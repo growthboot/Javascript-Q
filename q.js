@@ -372,7 +372,7 @@ q.height = function () {
 q.request = function (arrParams) {
 	var r = new XMLHttpRequest();
 	r.open("POST", arrParams.url, true);
-	var strParams = typeof arrParams.post == 'object' ? q(arrParams.post).serialize() : arrParams.post;
+	var strParams = typeof arrParams.post == 'object' ? q.serialize(arrParams.post) : arrParams.post;
 	r.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 	r.setRequestHeader("Content-length", strParams.length);
 	r.setRequestHeader("Connection", "close");
@@ -383,11 +383,13 @@ q.request = function (arrParams) {
 	};
 	r.send(strParams);
 };
-q.serialize = function() {
+q.serialize = function(node) {
+	if (!node)
+		node = this[0];
 	var str = [];
-	for(var p in this[0])
-		if (this[0].hasOwnProperty(p)) {
-			str.push(encodeURIComponent(p) + "=" + encodeURIComponent(this[0][p]));
+	for(var p in node)
+		if (node.hasOwnProperty(p)) {
+			str.push(encodeURIComponent(p) + "=" + encodeURIComponent(node[p]));
 		}
 	return str.join("&");
 };
