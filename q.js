@@ -1,5 +1,5 @@
 /*
- * JavascriptQ v1.02
+ * QueryChain v1.02
  * https://github.com/AugmentLogic/JavascriptQ
  */
 // - start of core dependencies
