@@ -12,14 +12,13 @@ var q = function (mixedQuery) {
 	// Start handling requests that come directly from a q session initiation.
 	// If a function is passed in it will launch right away if the dom is ready
 	// or wait if it is not.
-	var domIsLoaded = false;
 	if (typeof mixedQuery == 'function') {
-		if (domIsLoaded)
+		if (q.domIsLoaded)
 			mixedQuery.call(q);
 		else
 			q.load_promises.push(mixedQuery);
 		window.onload = function () {
-			domIsLoaded = true;
+			q.domIsLoaded = true;
 			var len = q.load_promises.length;
 			for (var intItr=0;intItr!=len;intItr++) {
 				q.load_promises[intItr].call(q);
@@ -62,6 +61,7 @@ var q = function (mixedQuery) {
 q.v = 1.02;
 q.isJavascriptQ = q.is_q = true;
 // requied variables
+q.domIsLoaded = false;
 q.load_promises = [];
 q.pixel_items = {
 	width:1,
