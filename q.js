@@ -34,7 +34,8 @@ var q = function (mixedQuery) {
 		return q;
 	// Pass an entire array into the q array chain.
 	} else if (typeof mixedQuery == 'array') {
-		for (var i=0; i!=mixedQuery.length; i++) {
+		var len = mixedQuery.length;
+		for (var i=0; i!=len; i++) {
 			q[i] = mixedQuery[i];
 		}
 		q.functionTrim(i);
@@ -43,7 +44,8 @@ var q = function (mixedQuery) {
 	// chain for further use.
 	} else if (/<[a-z][\s\S]*>/i.test(mixedQuery)) {
 		var children = q.make(mixedQuery);
-		for (var i=0;i!=children.length;i++) {
+		var len = children.length
+		for (var i=0;i!=len;i++) {
 			q[i] = children[i];
 		}
 		q.functionTrim(i);
@@ -94,8 +96,9 @@ q.find = function (strQuery) {
 		arrResult = [].slice.call(document.querySelectorAll(strQuery));
 	}
 	var i=0;
-	if (arrResult.length) {
-		for (; i!=arrResult.length; i++) {
+	var len = arrResult.length;
+	if (len) {
+		for (; i!=len; i++) {
 			q[i] = arrResult[i];
 		}
 	}
