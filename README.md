@@ -1,2 +1,2 @@
-# JavascriptQ
-A very small library to substitute Jquery or other large libraries for when you need a light-weight alternative.
+# QueryChain
+A very small 5k JavaScript library for when you need a light-weight alternative with most the features you're used to.
