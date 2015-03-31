@@ -1,6 +1,6 @@
 /*
  * QueryChain v1.02
- * https://github.com/AugmentLogic/JavascriptQ
+ * https://github.com/AugmentLogic/QueryChain
  */
 // - start of core dependencies
 var q = function (mixedQuery) {
