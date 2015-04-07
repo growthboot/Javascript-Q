@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>QueryChain Library - Unit Testing</title>
+		<script src="./js/lib/q.js"></script>
+		<script src="./js/lib/q.debug.js"></script>
+		<style>
+			body * {
+				max-width: 700px;
+			}
+			.title {
+				font-size:14pt;
+				font-weight: bold;
+				padding: 10px 0;
+				margin-top:30px;
+			}
+			.passfail {
+
+			}
+			.passfail {
+				display: inline-block;
+				width:18px;
+				height:18px;
+				vertical-align: middle;
+				background-color:red;
+				border:1px solid #000;
+			}
+			.passfail.passed {
+				background-color: green;
+			}
+			.passfail.failed,
+			.passfail.failed2 {
+				background-color: red;
+			}
+			.testmessage {
+				display: inline-block;
+				height:16px;
+				vertical-align: middle;
+			}
+			.unit {
+				margin-top: 10px;
+				vertical-align: middle;
+			}
+		</style>
+
+	</head>
+	<body>
+		<h1>QueryChain Library - Unit Testing</h1>
+		<p>
+			The following list is each test that was used to create the QueryChain library.
+			If a box is green the test worked correctly. If a box is red, it failed the test and a bug was detected in the library.
+		</p>
+		<div class="title">Basic selection testing</div>
+		<div id="test1">
+			<div class="unit">
+				<div class="passfail"  id="test1_result"></div>
+				<div class="testmessage">Selection of a single div using id selection.</div>
+			</div>
+			<script>
+				var objNode = q('#test1_result');
+				var boolTest = objNode && typeof objNode[0] == 'object';
+				if (boolTest) {
+					objNode[0].style.backgroundColor = 'green';
+				}
+			</script>
+		</div>
+		<div class="title">Css modification</div>
+		<div id="test2">
+			<div class="unit">
+				<div class="passfail" id="test2_result"></div>
+				<div class="testmessage">Alter background-color of a box.</div>
+			</div>
+			<script>
+				q('#test2_result').css({
+					'background-color' : 'green'
+				});
+			</script>
+		</div>
+		<div class="title">Chaining / Find operation</div>
+		<div id="test3">
+			<div class="unit">
+				<div class="passfail" id="test3_result"></div>
+				<div class="testmessage">Basic chained find operation.</div>
+			</div>
+			<script>
+				q('#test3').find('#test3_result').css({
+					'background-color' : 'green'
+				});
+			</script>
+		</div>
+		<div id="test4">
+			<div class="unit">
+				<div class="passfail" id="test4_result"></div>
+				<div class="testmessage">Check for false-positive in chained find operation.</div>
+			</div>
+			<script>
+				if (!q('#test3').find('#test4_result')[0]) {
+					q('#test4_result').css({
+						'background-color' : 'green'
+					});
+				}
+			</script>
+		</div>
+		<div id="test7">
+			<div class="unit">
+				<div class="passfail" id="test7_result"></div>
+				<div class="testmessage">Handle q object through variable.</div>
+			</div>
+			<script>
+				var objq = q('#test7_result');
+				objq.css({
+					'background-color' : 'green'
+				});
+			</script>
+		</div>
+		<div id="test8">
+			<div class="unit">
+				<div class="passfail" id="test8_result"></div>
+				<div class="testmessage">Separated chain handling.</div>
+			</div>
+			<script>
+				var objq = q('#test8_result');
+				q.css({
+					'background-color' : 'green'
+				});
+			</script>
+		</div>
+		<div class="title">Class handling</div>
+		<div id="test5">
+			<div class="unit">
+				<div class="passfail" id="test5_result"></div>
+				<div class="testmessage">Add a class.</div>
+			</div>
+			<script>
+				q('#test5_result').addClass('passed');
+			</script>
+		</div>
+		<div id="test10">
+			<div class="unit">
+				<div class="passfail" id="test10_result"></div>
+				<div class="testmessage">Check if class exists.</div>
+			</div>
+			<script>
+				if (q('#test10_result').hasClass('passfail')) {
+					q('#test10_result').addClass('passed');
+				}
+			</script>
+		</div>
+		<div id="test6">
+			<div class="unit">
+				<div class="passfail failed passed" id="test6_result"></div>
+				<div class="testmessage">Remove a class.</div>
+			</div>
+			<script>
+				q('#test6_result').removeClass('failed');
+			</script>
+		</div>
+		<div id="test9">
+			<div class="unit">
+				<div class="passfail" id="test9_result"></div>
+				<div class="testmessage">Add multiple classes.</div>
+			</div>
+			<script>
+				q('#test9_result')
+					.addClass('failed passed')
+					.removeClass('failed');
+			</script>
+		</div>
+		<div id="test11">
+			<div class="unit">
+				<div class="passfail passed failed failed2" id="test11_result"></div>
+				<div class="testmessage">Remove multiple classes.</div>
+			</div>
+			<script>
+				q('#test11_result').removeClass('failed failed2');
+			</script>
+		</div>
+		<div style="padding:40px 20px">
+			Test count: <script>document.write(q('.unit').count);</script>
+		</div>
+	</body>
+</html>
