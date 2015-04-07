@@ -25,7 +25,7 @@ q("h3").remove()
 ### Iterate each dom object found and change their color
 ```javascript
 q("h3").each(function () {
-  this.css({
+  q(this).css({
     "background-color" : "#000",
     "color" : "#fff"
   });
