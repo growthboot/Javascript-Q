@@ -1,6 +1,6 @@
 /*
- * JavascriptQ v1.022
- * https://github.com/AugmentLogic/JavascriptQ
+ * QueryChain v1.023
+ * https://github.com/AugmentLogic/QueryChain
  */
 // - start of core dependencies
 var q = function (mixedQuery) {
@@ -25,21 +25,21 @@ var q = function (mixedQuery) {
 			}
 		};
 		return q;
-	// If an object is passed in add it to the array chain and as always trim
-	// anything off the remainder incase there was a previous chain, since array
-	// chains are never purged until a new chian is created.
-	} else if (typeof mixedQuery == 'object') {
-		q[0] = mixedQuery;
-		q.count = 1;
-		q.functionTrim(1);
-		return q;
 	// Pass an entire array into the q array chain.
-	} else if (typeof mixedQuery == 'array') {
+	} else if (mixedQuery instanceof Array) {
 		var len = q.count = mixedQuery.length;
 		for (var i=0; i!=len; i++) {
 			q[i] = mixedQuery[i];
 		}
 		q.functionTrim(i);
+		return q;
+	// If an object is passed in add it to the array chain and as always trim
+	// anything off the remainder incase there was a previous chain, since array
+	// chains are never purged until a new chian is created.
+	} else if (mixedQuery instanceof Object) {
+		q[0] = mixedQuery;
+		q.count = 1;
+		q.functionTrim(1);
 		return q;
 	// Html detected, build the html then load all it's nodes into the array
 	// chain for further use.
@@ -61,7 +61,7 @@ var q = function (mixedQuery) {
 	}
 	return q;
 };
-q.v = 1.022;
+q.v = 1.023;
 q.isJavascriptQ = q.is_q = true;
 // requied variables
 q.domIsLoaded = false;
