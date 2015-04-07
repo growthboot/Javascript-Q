@@ -1,6 +1,6 @@
 /*
- * QueryChain v1.02
- * https://github.com/AugmentLogic/QueryChain
+ * JavascriptQ v1.021
+ * https://github.com/AugmentLogic/JavascriptQ
  */
 // - start of core dependencies
 var q = function (mixedQuery) {
@@ -30,11 +30,12 @@ var q = function (mixedQuery) {
 	// chains are never purged until a new chian is created.
 	} else if (typeof mixedQuery == 'object') {
 		q[0] = mixedQuery;
+		q.count = 1;
 		q.functionTrim(1);
 		return q;
 	// Pass an entire array into the q array chain.
 	} else if (typeof mixedQuery == 'array') {
-		var len = mixedQuery.length;
+		var len = q.count = mixedQuery.length;
 		for (var i=0; i!=len; i++) {
 			q[i] = mixedQuery[i];
 		}
@@ -44,7 +45,7 @@ var q = function (mixedQuery) {
 	// chain for further use.
 	} else if (/<[a-z][\s\S]*>/i.test(mixedQuery)) {
 		var children = q.make(mixedQuery);
-		var len = children.length
+		var len = q.count = children.length
 		for (var i=0;i!=len;i++) {
 			q[i] = children[i];
 		}
@@ -60,11 +61,12 @@ var q = function (mixedQuery) {
 	}
 	return q;
 };
-q.v = 1.02;
+q.v = 1.021;
 q.isJavascriptQ = q.is_q = true;
 // requied variables
 q.domIsLoaded = false;
 q.load_promises = [];
+q.count = 0;
 q.pixel_items = {
 	width:1,
 	height:1,
@@ -96,7 +98,7 @@ q.find = function (strQuery) {
 		arrResult = [].slice.call(document.querySelectorAll(strQuery));
 	}
 	var i=0;
-	var len = arrResult.length;
+	var len = q.count = arrResult.length;
 	if (len) {
 		for (; i!=len; i++) {
 			q[i] = arrResult[i];
@@ -108,13 +110,9 @@ q.find = function (strQuery) {
 // Iterate arrays, objects and fake function arrays
 q.each = function (mixedParam1, fnCallback) {
 	if (typeof mixedParam1 == 'function') {
-		if (typeof fnCallback != 'function') {
-			fnCallback = mixedParam1;
-			mixedParam1 = this;
-		}
-		if (typeof mixedParam1[0] != 'undefined') {
-			for (var i=0;mixedParam1[i];i++) {
-				var res = mixedParam1.call(mixedParam1[i]);
+		if (typeof this[0] != 'undefined') {
+			for (var i=0;this[i];i++) {
+				var res = mixedParam1.call(this[i]);
 				if (res === false)
 					break;
 			}
@@ -165,6 +163,7 @@ q.css = function (mixedCss) {
 			for (var strKey in mixedCss) {
 				var strImportant = /!important *$/.test(mixedCss[strKey]) ? 'important' : undefined;
 				var strValue = typeof mixedCss[strKey] == 'string' ? mixedCss[strKey].replace(/ *!important *$/, '') : mixedCss[strKey];
+
 				this.style.setProperty(strKey, strValue);
 			}
 		});
@@ -192,9 +191,11 @@ q.clone = function () {
 q.addClass = function (strClassName, arrCss) {
 	if (!arrCss) {
 		q.each(function () {
-			this.classList.add(strClassName);
+			var node = this;
+			q.each(strClassName.split(/ /), function () {
+				node.classList.add(this);
+			});
 		});
-		return q;
 	} else if (typeof arrCss == 'object') {
 		var strTempCss = strClassName + ' {';
 		for (var strName in arrCss) {
@@ -202,20 +203,24 @@ q.addClass = function (strClassName, arrCss) {
 		}
 		strTempCss += '}';
 		strClassName = strTempCss;
+		var all = document.styleSheets;
+		if (typeof all[all.length - 1] == 'undefined') {
+			document.head.appendChild(document.createElement('style'));
+			all = document.styleSheets;
+		}
+		var s = all[all.length - 1];
+		var l = s.cssRules.length;
+		var boolIE=!s.insertRule;
+		s[boolIE?'addRule':'insertRule'](strClassName, boolIE?-1:l);
 	}
-	var all = document.styleSheets;
-	if (typeof all[all.length - 1] == 'undefined') {
-		document.head.appendChild(document.createElement('style'));
-		all = document.styleSheets;
-	}
-	var s = all[all.length - 1];
-	var l = s.cssRules.length;
-	var boolIE=!s.insertRule;
-	s[boolIE?'addRule':'insertRule'](strClassName, boolIE?-1:l);
+	return q;
 };
 q.removeClass = function (strClassName) {
 	q.each(function () {
-		this.classList.remove(strClassName);
+		var node = this;
+		q.each(strClassName.split(/ /), function () {
+			node.classList.remove(this);
+		});
 	});
 };
 q.attr = function (strKey, strVal) {
