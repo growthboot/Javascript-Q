@@ -76,6 +76,36 @@
 				});
 			</script>
 		</div>
+		<div id="test15">
+			<div class="unit">
+				<div class="passfail" id="test15_result"></div>
+				<div class="testmessage">Check width of box.</div>
+			</div>
+			<script>
+				if (q('#test15_result').css('width') == '18px')
+					q('#test15_result').css({
+						'background-color' : 'green'
+					});
+			</script>
+		</div>
+		<div id="test14">
+			<div class="unit">
+				<div class="passfail" id="test14_result"></div>
+				<div class="testmessage">Alter width of box.</div>
+			</div>
+			<script>
+				q('#test14_result').css({
+					'width' : 100
+				});
+				if (q('#test14_result').css('width') == '100px')
+					q('#test14_result').css({
+						'background-color' : 'green'
+					});
+				q('#test14_result').css({
+					'width' : 18
+				});
+			</script>
+		</div>
 		<div class="title">Chaining / Find operation</div>
 		<div id="test3">
 			<div class="unit">
@@ -143,6 +173,31 @@
 			<script>
 				if (q('#test10_result').hasClass('passfail')) {
 					q('#test10_result').addClass('passed');
+				}
+			</script>
+		</div>
+		<div id="test12">
+			<div class="unit">
+				<div class="passfail anotherclass" id="test12_result"></div>
+				<div class="testmessage">Check for multiple classes.</div>
+			</div>
+			<script>
+				if (q('#test12_result').hasClass('passfail anotherclass')) {
+					q('#test12_result').addClass('passed');
+				}
+			</script>
+		</div>
+		<div id="test13">
+			<div class="unit">
+				<div class="passfail" id="test13_result"></div>
+				<div class="testmessage">Check hasClass for false-positive.</div>
+			</div>
+			<script>
+				if (
+					!q('#test13_result').hasClass('passfail anotherclass')
+					&& q('#test13_result').hasClass('passfail')
+				) {
+					q('#test13_result').addClass('passed');
 				}
 			</script>
 		</div>
