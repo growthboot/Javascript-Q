@@ -1,5 +1,5 @@
 /*
- * JavascriptQ v1.021
+ * JavascriptQ v1.022
  * https://github.com/AugmentLogic/JavascriptQ
  */
 // - start of core dependencies
@@ -61,7 +61,7 @@ var q = function (mixedQuery) {
 	}
 	return q;
 };
-q.v = 1.021;
+q.v = 1.022;
 q.isJavascriptQ = q.is_q = true;
 // requied variables
 q.domIsLoaded = false;
@@ -157,13 +157,15 @@ q.css = function (mixedCss) {
 		var obj = this.isJavascriptQ ? this[0] : this;
 		return obj.style.cssText;
 	} else {
-		if (typeof mixedCss == 'string')
-			return getComputedStyle(this[0])[mixedCss];
+		if (typeof mixedCss == 'string') {
+			return getComputedStyle(this[0],null).getPropertyValue(mixedCss);
+		}
 		q.each(function () {
 			for (var strKey in mixedCss) {
 				var strImportant = /!important *$/.test(mixedCss[strKey]) ? 'important' : undefined;
-				var strValue = typeof mixedCss[strKey] == 'string' ? mixedCss[strKey].replace(/ *!important *$/, '') : mixedCss[strKey];
-
+				var strVal = mixedCss[strKey];
+				strVal = strVal!=0 && q.pixel_items[strKey] && typeof strVal != 'string' ? strVal+'px' : strVal;
+				var strValue = typeof strVal == 'string' ? strVal.replace(/ *!important *$/, '') : strVal;
 				this.style.setProperty(strKey, strValue);
 			}
 		});
@@ -227,7 +229,7 @@ q.attr = function (strKey, strVal) {
 	if (!strVal)
 		return this[0].getAttribute(strKey);
 	q.each(function () {
-		this.setAttribute(strKey, strVal!=0 && q.pixel_items[strKey] && typeof strVal != 'string' ? strVal+'px' : strVal);
+		this.setAttribute(strKey, strVal);
 	});
 	return q;
 };
@@ -344,18 +346,18 @@ q.is = function (strQuery) {
 };
 q.hasClass = function (strClassName) {
 	var boolHas = false;
+	var boolDoesntHave = false;
 	q.each(strClassName.split(/ /), function (k) {
 		var name = this;
 		q.each(function () {
 			if (this.classList.contains(name)) {
 				boolHas = true;
-				return false;
+			} else {
+				boolDoesntHave = true;
 			}
 		});
-		if (boolHas)
-			return false;
 	});
-	return boolHas;
+	return boolHas && !boolDoesntHave;
 };
 q.next = function () {
 	return this[0].nextElementSibling;
