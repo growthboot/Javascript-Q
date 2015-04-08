@@ -3,7 +3,7 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>QueryChain Library - Unit Testing</title>
-		<script src="q.js"></script>
+		<script src="./js/lib/q.js"></script>
 		<style>
 			body * {
 				max-width: 700px;
@@ -218,16 +218,60 @@
 				q('#test11_result').removeClass('failed failed2');
 			</script>
 		</div>
-		<div id="test8">
+		<div class="title">Chained iteration</div>
+		<div id="test17">
 			<div class="unit">
-				<div class="passfail" id="test8_result"></div>
-				<div class="testmessage">Add two class and remove one.</div>
+				<div class="passfail" id="test17_result"></div>
+				<div class="testmessage">Placeholder for next text.</div>
+			</div>
+		</div>
+		<div id="test18">
+			<div class="unit">
+				<div class="passfail" id="test18_result"></div>
+				<div class="testmessage">The each function is working correctly if this box and the above box is green.</div>
 			</div>
 			<script>
-				q('#test8_result')
-					.addClass('failed')
-					.addClass('passed')
-					.removeClass('failed');
+				q('#test17_result,#test18_result').each(function () {
+					q(this).addClass('passed');
+				});
+			</script>
+		</div>
+		<div class="title">None chain-able resources</div>
+		<div id="test16">
+			<div class="unit">
+				<div class="passfail" id="test16_result"></div>
+				<div class="testmessage">On document load.</div>
+			</div>
+			<script>
+				q(function () {
+					q('#test16_result')
+						.addClass('passed');
+				});
+			</script>
+		</div>
+		<div class="title">Altering attributes</div>
+		<div id="test19">
+			<div class="unit">
+				<div class="passfail" id="test19_result"></div>
+				<div class="testmessage">Set an attribute and read to see if it was set/read correctly.</div>
+			</div>
+			<script>
+				var strAttr = "abcd1234";
+				var strAttrResult = q('#test19_result').attr('custome_attr', strAttr).attr('custome_attr');
+				if (strAttrResult == strAttr)
+					q('#test19_result').addClass('passed');
+			</script>
+		</div>
+		<div id="test20">
+			<div class="unit">
+				<div class="passfail" id="test20_result"></div>
+				<div class="testmessage">Check if a attr can be removed correctly.</div>
+			</div>
+			<script>
+				var strAttrResult = q('#test19_result').removeAttr('custome_attr').attr('custome_attr');
+				if (strAttrResult == null) {
+					q('#test20_result').addClass('passed');
+				}
 			</script>
 		</div>
 		<div style="padding:40px 20px">
