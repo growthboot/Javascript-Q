@@ -1,73 +1,20 @@
-/*
- * QueryChain v1.023
- * https://github.com/AugmentLogic/QueryChain
- */
 // - start of core dependencies
-var q = function (mixedQuery) {
-	// Variable chain contains information that can be gathered but is forgotten
-	// each time a new query starts.
-	// This is different from the traditional array chain in that its as an
-	// assoicative array designed to keep track of things temporarily.
-	q.chain = {};
-	// Start handling requests that come directly from a q session initiation.
-	// If a function is passed in it will launch right away if the dom is ready
-	// or wait if it is not.
-	if (typeof mixedQuery == 'function') {
-		if (q.domIsLoaded)
-			mixedQuery.call(q);
-		else
-			q.load_promises.push(mixedQuery);
-		window.onload = function () {
-			q.domIsLoaded = true;
-			var len = q.load_promises.length;
-			for (var intItr=0;intItr!=len;intItr++) {
-				q.load_promises[intItr].call(q);
-			}
-		};
-		return q;
-	// Pass an entire array into the q array chain.
-	} else if (mixedQuery instanceof Array) {
-		var len = q.count = mixedQuery.length;
-		for (var i=0; i!=len; i++) {
-			q[i] = mixedQuery[i];
-		}
-		q.functionTrim(i);
-		return q;
-	// If an object is passed in add it to the array chain and as always trim
-	// anything off the remainder incase there was a previous chain, since array
-	// chains are never purged until a new chian is created.
-	} else if (mixedQuery instanceof Object) {
-		q[0] = mixedQuery;
-		q.count = 1;
-		q.functionTrim(1);
-		return q;
-	// Html detected, build the html then load all it's nodes into the array
-	// chain for further use.
-	} else if (/<[a-z][\s\S]*>/i.test(mixedQuery)) {
-		var children = q.make(mixedQuery);
-		var len = q.count = children.length
-		for (var i=0;i!=len;i++) {
-			q[i] = children[i];
-		}
-		q.functionTrim(i);
-		return q;
-	// When anything else besides the above things is found q assumes that the
-	// query variable must contain css so it searches the dom from the dom
-	// element in the array chian or if the is empty form the start of the
-	// document.
-	} else {
-		q.functionTrim(0);
-		return q.find(mixedQuery);
-	}
-	return q;
+var q = function (query) {
+	/*
+	 * QueryChain Library v1.03
+	 * Tutorial available at:
+	 * https://github.com/AugmentLogic/QueryChain
+	 */
+	return q.r.init(query);
 };
-q.v = 1.023;
+q.v = 1.03;
 q.isJavascriptQ = q.is_q = true;
 // requied variables
-q.domIsLoaded = false;
-q.load_promises = [];
 q.count = 0;
-q.pixel_items = {
+q.r = {};
+q.r.domIsLoaded = false;
+q.r.load_promises = [];
+q.r.pixel_items = {
 	width:1,
 	height:1,
 	top:1,
@@ -85,27 +32,86 @@ q.pixel_items = {
 	'border-width':1,
 	'line-height':1
 };
+q.r.init = function (mixedQuery) {
+	var qcopy = q.extend({},q);
+	qcopy.isCopy = true;
+	// don't extend resources to save memory
+	delete qcopy.r;
+	// Variable chain contains information that can be gathered but is forgotten
+	// each time a new query starts.
+	// This is different from the traditional array chain in that its as an
+	// assoicative array designed to keep track of things temporarily.
+	qcopy.chain = {};
+	// Start handling requests that come directly from a q session initiation.
+	// If a function is passed in it will launch right away if the dom is ready
+	// or wait if it is not.
+	if (typeof mixedQuery == 'function') {
+		if (q.r.domIsLoaded)
+			mixedQuery.call(qcopy);
+		else
+			q.r.load_promises.push(mixedQuery);
+		window.onload = function () {
+			q.r.domIsLoaded = true;
+			var len = qcopy.r.load_promises.length;
+			for (var intItr=0;intItr!=len;intItr++) {
+				qcopy.r.load_promises[intItr].call(qcopy);
+			}
+		};
+		return qcopy;
+	// Pass an entire array into the q array chain.
+	} else if (mixedQuery instanceof Array) {
+		var len = qcopy.count = mixedQuery.length;
+		for (var i=0; i!=len; i++) {
+			qcopy[i] = mixedQuery[i];
+		}
+		qcopy.functionTrim(i);
+		return qcopy;
+	// If an object is passed in add it to the array chain and as always trim
+	// anything off the remainder incase there was a previous chain, since array
+	// chains are never purged until a new chian is created.
+	} else if (mixedQuery instanceof Object) {
+		qcopy[0] = mixedQuery;
+		qcopy.count = 1;
+		qcopy.functionTrim(1);
+		return qcopy;
+	// Html detected, build the html then load all it's nodes into the array
+	// chain for further use.
+	} else if (/<[a-z][\s\S]*>/i.test(mixedQuery)) {
+		var children = qcopy.make(mixedQuery);
+		var len = qcopy.count = children.length
+		for (var i=0;i!=len;i++) {
+			qcopy[i] = children[i];
+		}
+		qcopy.functionTrim(i);
+		return qcopy;
+		// When anything else besides the above things is found q assumes that the
+		// query variable must contain css so it searches the dom from the dom
+		// element in the array chian or if the is empty form the start of the
+		// document.
+	} else {
+		qcopy[0] = document;
+		qcopy.functionTrim(1);
+		return qcopy.find.call(qcopy,mixedQuery);
+	}
+	return qcopy;
+};
 // Search the dom from the array chain or if there is nothing in chain from
 // the start of the document.
 q.find = function (strQuery) {
 	var arrResult = [];
-	if (this[0]) {
-		q.each(function () {
-			var arrSubResult = [].slice.call(this.querySelectorAll(strQuery));
-			arrResult = arrResult.concat(arrSubResult);
-		});
-	} else {
-		arrResult = [].slice.call(document.querySelectorAll(strQuery));
-	}
+	this.each(function () {
+		var arrSubResult = [].slice.call(this.querySelectorAll(strQuery));
+		arrResult = arrResult.concat(arrSubResult);
+	});
+	this.functionTrim(0);
 	var i=0;
-	var len = q.count = arrResult.length;
+	var len = this.count = arrResult.length;
 	if (len) {
 		for (; i!=len; i++) {
-			q[i] = arrResult[i];
+			this[i] = arrResult[i];
 		}
 	}
-	q.functionTrim(i);
-	return q;
+	return this;
 };
 // Iterate arrays, objects and fake function arrays
 q.each = function (mixedParam1, fnCallback) {
@@ -125,19 +131,18 @@ q.each = function (mixedParam1, fnCallback) {
 				break;
 		}
 	}
-	return q;
+	return this;
 };
 // Remove all items from a fake function array
 q.functionTrim = function (intIndex) {
-	for (var intItr=intIndex;q[intItr];intItr++) {
-		delete q[intItr];
+	for (var intItr=intIndex;this[intItr];intItr++) {
+		delete this[intItr];
 	}
 };
-q.copy = function (obj) {
-	if (null == obj || "object" != typeof obj) return obj;
-	var copy = obj.constructor();
-	for (var attr in obj) {
-		if (obj.hasOwnProperty(attr)) copy[attr] = obj[attr];
+q.extend = function (objSource,objExtend) {
+	var copy = objSource;
+	for (var attr in objExtend) {
+		if (objExtend.hasOwnProperty(attr)) copy[attr] = objExtend[attr];
 	}
 	return copy;
 };
@@ -155,35 +160,37 @@ q.rtrim = function (str) {
 q.css = function (mixedCss) {
 	if (!mixedCss) {
 		var obj = this.isJavascriptQ ? this[0] : this;
-		return obj.style.cssText;
+		return obj && obj.style ? obj.style.cssText : "";
 	} else {
 		if (typeof mixedCss == 'string') {
 			return getComputedStyle(this[0],null).getPropertyValue(mixedCss);
 		}
-		q.each(function () {
+		this.each(function () {
 			for (var strKey in mixedCss) {
 				var strImportant = /!important *$/.test(mixedCss[strKey]) ? 'important' : undefined;
 				var strVal = mixedCss[strKey];
-				strVal = strVal!=0 && q.pixel_items[strKey] && typeof strVal != 'string' ? strVal+'px' : strVal;
+				strVal = strVal!=0 && q.r.pixel_items[strKey] && typeof strVal != 'string' ? strVal+'px' : strVal;
 				var strValue = typeof strVal == 'string' ? strVal.replace(/ *!important *$/, '') : strVal;
 				this.style.setProperty(strKey, strValue);
 			}
 		});
-		return q;
+		return this;
 	}
 };
 // - end of debug dependencies
 // - start of dom manipulation dependencies
 q.html = function (strHTML) {
 	if (strHTML == undefined)
-		return q[0].innerHTML;
-	q.each(function () {
+		return this[0].innerHTML;
+	this.each(function () {
 		this.innerHTML = strHTML;
 	});
-	return q;
+	return this;
 };
 q.replaceWith = function (strHTML) {
-	this[0].outerHTML = strHTML;
+	this.each(function () {
+		this.outerHTML = strHTML;
+	});
 };
 q.clone = function () {
 	return this[0].cloneNode(true);
@@ -192,7 +199,7 @@ q.clone = function () {
 // parameters to inject a class with css into a document head stylesheet.
 q.addClass = function (strClassName, arrCss) {
 	if (!arrCss) {
-		q.each(function () {
+		this.each(function () {
 			var node = this;
 			q.each(strClassName.split(/ /), function () {
 				node.classList.add(this);
@@ -215,10 +222,10 @@ q.addClass = function (strClassName, arrCss) {
 		var boolIE=!s.insertRule;
 		s[boolIE?'addRule':'insertRule'](strClassName, boolIE?-1:l);
 	}
-	return q;
+	return this;
 };
 q.removeClass = function (strClassName) {
-	q.each(function () {
+	this.each(function () {
 		var node = this;
 		q.each(strClassName.split(/ /), function () {
 			node.classList.remove(this);
@@ -228,19 +235,19 @@ q.removeClass = function (strClassName) {
 q.attr = function (strKey, strVal) {
 	if (!strVal)
 		return this[0].getAttribute(strKey);
-	q.each(function () {
+	this.each(function () {
 		this.setAttribute(strKey, strVal);
 	});
-	return q;
+	return this;
 };
 q.removeAttr = function (strKey, strVal) {
-	q.each(function () {
+	this.each(function () {
 		this.removeAttribute(strKey, strVal);
 	});
-	return q;
+	return this;
 };
 q.bind = function (strEvents, fnCallback) {
-	q.each(function () {
+	this.each(function () {
 		var node = this;
 		q.each(strEvents.split(/ /),function () {
 			var method = function (e) {
@@ -257,16 +264,16 @@ q.bind = function (strEvents, fnCallback) {
 				node.attachEvent('on' + this, method);
 		});
 	});
-	return q;
+	return this;
 };
 q.unbind = function (strEvents) {
-	q.each(function () {
+	this.each(function () {
 		var node = this;
 		q.each(strEvents.split(/ /),function () {
 			node.removeEventListener('on' + this);
 		});
 	});
-	return q;
+	return this;
 };
 q.make = function (strHtml) {
 	var wrapper = document.createElement('div');
@@ -275,37 +282,43 @@ q.make = function (strHtml) {
 };
 q.append = function (mixedVar) {
 	var item = typeof mixedVar == 'string' ? q.make(mixedVar) : mixedVar;
-	q.each(function () {
+	this.each(function () {
 		var node = this;
 		q.each(item,function () {
 			node.appendChild(this);
 		});
 	});
-	return q;
+	return this;
 };
 q.prepend = function (mixedVar) {
 	var item = typeof mixedVar == 'string' ? q.make(mixedVar) : mixedVar;
-	res.iterate.call(this,function () {
+	this.each(function () {
 		var node = this;
-		res.iterate.call(item,function () {
+		q.each(item,function () {
 			node.insertBefore(this, node.firstChild);
 		});
 	});
-	return q;
+	return this;
 };
 q.remove = function () {
-	this[0].parentNode.removeChild(this[0]);
+	this.each(function () {
+		this.parentNode.removeChild(this);
+	});
 };
 q.text = function (strText) {
 	if (strText == undefined)
 		return this[0].textContent;
-	this[0].textContent = strText;
+	this.each(function () {
+		this.textContent = strText;
+	});
 	return this;
 };
 q.trigger = function (strEvent) {
 	var event = document.createEvent('HTMLEvents');
 	event.initEvent(strEvent, true, false);
-	this[0].dispatchEvent(event);
+	this.each(function () {
+		this.dispatchEvent(event);
+	});
 };
 // - end of dom manipulation dependencies
 // - start of dom information dependencies
@@ -320,26 +333,26 @@ q.pos = function () {
 		left += element.offsetLeft || 0;
 		element = element.offsetParent;
 	} while(element);
-	q.chain.pos = {
+	this.chain.pos = {
 		top: top,
 		left: left
 	};
-	return q.chain.pos;
+	return this.chain.pos;
 };
 q.left = function () {
-	return q.chain.pos ? q.chain.pos.left : q.pos().left;
+	return this.chain.pos ? this.chain.pos.left : this.pos().left;
 };
 q.top = function () {
-	return q.chain.top ? q.chain.pos.top : q.pos().top;
+	return this.chain.top ? this.chain.pos.top : this.pos().top;
 };
 q.right = function () {
-	return q.left()+q.width();
+	return this.left()+this.width();
 };
 q.bottom = function () {
-	return q.top()+q.height();
+	return this.top()+this.height();
 };
 q.is = function (strQuery) {
-	q.each(function () {
+	this.each(function () {
 		var el = this;
 		return (el.matches || el.matchesSelector || el.msMatchesSelector || el.mozMatchesSelector || el.webkitMatchesSelector || el.oMatchesSelector).call(el, strQuery);
 	});
@@ -347,10 +360,10 @@ q.is = function (strQuery) {
 q.hasClass = function (strClassName) {
 	var boolHas = false;
 	var boolDoesntHave = false;
-	q.each(strClassName.split(/ /), function (k) {
-		var name = this;
-		q.each(function () {
-			if (this.classList.contains(name)) {
+	this.each(function () {
+		var node = this
+		q.each(strClassName.split(/ /), function (k) {
+			if (node.classList.contains(this)) {
 				boolHas = true;
 			} else {
 				boolDoesntHave = true;
