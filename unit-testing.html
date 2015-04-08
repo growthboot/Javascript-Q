@@ -143,18 +143,6 @@
 				});
 			</script>
 		</div>
-		<div id="test8">
-			<div class="unit">
-				<div class="passfail" id="test8_result"></div>
-				<div class="testmessage">Separated chain handling.</div>
-			</div>
-			<script>
-				var objq = q('#test8_result');
-				q.css({
-					'background-color' : 'green'
-				});
-			</script>
-		</div>
 		<div class="title">Class handling</div>
 		<div id="test5">
 			<div class="unit">
@@ -228,6 +216,18 @@
 			</div>
 			<script>
 				q('#test11_result').removeClass('failed failed2');
+			</script>
+		</div>
+		<div id="test8">
+			<div class="unit">
+				<div class="passfail" id="test8_result"></div>
+				<div class="testmessage">Add two class and remove one.</div>
+			</div>
+			<script>
+				q('#test8_result')
+					.addClass('failed')
+					.addClass('passed')
+					.removeClass('failed');
 			</script>
 		</div>
 		<div style="padding:40px 20px">
