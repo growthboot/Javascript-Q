@@ -15,9 +15,6 @@ q.type = function (mixedVar) {
 		default:
 			break;
 	}
-	if(mixedVar.jquery) {
-		return 'jquery';
-	}
 	switch(mixedVar.constructor) {
 		case Array:
 			return 'array';
@@ -78,13 +75,6 @@ q.alert = function (mixedValue) {
 				dump += 'Object [' + Object.keys(obj).length + '] { \n';
 				q.each(obj, function(k,v) {
 				   dump += p + strDel + k + ': ' + recursion(v, level + 1) + '\n';
-				});
-				dump += p + '}';
-				break;
-			 case "jquery":
-				dump += 'jQuery Object [' + Object.keys(obj).length + '] { \n';
-				q.each(obj, function(k,v) {
-				   dump += p + strDel + k + ' = ' + recursion(v, level + 1) + '\n';
 				});
 				dump += p + '}';
 				break;
