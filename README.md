@@ -8,7 +8,7 @@ Include QueryChain q.js file into the head of your html document.
 <script src="q.js"></script>
 ```
 
-## QueryChain core examples
+## QueryChain q.js Examples
 
 ### Document ready
 ```javascript
