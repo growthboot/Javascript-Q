@@ -32,7 +32,7 @@ q("h3").each(function () {
 });
 ```
 
-### Get the width or height of an element that was selected by its id
+### Get the width or height of an element
 ```html
 <div id="my_div01" style="width:20px;height:25px"></div>
 ```
@@ -41,4 +41,8 @@ q("#my_div01").width(); // returns: 20px
 q("#my_div01").height(); // returns: 25px
 ```
 
-
+### Find a all divs from a specific point inside the dom
+```javascript
+var container =  q("#my_container01");
+var alldivs = container.find("DIV");
+```
