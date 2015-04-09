@@ -19,7 +19,7 @@ q(function () {
 
 ### Access all h3 dom objects and remove them
 ```javascript
-q("h3").remove()
+q("h3").remove();
 ```
 
 ### Iterate each dom object found and change their color
@@ -31,3 +31,14 @@ q("h3").each(function () {
   });
 });
 ```
+
+### Get the width or height of an element that was selected by its id
+```html
+<div id="my_div01" style="width:20px;height:25px"></div>
+```
+```javascript
+q("#my_div01").width(); // returns: 20px
+q("#my_div01").height(); // returns: 25px
+```
+
+
