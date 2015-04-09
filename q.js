@@ -1,13 +1,13 @@
 // - start of core dependencies
 var q = function (query) {
 	/*
-	 * QueryChain Library v1.03
+	 * QueryChain Library v1.031
 	 * Tutorial available at:
 	 * https://github.com/AugmentLogic/QueryChain
 	 */
 	return q.r.init(query);
 };
-q.v = 1.03;
+q.v = 1.031;
 q.isJavascriptQ = q.is_q = true;
 // requied variables
 q.count = 0;
@@ -52,11 +52,12 @@ q.r.init = function (mixedQuery) {
 			q.r.load_promises.push(mixedQuery);
 		window.onload = function () {
 			q.r.domIsLoaded = true;
-			var len = qcopy.r.load_promises.length;
+			var len = q.r.load_promises.length;
 			for (var intItr=0;intItr!=len;intItr++) {
-				qcopy.r.load_promises[intItr].call(qcopy);
+				q.r.load_promises[intItr].call(qcopy);
 			}
 		};
+		qcopy[0] = document;
 		return qcopy;
 	// Pass an entire array into the q array chain.
 	} else if (mixedQuery instanceof Array) {
@@ -95,7 +96,7 @@ q.r.init = function (mixedQuery) {
 	}
 	return qcopy;
 };
-// Search the dom from the array chain or if there is nothing in chain from
+// Search down the dom from the array chain or if there is nothing in chain from
 // the start of the document.
 q.find = function (strQuery) {
 	var arrResult = [];
@@ -111,6 +112,15 @@ q.find = function (strQuery) {
 			this[i] = arrResult[i];
 		}
 	}
+	return this;
+};
+// Search up the dom for the closest object that matches a selector
+q.closest = function (strQuery) {
+	var node = q.parent(this[0]);
+	while (!q(node).is(strQuery)) {
+		node = q.parent(node);
+	}
+	this[0] = node;
 	return this;
 };
 // Iterate arrays, objects and fake function arrays
@@ -352,10 +362,17 @@ q.bottom = function () {
 	return this.top()+this.height();
 };
 q.is = function (strQuery) {
+	var boolIs = false;
+	var boolIsNot = false;
 	this.each(function () {
 		var el = this;
-		return (el.matches || el.matchesSelector || el.msMatchesSelector || el.mozMatchesSelector || el.webkitMatchesSelector || el.oMatchesSelector).call(el, strQuery);
+		var res = (el.matches || el.matchesSelector || el.msMatchesSelector || el.mozMatchesSelector || el.webkitMatchesSelector || el.oMatchesSelector).call(el, strQuery);
+		if (res)
+			boolIs = true;
+		else
+			boolIsNot = true;
 	});
+	return boolIs && !boolIsNot;
 };
 q.hasClass = function (strClassName) {
 	var boolHas = false;
@@ -378,8 +395,14 @@ q.next = function () {
 q.prev = function () {
 	return this[0].previousElementSibling;
 };
-q.parent = function () {
-	return this[0].parentNode;
+q.parent = function (node) {
+	var boolNode = !!node;
+	if (!boolNode)
+		node = this[0];
+	node = node.parentNode;
+	if (!boolNode)
+		this[0] = node;
+	return boolNode ? node : this;
 };
 q.width = function () {
 	return this[0].innerWidth;
