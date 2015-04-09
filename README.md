@@ -43,6 +43,6 @@ q("#my_div01").height(); // returns: 25px
 
 ### Find all checkboxes from a specific point inside the dom
 ```javascript
-var container =  q("#my_container01");
-var alldivs = container.find("input[type='checkbox']");
+var alldivs = q("#my_container01")
+  .find("input[type='checkbox']");
 ```
