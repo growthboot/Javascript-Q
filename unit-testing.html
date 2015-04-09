@@ -64,7 +64,7 @@
 				}
 			</script>
 		</div>
-		<div class="title">Css modification</div>
+		<div class="title">Css handling</div>
 		<div id="test2">
 			<div class="unit">
 				<div class="passfail" id="test2_result"></div>
@@ -141,6 +141,35 @@
 				objq.css({
 					'background-color' : 'green'
 				});
+			</script>
+		</div>
+		<div id="test21">
+			<div class="unit">
+				<div class="passfail" id="test21_result"></div>
+				<div class="testmessage">Use the .is method to check if something matches a selection.</div>
+			</div>
+			<script>
+				var objq = q('#test21_result');
+				if (objq.is('.passfail') && !objq.is('.failed')) {
+					objq.css({
+						'background-color' : 'green'
+					});
+				}
+			</script>
+		</div>
+		<div id="test22" class="test22_top">
+			<div class="unit">
+				<div class="passfail" id="test22_result"></div>
+				<div class="testmessage">Test the .closest method to find the nearest matching element up the dom tree.</div>
+			</div>
+			<script>
+				var objq1 = q('#test22');
+				var objq2 = q('#test22_result').closest('.test22_top');
+				if (objq1[0] == objq2[0]) {
+					q('#test22_result').css({
+						'background-color' : 'green'
+					});
+				}
 			</script>
 		</div>
 		<div class="title">Class handling</div>
