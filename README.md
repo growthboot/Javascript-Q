@@ -44,5 +44,22 @@ q("#my_div01").height(); // returns: 25px
 ### Find all checkboxes from a specific point inside the dom
 ```javascript
 var container =  q("#my_container01");
-var alldivs = container.find("input[type='checkbox']");
+var allDivs = container.find("input[type='checkbox']");
+```
+
+### Search backwords up the dom tree for the closest element that matches a selection
+```javascript
+var container =  q("#my_container01");
+var closeestTable = container.closest("table");
+```
+
+### Check if a specific element matches a selection
+```html
+<div id="my_div01" class="some_class"></div>
+```
+```javascript
+var container =  q("#my_div01");
+if (container.is('div.some_class')) {
+  // Returns true because the element has the class some_class and is a DIV
+}
 ```
