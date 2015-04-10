@@ -83,4 +83,6 @@ q("#my_div01").attr({
   'some_key' : 'some_value'
 });
 ```
+```javascript
 console.log("Some key: " + q("#my_div01").attr("some_key")); // outputs: Some key: some_value
+```
