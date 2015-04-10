@@ -13,7 +13,7 @@ Include QueryChain q.js file into the head of your html document.
 ### Document ready
 ```javascript
 q(function () {
-  alert('The document has finished loading.');
+  console.log('The document has finished loading.');
 })
 ```
 
