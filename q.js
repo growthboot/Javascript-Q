@@ -1,13 +1,17 @@
+/*
+ * Change log:
+ * Allow one css value to be set at a time
+ */
 // - start of core dependencies
 var q = function (query) {
 	/*
-	 * QueryChain Library v1.033
+	 * QueryChain Library v1.034
 	 * Tutorial available at:
 	 * https://github.com/AugmentLogic/QueryChain
 	 */
 	return q.r.init(query);
 };
-q.v = 1.033;
+q.v = 1.034;
 q.isJavascriptQ = q.is_q = true;
 // requied variables
 q.count = 0;
@@ -167,13 +171,18 @@ q.ltrim = function (str) {
 q.rtrim = function (str) {
    return str.replace(new RegExp("[\\s]+$", "g"), "");
 };
-q.css = function (mixedCss) {
+q.css = function (mixedCss, strValue) {
 	if (!mixedCss) {
 		var obj = this.isJavascriptQ ? this[0] : this;
 		return obj && obj.style ? obj.style.cssText : "";
 	} else {
 		if (typeof mixedCss == 'string') {
 			return getComputedStyle(this[0],null).getPropertyValue(mixedCss);
+		}
+		if (strValue) {
+			var strKey = mixedCss;
+			mixedCss = {};
+			mixedCss[strKey] = strValue;
 		}
 		this.each(function () {
 			for (var strKey in mixedCss) {
