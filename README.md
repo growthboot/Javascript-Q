@@ -102,7 +102,7 @@ q("#my_div01 h3").css({
   'background-color' : '#000'
 });
 ```
-Get the value of an style on an element
+Get the value of a style on an element
 ```javascript
 console.log("Color: " + q("#my_div01").css("color")); // outputs: Color: #000
 ```
