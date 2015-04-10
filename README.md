@@ -73,16 +73,19 @@ if (container.is('div.some_class')) {
 }
 ```
 
-### Set/get attributes on elements
+### Set / get attributes on elements
+Set a signle attribute
 ```javascript
 q("#my_div01").attr('any_attribute', 'any_value');
 ```
+Set multipule attributes
 ```javascript
 q("#my_div01").attr({
   'multiple_attrs' : 'can_be_set',
   'some_key' : 'some_value'
 });
 ```
+Get the value of an attribute
 ```javascript
 console.log("Some key: " + q("#my_div01").attr("some_key")); // outputs: Some key: some_value
 ```
