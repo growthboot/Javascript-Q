@@ -1,13 +1,13 @@
 // - start of core dependencies
 var q = function (query) {
 	/*
-	 * QueryChain Library v1.031
+	 * QueryChain Library v1.033
 	 * Tutorial available at:
 	 * https://github.com/AugmentLogic/QueryChain
 	 */
 	return q.r.init(query);
 };
-q.v = 1.031;
+q.v = 1.033;
 q.isJavascriptQ = q.is_q = true;
 // requied variables
 q.count = 0;
@@ -242,11 +242,18 @@ q.removeClass = function (strClassName) {
 		});
 	});
 };
-q.attr = function (strKey, strVal) {
-	if (!strVal)
-		return this[0].getAttribute(strKey);
+q.attr = function (strKeyOrParams, strVal) {
+	var boolParams = typeof strKeyOrParams == 'object';
+	var arrParams = boolParams ? strKeyOrParams : {};
+	if (!boolParams && strVal)
+		arrParams[strKeyOrParams] = strVal;
+	if (!boolParams && !strVal)
+		return this[0].getAttribute(strKeyOrParams);
 	this.each(function () {
-		this.setAttribute(strKey, strVal);
+		var node = this;
+		q.each(arrParams, function (k,v) {
+			node.setAttribute(k, v);
+		});
 	});
 	return this;
 };
