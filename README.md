@@ -72,3 +72,15 @@ if (container.is('div.some_class')) {
   // Returns true because the element has the class some_class and is a DIV
 }
 ```
+
+### Set/get attributes on elements
+```javascript
+q("#my_div01").attr('any_attribute', 'any_value');
+```
+```javascript
+q("#my_div01").attr({
+  'multiple_attrs' : 'can_be_set',
+  'some_key' : 'some_value'
+});
+```
+console.log("Some key: " + q("#my_div01").attr("some_key")); // outputs: Some key: some_value
