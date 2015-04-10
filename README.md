@@ -97,12 +97,12 @@ q("#my_div01").css('color', '#000');
 ```
 Set multipule styles on multiple elements
 ```javascript
-q("#my_div01 h3").attr({
+q("#my_div01 h3").css({
   'color' : '#fff',
   'background-color' : '#000'
 });
 ```
 Get the value of an style on an element
 ```javascript
-console.log("Color: " + q("#my_div01").attr("color")); // outputs: Color: #000
+console.log("Color: " + q("#my_div01").css("color")); // outputs: Color: #000
 ```
