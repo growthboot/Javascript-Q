@@ -176,13 +176,12 @@ q.css = function (mixedCss, strValue) {
 		var obj = this.isJavascriptQ ? this[0] : this;
 		return obj && obj.style ? obj.style.cssText : "";
 	} else {
-		if (typeof mixedCss == 'string') {
-			return getComputedStyle(this[0],null).getPropertyValue(mixedCss);
-		}
 		if (strValue) {
 			var strKey = mixedCss;
 			mixedCss = {};
 			mixedCss[strKey] = strValue;
+		} else if (typeof mixedCss == 'string') {
+			return getComputedStyle(this[0],null).getPropertyValue(mixedCss);
 		}
 		this.each(function () {
 			for (var strKey in mixedCss) {
