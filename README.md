@@ -32,7 +32,7 @@ q("h3").each(function () {
 });
 ```
 
-### Get the width or height of an element
+### Get the dimentions of an object
 ```html
 <div id="my_div01" style="width:20px;height:25px"></div>
 ```
@@ -40,6 +40,15 @@ q("h3").each(function () {
 q("#my_div01").width(); // returns: 20px
 q("#my_div01").height(); // returns: 25px
 ```
+
+### Get the position of an object
+```javascript
+q("#my_div01").top(); // returns how many pixels there are from the top of the document
+q("#my_div01").left(); // returns how many pixels there are from the left of the document
+q("#my_div01").bottom(); // returns the top position + the element height
+q("#my_div01").right(); // returns the left position + the element width
+```
+
 
 ### Find all checkboxes from a specific point inside the dom
 ```javascript
