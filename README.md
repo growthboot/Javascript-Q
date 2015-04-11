@@ -106,3 +106,54 @@ Get the value of a style on an element
 ```javascript
 console.log("Color: " + q("#my_div01").css("color")); // outputs: Color: #000
 ```
+
+### Make an ajax get request
+```javascript
+q.request({
+	url : 'test-ajax.php',
+	success : function (strResponse) {
+		console.log('Response: ' + strResponse);
+	}
+});
+```
+### Make an ajax post request
+```javascript
+q.request({
+	url : 'test-ajax.php',
+	post : {
+		'test_key' : 'test_value'
+	},
+	success : function (strResponse) {
+		console.log('Response: ' + strResponse);
+	}
+});
+```
+### Create a post using form feilds from a specific part of the dom tree
+```html
+<form>
+	<input type="hidden" name="test1" value="value1" />
+	<input type="button" name="test2" value="value2" />
+	<input type="text" name="test3" value="value3" />
+	<input type="checkbox" checked="checked" name="test4" value="value4" />
+	<input type="checkbox" name="test5" value="value5" />
+	<input type="radio" name="test6" value="value6_1" />
+	<input type="radio" name="test6" checked="checked" value="value6_2" />
+	<input type="radio" name="test6" value="value6_3" />
+	<input type="text" name="test7" value="value7_1" />
+	<input type="text" name="test7" value="value7_2" />
+	<input type="submit" name="test8" value="value8" />
+	<input type="text" name="test10" value="" />
+	<textarea name="test11">value11</textarea>
+	<button>test button 1</button>
+	<button name="test9">test button 2</button>
+</form>
+```
+```javascript
+q.request({
+	url : 'test-ajax.php',
+	post : q('form').serialize(), // serialization response: test1=value1&test3=value3&test4=value4&test6=value6_2&test7=value7_1&test7=value7_2&test10=&test11=value11
+	success : function (strResponse) {
+	  
+	}
+});
+```
