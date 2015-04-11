@@ -41,6 +41,9 @@
 				margin-top: 10px;
 				vertical-align: middle;
 			}
+			.sample {
+				display:none;
+			}
 		</style>
 
 	</head>
@@ -74,6 +77,15 @@
 				q('#test2_result').css({
 					'background-color' : 'green'
 				});
+			</script>
+		</div>
+		<div id="test27">
+			<div class="unit">
+				<div class="passfail" id="test27_result"></div>
+				<div class="testmessage">Set a single style.</div>
+			</div>
+			<script>
+				q('#test27_result').css('background-color', 'green');
 			</script>
 		</div>
 		<div id="test15">
@@ -303,6 +315,174 @@
 				}
 			</script>
 		</div>
+		<div id="test26">
+			<div class="unit">
+				<div class="passfail" id="test26_result"></div>
+				<div class="testmessage">Set multiple attributes.</div>
+			</div>
+			<script>
+				q('#test26_result').attr({
+					test1 : '123',
+					test2 : '321'
+				});
+				if (
+					q('#test26_result').attr('test1') == '123'
+					&& q('#test26_result').attr('test2') == '321'
+				) {
+					q('#test26_result').addClass('passed');
+				}
+			</script>
+		</div>
+		<div class="title">Custom each iteration</div>
+		<div id="test23">
+			<div class="unit">
+				<div class="passfail" id="test23_result"></div>
+				<div class="testmessage">Iterate an object.</div>
+			</div>
+			<script>
+				var objSampleData = {
+					123:'abc',
+					4:5,
+					'd':6,
+					'e':'f'
+				};
+				var i =0;
+				q.each(objSampleData,function (k,v) {
+					i++;
+				});
+				if (i==4) {
+					q('#test23_result').addClass('passed');
+				}
+			</script>
+		</div>
+		<div id="test24">
+			<div class="unit">
+				<div class="passfail" id="test24_result"></div>
+				<div class="testmessage">Iterate an array.</div>
+			</div>
+			<script>
+				var objSampleData = [
+					'abc',
+					1,
+					2,
+					'asa123'
+				];
+				var i =0;
+				q.each(objSampleData,function (k,v) {
+					i++;
+				});
+				if (i==4) {
+					q('#test24_result').addClass('passed');
+				}
+			</script>
+		</div>
+		<div id="test25">
+			<div class="unit">
+				<div class="passfail" id="test25_result"></div>
+				<div class="testmessage">Iterate QueryChain.</div>
+			</div>
+			<script>
+				var objSampleData = [
+					'abc',
+					1,
+					2,
+					'asa123'
+				];
+				var i =0;
+				q(objSampleData).each(function (k,v) {
+					i++;
+				});
+				if (i==4) {
+					q('#test25_result').addClass('passed');
+				}
+			</script>
+		</div>
+		<div class="title">Ajax</div>
+		<div id="test28">
+			<div class="unit">
+				<div class="passfail" id="test28_result"></div>
+				<div class="testmessage">Create a simple get request.</div>
+			</div>
+			<script>
+				q.request({
+					url : 'test-ajax.php',
+					success : function (strResponse) {
+						if (strResponse.replace(/\r?\n/g, '') == 'array(0) {}array(0) {}') {
+							q('#test28_result').addClass('passed');
+						}
+					}
+				});
+			</script>
+		</div>
+		<div id="test29">
+			<div class="unit">
+				<div class="passfail" id="test29_result"></div>
+				<div class="testmessage">Create a simple post request.</div>
+			</div>
+			<script>
+				q.request({
+					url : 'test-ajax.php',
+					post : {
+						'test_key' : 'test_value'
+					},
+					success : function (strResponse) {
+						if (strResponse.replace(/\r?\n/g, '') == 'array(0) {}array(1) {  ["test_key"]=>  string(10) "test_value"}') {
+							q('#test29_result').addClass('passed');
+						}
+					}
+				});
+			</script>
+		</div>
+		<div id="test30">
+			<div class="unit">
+				<div class="passfail" id="test30_result"></div>
+				<div class="testmessage">Serialize a form.</div>
+			</div>
+			<div class="sample">
+				<form>
+					<input type="hidden" name="test1" value="value1" />
+					<input type="button" name="test2" value="value2" />
+					<input type="text" name="test3" value="value3" />
+					<input type="checkbox" checked="checked" name="test4" value="value4" />
+					<input type="checkbox" name="test5" value="value5" />
+					<input type="radio" name="test6" value="value6_1" />
+					<input type="radio" name="test6" checked="checked" value="value6_2" />
+					<input type="radio" name="test6" value="value6_3" />
+					<input type="text" name="test7" value="value7_1" />
+					<input type="text" name="test7" value="value7_2" />
+					<input type="submit" name="test8" value="value8" />
+					<input type="text" name="test10" value="" />
+					<textarea name="test11">value11</textarea>
+					<button>test button 1</button>
+					<button name="test9">test button 2</button>
+				</form>
+			</div>
+			<script>
+				var strExpected = "test1=value1&test3=value3&test4=value4&test6=value6_2&test7=value7_1&test7=value7_2&test10=&test11=value11";
+				if (q('#test30 form').serialize() == strExpected) {
+					q('#test30_result').addClass('passed');
+				}
+			</script>
+		</div>
+		<div id="test31">
+			<div class="unit">
+				<div class="passfail" id="test31_result"></div>
+				<div class="testmessage">Serialize an array.</div>
+			</div>
+			<script>
+				var objSampleData = {
+					123:'abc',
+					4:5,
+					'd':6,
+					'e':'f'
+				};
+				var strExpected = "4=5&123=abc&d=6&e=f";
+				if (q.serialize(objSampleData) == strExpected) {
+					q('#test31_result').addClass('passed');
+				}
+			</script>
+		</div>
+
 		<div style="padding:40px 20px">
 			Test count: <script>document.write(q('.unit').count);</script>
 		</div>
