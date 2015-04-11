@@ -1,17 +1,18 @@
 /*
  * Change log:
- * Allow one css value to be set at a time
+ * Moved type method as a core feature because of its usefulness
+ * Added dom serialization for ajax posts
  */
 // - start of core dependencies
 var q = function (query) {
 	/*
-	 * QueryChain Library v1.034
+	 * QueryChain Library v1.035
 	 * Tutorial available at:
 	 * https://github.com/AugmentLogic/QueryChain
 	 */
 	return q.r.init(query);
 };
-q.v = 1.034;
+q.v = 1.035;
 q.isJavascriptQ = q.is_q = true;
 // requied variables
 q.count = 0;
@@ -430,7 +431,9 @@ q.height = function () {
 q.request = function (arrParams) {
 	var r = new XMLHttpRequest();
 	r.open("POST", arrParams.url, true);
-	var strParams = typeof arrParams.post == 'object' ? q.serialize(arrParams.post) : arrParams.post;
+	var strParams = "";
+	if (arrParams.post)
+		strParams = typeof arrParams.post == 'object' ? q.serialize(arrParams.post) : arrParams.post;
 	r.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 	r.setRequestHeader("Content-length", strParams.length);
 	r.setRequestHeader("Connection", "close");
@@ -441,13 +444,75 @@ q.request = function (arrParams) {
 	};
 	r.send(strParams);
 };
+q.val = function () {
+	return this[0].value;
+}
 q.serialize = function(node) {
 	if (!node)
 		node = this[0];
-	var str = [];
-	for(var p in node)
-		if (node.hasOwnProperty(p)) {
-			str.push(encodeURIComponent(p) + "=" + encodeURIComponent(node[p]));
-		}
-	return str.join("&");
+	var arrData = [];
+	if (q.type(node) == 'object') {
+		for(var p in node)
+			if (node.hasOwnProperty(p)) {
+				arrData.push(encodeURIComponent(p) + "=" + encodeURIComponent(node[p]));
+			}
+	} else if (q.type(node) == 'domelement') {
+		var objForm = q(node);
+		objForm.find('input:not([type="button"]):not([type="submit"]),textarea').each(function () {
+			var objInput = q(this);
+			if (!objInput.attr('name') || objInput.is('input[type="radio"]:not(:checked),input[type="checkbox"]:not(:checked)'))
+				return;
+			arrData.push(encodeURIComponent(objInput.attr('name')) + "=" + encodeURIComponent(objInput.val()));
+		});
+	}
+	return arrData.join("&");
+};
+q.type = function (mixedVar) {
+	var type = typeof(mixedVar);
+	if(type != "object") {
+		return type;
+	}
+	switch(mixedVar) {
+		case null:
+			return 'null';
+		case window:
+			return 'window';
+		case document:
+			return 'document';
+		case window.event:
+			return 'event';
+		default:
+			break;
+	}
+	if(mixedVar.jquery) {
+		return 'jquery';
+	}
+	switch(mixedVar.constructor) {
+		case Array:
+			return 'array';
+		case Boolean:
+			return 'boolean';
+		case Date:
+			return 'date';
+		case Object:
+			return 'object';
+		case RegExp:
+			return 'regexp';
+		case ReferenceError:
+		case Error:
+			return 'error';
+		case null:
+		default:
+			break;
+	}
+	switch(mixedVar.nodeType) {
+		case 1:
+			return 'domelement';
+		case 3:
+			return 'string';
+		case null:
+		default:
+			break;
+	}
+	return 'Unknown';
 };
