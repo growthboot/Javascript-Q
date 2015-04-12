@@ -159,5 +159,11 @@ q.request({
 ```
 
 ### List of methods
+- **css**: Add styles on any selection `q("p").css("padding":"5px")` or `q("p").css({"paddding","5px","color","#333"})`.
 - **each**: Iterate a selection from the DOM `q("p").each(function () {...})`, iterate an object `q.each(obj,function (k,v) {...})`.
 - **closest**: Search up the DOM tree until a selection is reached `q(".headline").closest(".section")`.
+- **extend**: Combine an object into another object combining their keys and values `q.extend({123:321},{abc:"cba"})` results in `{123:321,abc:"cba"}`.
+- **trim**: Remove any spaces from the start and end of a string `q.trim(" abc  ")` results in "abc".
+- **ltrim**: Remove any spaces from the start of a string `q.trim(" abc  ")` results in "abc  ".
+- **rtrim**: Remove any spaces from the end of a string `q.trim(" abc  ")` results in " abc".
+- **functionTrim**: Remove all items from a specific point on function index. For example  `q('div').functionTrim(0)` would empty the QueryChain selection. 
