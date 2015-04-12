@@ -3,7 +3,8 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>QueryChain Library - Unit Testing</title>
-		<script src="q.js"></script>
+		<script src="./js/lib/q.js"></script>
+		<script src="./js/lib/q.debug.js"></script>
 		<style>
 			body * {
 				max-width: 700px;
@@ -333,6 +334,31 @@
 				}
 			</script>
 		</div>
+		<div id="test38">
+			<div class="unit">
+				<div class="passfail" id="test38_result"></div>
+				<div class="testmessage">Check the value of an input.</div>
+				<div class="sample"><input type="text" value="test123" /></div>
+			</div>
+			<script>
+				if (q("#test38 .sample input").val() == "test123") {
+					q("#test38_result").addClass("passed");
+				}
+			</script>
+		</div>
+		<div id="test39">
+			<div class="unit">
+				<div class="passfail" id="test39_result"></div>
+				<div class="testmessage">Change the value of an input.</div>
+				<div class="sample"><input type="text" value="test123" /></div>
+			</div>
+			<script>
+				q("#test39 .sample input").val("another test 123");
+				if (q("#test39 .sample input").val() == "another test 123") {
+					q("#test39_result").addClass("passed");
+				}
+			</script>
+		</div>
 		<div class="title">Custom each iteration</div>
 		<div id="test23">
 			<div class="unit">
@@ -482,7 +508,97 @@
 				}
 			</script>
 		</div>
-
+		<div class="title">DOM navigation</div>
+		<div id="test32">
+			<div class="unit">
+				<div class="passfail" id="test32_result"></div>
+				<div class="testmessage">Get parent element.</div>
+			</div>
+			<script>
+				var node = q('#test32_result').parent();
+				if (node.hasClass('unit')) {
+					q('#test32_result').addClass('passed');
+				}
+			</script>
+		</div>
+		<div id="test33">
+			<div class="unit">
+				<div class="passfail" id="test33_result"></div>
+				<div class="testmessage">Get next element.</div>
+			</div>
+			<script>
+				var node = q('#test33_result').next();
+				if (node.hasClass('testmessage')) {
+					q('#test33_result').addClass('passed');
+				}
+			</script>
+		</div>
+		<div id="test34">
+			<div class="unit">
+				<span class="test_element"></span>
+				<div class="passfail" id="test34_result"></div>
+				<div class="testmessage">Get previous element.</div>
+			</div>
+			<script>
+				var node = q('#test34_result').prev();
+				if (node.hasClass('test_element')) {
+					q('#test34_result').addClass('passed');
+				}
+			</script>
+		</div>
+		<div id="test35">
+			<div class="unit">
+				<div class="passfail" id="test35_result"></div>
+				<div class="testmessage">Get previous element when none is available.</div>
+			</div>
+			<script>
+				var node = q('#test35_result').prev();
+				if (node[0] == null) {
+					q('#test35_result').addClass('passed');
+				}
+			</script>
+		</div>
+		<div class="title">DOM manipulation</div>
+		<div id="test36">
+			<div class="unit">
+				<div class="passfail" id="test36_result"></div>
+				<div class="testmessage">Add a div to the dom using html method.</div>
+				<div class="sample"></div>
+			</div>
+			<script>
+				q('#test36 .sample').html("<div class='sample_passed'>123</div>");
+				if (q("#test36 .sample .sample_passed")[0] != null) {
+					q('#test36_result').addClass('passed');
+				}
+			</script>
+		</div>
+		<div id="test37">
+			<div class="unit">
+				<div class="passfail" id="test37_result"></div>
+				<div class="testmessage">Replace a div with another.</div>
+				<div class="sample_test"></div>
+			</div>
+			<script>
+				q('#test37 .sample_test').replaceWith("<div class='sample'>123</div>");
+				if (q("#test37 .unit > .sample")[0] != null) {
+					q('#test37_result').addClass('passed');
+				}
+			</script>
+		</div>
+		<div id="test40">
+			<div class="unit">
+				<div class="passfail" id="test40_result"></div>
+				<div class="testmessage">Change the text of a div.</div>
+				<div class="sample"></div>
+			</div>
+			<script>
+				q('#test40 .sample_test').text("<div class='sample_test'>123</div>");
+				alert(q('#test40 .sample_test').html());
+				if (q('#test40 .sample_test').html() == "<div class='sample_test'>123</div>") {
+					q('#test40_result').addClass('passed');
+				}
+			</script>
+		</div>
 		<div style="padding:40px 20px">
 			Test count: <script>document.write(q('.unit').count);</script>
 		</div>
