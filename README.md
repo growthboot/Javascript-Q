@@ -159,15 +159,43 @@ q.request({
 ```
 
 ### List of methods
+- **find**: Search from any point in the DOM tree for a selection `some_element.find(".some_class")`.
+- **parent**: Get the parent of an element `q("...").parent()`.
+- **next**: Get the next sibiling of an element on the DOM tree `q("...").next()`.
+- **prev**: Get the previous sibiling of an element on the DOM tree `q("...").prev()`.
+- **is**: Check if elements match a selection `some_elements.is(".some_class")` resturns true if it matches the selection.
 - **css**: Add styles on any selection `q("p").css("padding":"5px")` or `q("p").css({"paddding","5px","color","#333"})`. Get a specific style from an element `q('#my_element').css("width")`.
-- **html**: Change the inner html of any element from a selection `q("#my_element").html("<b>Some html</b>")`.
+- **html**: Change the inner HTML of any element `q("#my_element").html("<b>Some html</b>")` or get the inner HTML of an element `q("#my_element").html()`.
+- **val**: Get the value of an input `q("#my_input").val()`.
+- **text**: Change the inner text of any element `q("#my_element").text("Some text")`.
 - **replaceWith**: Replace an element either some html `q("#my_element").html("<b>Some html</b>")`.
-- **addClass**: Add a style sheet class to an element `q('h1').addClass("headline")`. Add multipule classes by seperating them by spaces.
+- **addClass**: Add a style sheet class to an element `q('h1').addClass("headline")`. Add multipule classes by seperating them by spaces. Inject a css class into the DOM `q.addClass(".headline", {position:"absolute",top:0,left:0})`.
+- **removeClass**: Remove a style sheet class from dom elements `q('h1').removeClass("headline")`.
+- **attr**: Add an attribute to elements `q("#headline").attr("more_data", "value")`. Get the value of an attribute `q("#headline").attr("more_data")` returns `"value"`.
+- **removeAttr**: Remove an attribute from elements `q("h3").removeAttr("more_data")`.
+- **bind**: Bind events to elements `q("body").bind("mouseover mouseout", function () {...})`.
+- **unbind**: Unbind an event from elements `q("body").unbind("mouseover mouseout")`.
+- **trigger**: Fire an event that was bund to an element `q("body").trigger("mouseover")`.
 - **each**: Iterate a selection from the DOM `q("p").each(function () {...})`, iterate an object `q.each(obj,function (k,v) {...})`.
 - **closest**: Search up the DOM tree until a selection is reached `q(".headline").closest(".section")`.
 - **extend**: Combine an object into another object combining their keys and values `q.extend({123:321},{abc:"cba"})` results in `{123:321,abc:"cba"}`.
 - **clone**: Clone a DOM element `q("#my_element").clone()`.
+- **make**: Convert a string of html into a DOM object `q.make("<div><b>testing</b></div>")`. Another way to do the same thing `q("<div><b>testing</b></div>")`.
+- **append**: Add elements on to the end of an element on the DOM tree `q("body").append("<div>testing</div>")`.
+- **prepend**: Add elements on to the beggining of an element on the DOM tree `q("body").prepend("<div>testing</div>")`.
+- **remove**: Remove elements from the the DOM tree `q("#my_element").remove()`.
+- **pos**: Return an object of the top and left position of an element `q("#my_element").pos()` example returns `{top:15px,left:15px}`.
+- **left**: Returns the left position of an object and stores the top position in memory incase you need it `q("#my_element").left()`.
+- **top**: Returns the top position of an object and stores the left position in memory incase you need it `q("#my_element").top()`.
+- **right**: Combines left + width methods `q("#my_element").right()`.
+- **bottom**: Combines top + bottom methods `q("#my_element").bottom()`.
+- **width**: Get the width of an element `q("#my_element").width()`.
+- **height**: Get the height of an element `q("#my_element").height()`.
 - **trim**: Remove any spaces from the start and end of a string `q.trim(" abc  ")` results in "abc".
 - **ltrim**: Remove any spaces from the start of a string `q.trim(" abc  ")` results in "abc  ".
 - **rtrim**: Remove any spaces from the end of a string `q.trim(" abc  ")` results in " abc".
 - **functionTrim**: Remove all items from a specific point on function index. For example  `q('div').functionTrim(0)` would empty the QueryChain selection. 
+- **mstime**: Get the current unix timestamp in milliseconds `q.mstime()`.
+- **request**: Make an AJAX GET request `q.request({url:"...",success:function() {...}})` or a POST request `q.request({url:"...",post:{some_key:"some_value"},success:function() {...}})`.
+- **serialize**: Serialize an array for a post string `q.serialize({some_key1:"some_value1",some_key2:"some_value2"})` returns `"some_key1=some_value1&some_key2=some_value2"`. Serialize all form elements from a specific point in the DOM tree `q("#some_element").serialize()`.
+- **type**: Return what type an element is `q.type(some_variable)` could possibly return an one of these values `null, window, document, event, array, boolean, date, object, regexp, error, domelement, string or Unknown`
