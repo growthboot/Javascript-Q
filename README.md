@@ -157,3 +157,7 @@ q.request({
 	}
 });
 ```
+
+### List of methods
+- **each**: Iterate a selection from the DOM `q("p").each(function () {...})`, iterate an object `q.each(obj,function (k,v) {...})`.
+- **closest**: Search up the DOM tree until a selection is reached `q(".headline").closest(".section")`.
