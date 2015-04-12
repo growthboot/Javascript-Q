@@ -1,18 +1,18 @@
 /*
  * Change log:
- * Moved type method as a core feature because of its usefulness
- * Added dom serialization for ajax posts
+ * Fixed issues with next and previous not chaining
+ *
  */
 // - start of core dependencies
 var q = function (query) {
 	/*
-	 * QueryChain Library v1.035
+	 * QueryChain Library v1.036
 	 * Tutorial available at:
 	 * https://github.com/AugmentLogic/QueryChain
 	 */
 	return q.r.init(query);
 };
-q.v = 1.035;
+q.v = 1.036;
 q.isJavascriptQ = q.is_q = true;
 // requied variables
 q.count = 0;
@@ -332,7 +332,7 @@ q.remove = function () {
 	});
 };
 q.text = function (strText) {
-	if (strText == undefined)
+	if (!strText)
 		return this[0].textContent;
 	this.each(function () {
 		this.textContent = strText;
@@ -405,11 +405,23 @@ q.hasClass = function (strClassName) {
 	});
 	return boolHas && !boolDoesntHave;
 };
-q.next = function () {
-	return this[0].nextElementSibling;
+q.next = function (node) {
+	var boolNode = !!node;
+	if (!boolNode)
+		node = this[0];
+	node = node.nextElementSibling;
+	if (!boolNode)
+		this[0] = node;
+	return boolNode ? node : this;
 };
-q.prev = function () {
-	return this[0].previousElementSibling;
+q.prev = function (node) {
+	var boolNode = !!node;
+	if (!boolNode)
+		node = this[0];
+	node = node.previousElementSibling;
+	if (!boolNode)
+		this[0] = node;
+	return boolNode ? node : this;
 };
 q.parent = function (node) {
 	var boolNode = !!node;
@@ -444,7 +456,13 @@ q.request = function (arrParams) {
 	};
 	r.send(strParams);
 };
-q.val = function () {
+q.val = function (strValue) {
+	if (strValue) {
+		this.each(function () {
+			this.value = strValue;
+		});
+		return this;
+	}
 	return this[0].value;
 }
 q.serialize = function(node) {
@@ -483,9 +501,6 @@ q.type = function (mixedVar) {
 			return 'event';
 		default:
 			break;
-	}
-	if(mixedVar.jquery) {
-		return 'jquery';
 	}
 	switch(mixedVar.constructor) {
 		case Array:
