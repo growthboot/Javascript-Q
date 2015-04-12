@@ -159,10 +159,14 @@ q.request({
 ```
 
 ### List of methods
-- **css**: Add styles on any selection `q("p").css("padding":"5px")` or `q("p").css({"paddding","5px","color","#333"})`.
+- **css**: Add styles on any selection `q("p").css("padding":"5px")` or `q("p").css({"paddding","5px","color","#333"})`. Get a specific style from an element `q('#my_element').css("width")`.
+- **html**: Change the inner html of any element from a selection `q("#my_element").html("<b>Some html</b>")`.
+- **replaceWith**: Replace an element either some html `q("#my_element").html("<b>Some html</b>")`.
+- **addClass**: Add a style sheet class to an element `q('h1').addClass("headline")`. Add multipule classes by seperating them by spaces.
 - **each**: Iterate a selection from the DOM `q("p").each(function () {...})`, iterate an object `q.each(obj,function (k,v) {...})`.
 - **closest**: Search up the DOM tree until a selection is reached `q(".headline").closest(".section")`.
 - **extend**: Combine an object into another object combining their keys and values `q.extend({123:321},{abc:"cba"})` results in `{123:321,abc:"cba"}`.
+- **clone**: Clone a DOM element `q("#my_element").clone()`.
 - **trim**: Remove any spaces from the start and end of a string `q.trim(" abc  ")` results in "abc".
 - **ltrim**: Remove any spaces from the start of a string `q.trim(" abc  ")` results in "abc  ".
 - **rtrim**: Remove any spaces from the end of a string `q.trim(" abc  ")` results in " abc".
