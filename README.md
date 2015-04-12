@@ -188,7 +188,7 @@ q.request({
 - **left**: Returns the left position of an object and stores the top position in memory incase you need it `q("#my_element").left()`.
 - **top**: Returns the top position of an object and stores the left position in memory incase you need it `q("#my_element").top()`.
 - **right**: Combines left + width methods `q("#my_element").right()`.
-- **bottom**: Combines top + bottom methods `q("#my_element").bottom()`.
+- **bottom**: Combines top + height methods `q("#my_element").bottom()`.
 - **width**: Get the width of an element `q("#my_element").width()`.
 - **height**: Get the height of an element `q("#my_element").height()`.
 - **trim**: Remove any spaces from the start and end of a string `q.trim(" abc  ")` results in "abc".
