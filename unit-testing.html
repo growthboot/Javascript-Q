@@ -13,8 +13,6 @@ objHTML.css({
 	zIndex : 123,
 	//'z-index' : 123
 });
-//alert(objHTML.css("z-index"));
-//alert("next");
 document.write("<div><input type='button' id='fakePop1' value='Pop'></div>");
 $(function () {
 	$("#fakePop1").click(function () {
@@ -27,13 +25,6 @@ $(function () {
 		})
 		.appendTo("body");
 	});
-	/*var objTest = {},
-	strUniqueId1 = $("<div>test</div>").uniqueId(),
-	strUniqueId2 = $("<div>test2</div>").uniqueId();
-	objTest[strUniqueId1] = 123;
-	objTest[strUniqueId2] = 321;
-	bark(objTest);
-	bark($.uniqueId(strUniqueId1));*/
 	
 	var obj1 = {
 		test : {
@@ -46,10 +37,8 @@ $(function () {
 			test2 : 2
 		}
 	};
-	//bark($.extend(obj1, obj2));
 	var obj3 = $.extend({}, obj2);
 	obj3.test2 = 3;
-	//bark([obj2, obj3]);
 	
 	
 	$("#animationBox5").click(function () {
@@ -335,7 +324,7 @@ objHTML.prepend(objHTMLChild);
 $("body").prepend(objHTML);
 //alert($("#prependToBodyTest").outer());
 //alert($("body").html());
-output("Prepend from query", objHTML.outer() == "<div><span></span></div>" ? strPass : strFail);
+output("Prepend from query", objHTML.outer() == '<div id="prependToBodyTest" style="z-index: 123;"><span></span></div>' ? strPass : strFail);
 
 // .appendTo
 $("#domManSource .cell1").appendTo("#domManSource");
