@@ -1,281 +1,559 @@
-/*
- * Change log:
- * Fixed issues with next and previous not chaining
- *
+/**
+ * q.js v2.0
+ * Javascript Q
+ * @author exitget.com
+ * Copyright (c) exitget.com
  */
-// - start of core dependencies
-var q = function (query) {
-	/*
-	 * QueryChain Library v1.036
-	 * Tutorial available at:
-	 * https://github.com/AugmentLogic/QueryChain
-	 */
-	return q.r.init(query);
-};
-q.v = 1.036;
-q.isJavascriptQ = q.is_q = true;
-// requied variables
-q.count = 0;
-q.r = {};
-q.r.domIsLoaded = false;
-q.r.load_promises = [];
-q.r.pixel_items = {
-	width:1,
-	height:1,
-	top:1,
-	left:1,
-	margin:1,
-	padding:1,
-	'margin-top':1,
-	'margin-bottom':1,
-	'margin-left':1,
-	'margin-right':1,
-	'padding-top':1,
-	'padding-bottom':1,
-	'padding-left':1,
-	'padding-right':1,
-	'border-width':1,
-	'line-height':1
-};
-q.r.init = function (mixedQuery) {
-	var qcopy = q.extend({},q);
-	qcopy.isCopy = true;
-	// don't extend resources to save memory
-	delete qcopy.r;
-	// Variable chain contains information that can be gathered but is forgotten
-	// each time a new query starts.
-	// This is different from the traditional array chain in that its as an
-	// assoicative array designed to keep track of things temporarily.
-	qcopy.chain = {};
-	// Start handling requests that come directly from a q session initiation.
-	// If a function is passed in it will launch right away if the dom is ready
-	// or wait if it is not.
-	if (typeof mixedQuery == 'function') {
-		if (q.r.domIsLoaded)
-			mixedQuery.call(qcopy);
+
+(function() {
+	var 
+
+	// Initialize Q
+	q = window.$ = function (mixedQuery) {
+		var that = copy(fun);
+		return that.put(mixedQuery);
+	},
+
+	// Duplicates an object
+	copy = q.copy = function (obj) {
+		return extend({}, obj);
+		/*
+		//if (null == obj || "object" != typeof obj) return obj;
+		var copy = obj.constructor();
+		for (var attr in obj) {
+			if (obj.hasOwnProperty(attr)) copy[attr] = obj[attr];
+		}
+		return copy;
+		*/
+	},
+	
+	extend = q.extend = function (obj1, obj2) {
+		var keys = Object.keys(obj2);
+	    for (var i = 0; i < keys.length; i += 1) {
+	      var val = obj2[keys[i]];
+	      obj1[keys[i]] = ['object', 'array'].indexOf(typeof val) != -1 ? extend(obj1[keys[i]] || {}, val) : val;
+	    }
+	    return obj1;
+	},
+
+	iterate = function (that, fnCallback) {
+		var 
+		i=0,
+		l;
+		if (isNode(that)) {
+			l=1;
+			if (fnCallback.call(that, i++, that) === false)
+				return;
+		} else {
+			l=that.length;
+			while (i<l) {
+				if (fnCallback.call(that[i], i, that[i++]) === false)
+					return;
+			}
+		}
+		return !!l;
+	},
+
+	reverseCamel = function (strInput) {
+		return strInput
+			.replace(/([a-z])([A-Z])/g, '$1-$2')
+			.toLowerCase();
+	},
+
+	// Handle DOM ready
+	boolReadyEventsOn = false,
+	arrReadyPromises = [],
+	ready = function () {
+		for (var intItr in arrReadyPromises) {
+			arrReadyPromises[intItr]();
+		}
+	},
+	completed = function( event ) {
+		// readyState === "complete" is good enough for us to call the dom ready in oldIE
+		if ( document.addEventListener || event.type === "load" || document.readyState === "complete" ) {
+			detach();
+			ready();
+		}
+	},
+	detach = function() {
+		if ( document.addEventListener ) {
+			document.removeEventListener( "DOMContentLoaded", completed, false );
+			window.removeEventListener( "load", completed, false );
+
+		} else {
+			document.detachEvent( "onreadystatechange", completed );
+			window.detachEvent( "onload", completed );
+		}
+	},
+
+	animations = 0, // the current amount of animations that have been started
+	objAnimationInstances = {},
+	objTransformHistory = {}, // css transforms are lost in the matrix so we gotta keep track of them
+	objTransformDefaults = {
+		scale : "1,1",
+		scaleX : 1,
+		scaleY : 1,
+		scaleZ : 1,
+		scale3d : "1,1,1",
+	},
+
+	objQueueChain = {}, // holds information for queuing animations for asynchronous playback
+
+	// Resource needed for adding px by default to css that doesnt have a prefix provided
+	arrExcludePx = {'transform-scaleX':1,'transform-scaleY':1,'transform-scale':1,'column-count': 1,'fill-opacity': 1,'font-weight': 1,'line-height': 1,opacity: 1,orphans: 1,widows: 1,'z-index': 1,zoom: 1,'background-color': 1},
+
+	// create new methods in the q variable that call bind ex: q(mixed).click(function);
+	arrAutoBind = ["click","mousedown","mouseup","mouseover","mousemove","mouseleave","mouseenter","change","load","dblclick","focus","focusin","focusout","input","keydown","keypress","keyup","resize","reset","scroll","select","touchcancel","touchend","touchmove","touchstart","transitionend","unload","wheel"],
+
+	// Support for .data
+	arrDataMemory = {},
+	// Support for: .bind .unbind .trigger
+	objEventMomory = {},
+	fun = {
+		length : 0,
+		is_q : 1,
+		version : "1.1",
+		layers : 0 // how many times has the find function ran
+	},
+	hexToRgb = q.hexToRgb = function (hex) {
+	    // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
+	    var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+	    hex = hex.replace(shorthandRegex, function(m, r, g, b) {
+	        return r + r + g + g + b + b;
+	    });
+		var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+	    return result ? {
+	        r: parseInt(result[1], 16),
+	        g: parseInt(result[2], 16),
+	        b: parseInt(result[3], 16)
+	    } : null;
+	};
+	q.prototype = fun;
+
+	// gives a q something to do. used when q is called as a function
+	fun.put = function (mixedQuery) {
+		var 
+		that = this,
+		queryType = typeof mixedQuery;
+		if (queryType == 'function') {
+			// DOM ready
+			if ( document.readyState === "complete" ) {
+				mixedQuery();
+			} else {
+				// Create the promise
+				arrReadyPromises.push(mixedQuery);
+				// Set the even listeners
+				if (!boolReadyEventsOn) {
+					boolReadyEventsOn = true;
+					if ( document.addEventListener ) {
+						document.addEventListener( "DOMContentLoaded", completed, false );
+						// A fallback to window.onload, that will always work
+						window.addEventListener( "load", completed, false );
+					// If IE event model is used
+					} else {
+						// Ensure firing before onload, maybe late but safe also for iframes
+						document.attachEvent( "onreadystatechange", completed );
+						// A fallback to window.onload, that will always work
+						window.attachEvent( "onload", completed );
+					}
+				}
+			}
+		} else if (queryType == 'object') {
+			var i=0;
+			if (isNode(mixedQuery)) {
+				that[i++] = mixedQuery;
+			} else if (Array.isArray(mixedQuery)) {
+				iterate(mixedQuery,function () {
+					that[i++] = this;
+				});
+			} else {
+				that[i++] = mixedQuery;
+			}
+			that.length = i;
+		} else if (queryType == 'array') {
+			var i=0,
+			l=mixedQuery.length;
+			while (i<l)
+				that[i] = mixedQuery[i++];
+			that.length = i;
+		} else if (queryType == 'string' && mixedQuery.charAt(0) === "<" && mixedQuery.charAt( mixedQuery.length - 1 ) === ">" && mixedQuery.length >= 3) {
+			var wrapper = document.createElement('div');
+			wrapper.innerHTML = mixedQuery;
+			var
+			children = wrapper.children,
+			l = children.length,
+			i=0;
+			while (i<l)
+				that[i] = children[i++];
+			that.length = i;
+		} else
+			return fun.find(mixedQuery);
+		return that;
+	};
+
+	// Find out if an object is a DOM node
+	fun.isNode = isNode = function (o){
+		return (
+			typeof Node === "object" 
+			? o instanceof Node 
+			: o && typeof o === "object" && typeof o.nodeType === "number" && typeof o.nodeName==="string"
+		);
+	};
+
+	// Find elements in dom that matches a CSS selection
+	// Adds them as a list to a copy of the q object
+	fun.find = function (strQuery) {
+		var qcopy = copy(fun), // start with a fresh q handle
+		arrResult = [],
+		l=this.length,
+		i=0;
+		if (this.layers!=0 && !l)
+			return qcopy;
+		qcopy.layers=this.layers+1;
+		var arrMatched = strQuery.match(/^ *> *(.+)/);
+		if (arrMatched) {
+			iterate(this.children(), function (k,el) {
+				if (arrMatched[1] == "*" || q(el).is(arrMatched[1]))
+					qcopy[i++] = el;
+			});
+		} else {
+			if (!l)
+				arrResult = [].slice.call(document.querySelectorAll(strQuery));
+			else while (i<l) {
+				var arrSubResult = [].slice.call(this[i++].querySelectorAll(strQuery));
+				arrResult = arrResult.concat(arrSubResult);
+			}
+			l = arrResult.length;
+			i=0;
+			while (i<l)
+				qcopy[i] = arrResult[i++];
+		}
+		qcopy.length = i;
+		return qcopy;
+	};
+
+	// Check if matches a selection
+	fun.is = function (strQuery) {
+		var boolIs = true;
+		iterate(this,function (k,el) {
+			if (!(el.matches || el.matchesSelector || el.msMatchesSelector || el.mozMatchesSelector || el.webkitMatchesSelector || el.oMatchesSelector).call(el, strQuery)) {
+				boolIs = false;
+				return false;
+			}
+		});
+		return boolIs;
+	};
+
+	// Clone a dom node
+	fun.clone = function (boolDeep) {
+		boolDeep = boolDeep !== false;
+		var 
+		qcopy = copy(fun),
+		intItr=0;
+		iterate(this,function () {
+			qcopy[intItr] = this.cloneNode(boolDeep)
+			intItr++;
+		});
+		qcopy.length = intItr;
+		return qcopy;
+	};
+
+	// Store data on a DOM node
+	fun.data = function (strKey, strVal) {
+		var 
+		boolGet = typeof strVal == "undefined",
+		arrDataResult = [];
+		iterate(this,function (j,el) {
+			var that = this,
+			intUId = q(el).uniqueId();
+			if (boolGet)
+				arrDataResult.push(arrDataMemory[intUId][strKey]);
+			else {
+				if (!arrDataMemory[intUId])
+					arrDataMemory[intUId] = {};
+				arrDataMemory[intUId][strKey] = strVal;
+			}
+		});
+		if (boolGet)
+			return arrDataResult;
 		else
-			q.r.load_promises.push(mixedQuery);
-		window.onload = function () {
-			q.r.domIsLoaded = true;
-			var len = q.r.load_promises.length;
-			for (var intItr=0;intItr!=len;intItr++) {
-				q.r.load_promises[intItr].call(qcopy);
+			return this;
+	};
+
+	// Get all the HTML currently held as nodes in the current query
+	fun.html = function (strHTML, strAttrKey) {
+		var htmlAttr = strAttrKey || "innerHTML";
+		if (strHTML == undefined) {
+			strHTML = "";
+			iterate(this,function (k,el) {
+				strHTML += el[htmlAttr];
+			});
+			return strHTML;
+		}
+		iterate(this,function (k,el) {
+			el[htmlAttr] = strHTML;
+		});
+		return this;
+	};
+	
+	fun.children = function () {
+		var
+		qcopy = copy(fun),
+		intNode = 0;
+		iterate(this,function (k,el) {
+			var 
+			nodes = el.childNodes,
+			intNodes = nodes.length;
+			for (var i=0;i!=intNodes;i++) {
+				qcopy[intNode++] = nodes[i];
 			}
-		};
-		qcopy[0] = document;
+		});
+		qcopy.length = intNode;
 		return qcopy;
-	// Pass an entire array into the q array chain.
-	} else if (mixedQuery instanceof Array) {
-		var len = qcopy.count = mixedQuery.length;
-		for (var i=0; i!=len; i++) {
-			qcopy[i] = mixedQuery[i];
-		}
-		qcopy.functionTrim(i);
-		return qcopy;
-	// If an object is passed in add it to the array chain and as always trim
-	// anything off the remainder incase there was a previous chain, since array
-	// chains are never purged until a new chian is created.
-	} else if (mixedQuery instanceof Object) {
-		qcopy[0] = mixedQuery;
-		qcopy.count = 1;
-		qcopy.functionTrim(1);
-		return qcopy;
-	// Html detected, build the html then load all it's nodes into the array
-	// chain for further use.
-	} else if (/<[a-z][\s\S]*>/i.test(mixedQuery)) {
-		var children = qcopy.make(mixedQuery);
-		var len = qcopy.count = children.length
-		for (var i=0;i!=len;i++) {
-			qcopy[i] = children[i];
-		}
-		qcopy.functionTrim(i);
-		return qcopy;
-		// When anything else besides the above things is found q assumes that the
-		// query variable must contain css so it searches the dom from the dom
-		// element in the array chian or if the is empty form the start of the
-		// document.
-	} else {
-		qcopy[0] = document;
-		qcopy.functionTrim(1);
-		return qcopy.find.call(qcopy,mixedQuery);
-	}
-	return qcopy;
-};
-// Search down the dom from the array chain or if there is nothing in chain from
-// the start of the document.
-q.find = function (strQuery) {
-	var arrResult = [];
-	this.each(function () {
-		var arrSubResult = [].slice.call(this.querySelectorAll(strQuery));
-		arrResult = arrResult.concat(arrSubResult);
-	});
-	this.functionTrim(0);
-	var i=0;
-	var len = this.count = arrResult.length;
-	if (len) {
-		for (; i!=len; i++) {
-			this[i] = arrResult[i];
-		}
-	}
-	return this;
-};
-// Search up the dom for the closest object that matches a selector
-q.closest = function (strQuery) {
-	var node = q.parent(this[0]);
-	while (!q(node).is(strQuery)) {
-		node = q.parent(node);
-	}
-	this[0] = node;
-	return this;
-};
-// Iterate arrays, objects and fake function arrays
-q.each = function (mixedParam1, fnCallback) {
-	if (typeof mixedParam1 == 'function') {
-		if (typeof this[0] != 'undefined') {
-			for (var i=0;this[i];i++) {
-				var res = mixedParam1.call(this[i]);
-				if (res === false)
-					break;
-			}
-		}
-	} else {
-		for (var k in mixedParam1) {
-			var v = mixedParam1[k];
-			var res = fnCallback.call(v, k, v);
-			if (res === false)
-				break;
-		}
-	}
-	return this;
-};
-// Remove all items from a fake function array
-q.functionTrim = function (intIndex) {
-	for (var intItr=intIndex;this[intItr];intItr++) {
-		delete this[intItr];
-	}
-};
-q.extend = function (objSource,objExtend) {
-	var copy = objSource;
-	for (var attr in objExtend) {
-		if (objExtend.hasOwnProperty(attr)) copy[attr] = objExtend[attr];
-	}
-	return copy;
-};
-// - end of core dependencies
-// - start of debug dependencies
-q.trim = function (str) {
-   return q.ltrim(q.rtrim(str));
-};
-q.ltrim = function (str) {
-   return str.replace(new RegExp("^[\\s]+", "g"), "");
-};
-q.rtrim = function (str) {
-   return str.replace(new RegExp("[\\s]+$", "g"), "");
-};
-q.css = function (mixedCss, strValue) {
-	if (!mixedCss) {
-		var obj = this.isJavascriptQ ? this[0] : this;
-		return obj && obj.style ? obj.style.cssText : "";
-	} else {
-		if (strValue) {
-			var strKey = mixedCss;
-			mixedCss = {};
-			mixedCss[strKey] = strValue;
-		} else if (typeof mixedCss == 'string') {
-			return getComputedStyle(this[0],null).getPropertyValue(mixedCss);
-		}
-		this.each(function () {
-			for (var strKey in mixedCss) {
-				var strImportant = /!important *$/.test(mixedCss[strKey]) ? 'important' : undefined;
-				var strVal = mixedCss[strKey];
-				strVal = strVal!=0 && q.r.pixel_items[strKey] && typeof strVal != 'string' ? strVal+'px' : strVal;
-				var strValue = typeof strVal == 'string' ? strVal.replace(/ *!important *$/, '') : strVal;
-				this.style.setProperty(strKey, strValue);
-			}
+	};
+	
+	fun.disableSelect = function () {
+		var none = "none";
+		iterate(this,function (k,el) {
+			q(el).css({
+				'-webkit-touch-callout': none, /* iOS Safari */
+			    '-webkit-user-select': none, /* Safari */
+			     '-khtml-user-select': none, /* Konqueror HTML */
+			       '-moz-user-select': none, /* Firefox */
+			        '-ms-user-select': none, /* Internet Explorer/Edge */
+			            'user-select': none /* Non-prefixed version, currently
+			                                  supported by Chrome and Opera */
+			})
 		});
 		return this;
 	}
-};
-// - end of debug dependencies
-// - start of dom manipulation dependencies
-q.html = function (strHTML) {
-	if (strHTML == undefined)
-		return this[0].innerHTML;
-	this.each(function () {
-		this.innerHTML = strHTML;
-	});
-	return this;
-};
-q.replaceWith = function (strHTML) {
-	this.each(function () {
-		this.outerHTML = strHTML;
-	});
-};
-q.clone = function () {
-	return this[0].cloneNode(true);
-};
-// Use only one parameter to add a class to an element in the chain. Use two
-// parameters to inject a class with css into a document head stylesheet.
-q.addClass = function (strClassName, arrCss) {
-	if (!arrCss) {
-		this.each(function () {
-			var node = this;
-			q.each(strClassName.split(/ /), function () {
-				node.classList.add(this);
-			});
-		});
-	} else if (typeof arrCss == 'object') {
-		var strTempCss = strClassName + ' {';
-		for (var strName in arrCss) {
-			strTempCss += strName + ':' + arrCss[strName] + ';';
+
+	// Same as .html except with the outer html
+	fun.outer = function (strHTML) {
+		return this.html(strHTML, "outerHTML");
+	};
+	
+	// Add text to a DOM node
+	fun.text = function (strText) {
+		return this.html(strText, "textContent");
+	};
+	
+	// set the value of an input
+	fun.val = function (strVal) {
+		if (!this[0])
+			return;
+		if (strVal == undefined)
+			return this[0].value;
+		this[0].value = strVal;
+		return this;
+	}
+
+	// Find the top left position of an DOM object
+	fun.position = function () {
+		var el = this[0],
+		rect = el.getBoundingClientRect(), 
+	    scrollLeft = window.pageXOffset || document.documentElement.scrollLeft,
+	    scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+	    return { 
+	    	top: rect.top + scrollTop, 
+	    	left: rect.left + scrollLeft 
+	    };
+	};
+	
+	fun.scrollTop = function (intTop) {
+		var el = this[0];
+		if (el == window) {
+			return window.pageYOffset || document.documentElement.scrollTop;
+		} else {
+			return el.scrollTop;
 		}
-		strTempCss += '}';
-		strClassName = strTempCss;
+	};
+
+	// DOM width
+	fun.width = function () {
+		return this[0].innerWidth || this[0].offsetWidth || this[0].clientWidth;
+	};
+	
+	// DOM height
+	fun.height = function () {
+		return this[0].innerHeight || this[0].offsetHeight || this[0].clientHeight;
+	};
+
+	// DOM innerWidth (not counting scrollbars)
+	fun.innerWidth = function () {
+		if (this[0] == window)
+			return document.documentElement.clientWidth || this.width();
+		return this[0].clientWidth || this.width();
+	};
+	// DOM innerHeight (not counting scrollbars)
+	fun.innerHeight = function () {
+		if (this[0] == window)
+			return document.documentElement.clientHeight || this.height();
+		return this[0].clientHeight || this.height();
+	};
+
+	// Dynamically adds a CSS stylesheet
+	q.addCSS = function (strCss, arrCss) {
+		if (typeof arrCss == 'object') {
+			var strTempCss = strCss + ' {';
+			for (var strName in arrCss) {
+				strTempCss += strName + ':' + arrCss[strName] + ';';
+			}
+			strTempCss += '}';
+			strCss = strTempCss;
+		}
 		var all = document.styleSheets;
 		if (typeof all[all.length - 1] == 'undefined') {
 			document.head.appendChild(document.createElement('style'));
 			all = document.styleSheets;
 		}
-		var s = all[all.length - 1];
-		var l = s.cssRules.length;
-		var boolIE=!s.insertRule;
-		s[boolIE?'addRule':'insertRule'](strClassName, boolIE?-1:l);
+		var s = all[all.length - 1],
+		l = s.cssRules.length;
+		if (s.insertRule)
+			s.insertRule(strCss, l);
+		else
+			s.addRule(strCss, -1); //IE
+		return this;
+	};
+	
+	function stringifyTransformData(objTransform) {
+		var arrTransforms = [];
+		for (var strName in objTransform) {
+			var mixedToValue = objTransform[strName];
+			arrTransforms.push(strName + "(" + mixedToValue + (typeof mixedToValue == 'string' || arrExcludePx['transform-'+strName] ? '' : 'px') + ")");
+		}
+		return arrTransforms.join(" ");
 	}
-	return this;
-};
-q.removeClass = function (strClassName) {
-	this.each(function () {
-		var node = this;
-		q.each(strClassName.split(/ /), function () {
-			node.classList.remove(this);
+	
+	function parseTransformData(strTransform) {
+		var 
+		arrTransform = strTransform.split(/ /),
+		arrResult = {};
+		for (var intItr in arrTransform) {
+			var arrParsed = arrTransform[intItr].split(/[\(\)]/);
+			arrResult[arrParsed[0]] = arrParsed[1];
+		}
+		return arrResult;
+	}
+	
+	// Request or define CSS
+	fun.css = function (mixedCss) {
+		var that = this;
+		if (typeof mixedCss == "function") {
+			mixedCss = mixedCss.call(that);
+		}
+		if (typeof mixedCss == 'undefined') {
+			return getComputedStyle(that[0]);
+		} else if (typeof mixedCss == 'string') {
+			var objStyle = getComputedStyle(that[0]);
+			return objStyle ? objStyle[reverseCamel(mixedCss)] : 0;
+		}
+		for (var strKey in mixedCss) {
+			var strValue = mixedCss[strKey];
+			if (strKey == "transform" && typeof strValue == "object") {
+				iterate(that,function (k,el) {
+					var intElUid = q(el).uniqueId();
+					if (!objTransformHistory[intElUid])
+						objTransformHistory[intElUid] = {};
+					objTransformHistory[intElUid] = strValue;
+				});
+				strValue = stringifyTransformData(strValue);
+			}
+			var 
+			strParam = reverseCamel(strKey),
+			strImportant = /!important *$/.test(mixedCss[strKey]) ? 'important' : '';
+			if (typeof strValue == 'string')
+				strValue = strValue.replace(/ *!important *$/, '');
+			if (
+				(typeof strValue == "number"
+				|| typeof strValue == "float"
+				|| (strValue+"").match(/^[0-9\.]+$/)) 
+				&& !arrExcludePx[strParam]
+			)
+				strValue += 'px';
+			iterate(that,function (k,el) {
+				el.style.setProperty(strParam, strValue, strImportant);
+			});
+		}
+		return that;
+	},
+
+	// Check if selection has a class (a bit redundant with .is but should be tested for a performance difference)
+	fun.hasClass = function (strClassName) {
+		var arrClasses = strClassName.split(/ /),
+		boolHas = true,
+		l=arrClasses.length;
+		iterate(this,function ()  {
+			for (var i=0;i!=l;i++) {
+				if (!this.classList.contains(strClassName))
+					boolHas = false;
+			}
 		});
-	});
-};
-q.attr = function (strKeyOrParams, strVal) {
-	var boolParams = typeof strKeyOrParams == 'object';
-	var arrParams = boolParams ? strKeyOrParams : {};
-	if (!boolParams && strVal)
-		arrParams[strKeyOrParams] = strVal;
-	if (!boolParams && !strVal)
-		return this[0].getAttribute(strKeyOrParams);
-	this.each(function () {
-		var node = this;
-		q.each(arrParams, function (k,v) {
-			node.setAttribute(k, v);
+		return boolHas;
+	};
+
+	// Add a class to the selection
+	fun.addClass = function (strClassName, boolRemove) {
+		var strEvent = boolRemove ? "remove" : "add";
+		iterate(this,function ()  {
+			this.classList[strEvent](strClassName);
 		});
-	});
-	return this;
-};
-q.removeAttr = function (strKey, strVal) {
-	this.each(function () {
-		this.removeAttribute(strKey, strVal);
-	});
-	return this;
-};
-q.bind = function (strEvents, fnCallback) {
-	this.each(function () {
-		var node = this;
-		q.each(strEvents.split(/ /),function () {
+		return this;
+	};
+
+	// Remove a class
+	fun.removeClass = function (strClassName) {
+		return this.addClass(strClassName, 1);
+	};
+
+	// Set an attribute
+	fun.attr = function (strKey, strVal, boolRemove) {
+		if (!strVal)
+			return this[0].getAttribute(strKey);
+		iterate(this,function () {
+			this.setAttribute(strKey, strVal);
+		});
+		return this;
+	};
+
+	// Remove an attribute
+	fun.removeAttr = function (strKey) {
+		iterate(this,function () {
+			this.removeAttribute(strKey);
+		});
+		return this;
+	};
+
+	// Get a results from the query
+	fun.get = function (intIndex) {
+		if (typeof intIndex != "undefined") {
+			if (this[intIndex])
+				return this[intIndex];
+		} else {
+			var arrResult = [];
+			iterate(this,function () {
+				arrResult.push(this);
+			});
+			return arrResult;
+		}
+	};
+
+	// Loop though a query
+	fun.each = function (fnCallback) {
+		iterate(this, function (k,v) {
+			return fnCallback.call(this,k,v);
+		});
+	};
+	q.each = function (obj, fnCallback) {
+		iterate(obj, function (k,v) {
+			return fnCallback.call(this,k,v);
+		});
+	};
+
+	// Bind events
+	fun.bind = function (strEvents, fnCallback) {
+		var arrEvents = strEvents.split(/ /);
+		iterate(this,function (k,node) {
 			var method = function (e) {
 				e = e || window.event;
 				e.target = e.target || e.srcElement;
@@ -283,251 +561,682 @@ q.bind = function (strEvents, fnCallback) {
 				if (e.target.nodeType == 3)
 					e.target = e.target.parentNode;
 				fnCallback.call(node, e);
-			};
-			window.addEventListener ?
-				node.addEventListener(this, method, true)
-			 :
-				node.attachEvent('on' + this, method);
-		});
-	});
-	return this;
-};
-q.unbind = function (strEvents) {
-	this.each(function () {
-		var node = this;
-		q.each(strEvents.split(/ /),function () {
-			node.removeEventListener('on' + this);
-		});
-	});
-	return this;
-};
-q.make = function (strHtml) {
-	var wrapper = document.createElement('div');
-	wrapper.innerHTML = strHtml;
-	return wrapper.children;
-};
-q.append = function (mixedVar) {
-	var item = typeof mixedVar == 'string' ? q.make(mixedVar) : mixedVar;
-	this.each(function () {
-		var node = this;
-		q.each(item,function () {
-			node.appendChild(this);
-		});
-	});
-	return this;
-};
-q.prepend = function (mixedVar) {
-	var item = typeof mixedVar == 'string' ? q.make(mixedVar) : mixedVar;
-	this.each(function () {
-		var node = this;
-		q.each(item,function () {
-			node.insertBefore(this, node.firstChild);
-		});
-	});
-	return this;
-};
-q.remove = function () {
-	this.each(function () {
-		this.parentNode.removeChild(this);
-	});
-};
-q.text = function (strText) {
-	if (!strText)
-		return this[0].textContent;
-	this.each(function () {
-		this.textContent = strText;
-	});
-	return this;
-};
-q.trigger = function (strEvent) {
-	var event = document.createEvent('HTMLEvents');
-	event.initEvent(strEvent, true, false);
-	this.each(function () {
-		this.dispatchEvent(event);
-	});
-};
-// - end of dom manipulation dependencies
-// - start of dom information dependencies
-q.mstime = function () {
-	return (new Date()).getTime();
-};
-q.pos = function () {
-	var element = this[0];
-	var top = 0, left = 0;
-	do {
-		top += element.offsetTop  || 0;
-		left += element.offsetLeft || 0;
-		element = element.offsetParent;
-	} while(element);
-	this.chain.pos = {
-		top: top,
-		left: left
-	};
-	return this.chain.pos;
-};
-q.left = function () {
-	return this.chain.pos ? this.chain.pos.left : this.pos().left;
-};
-q.top = function () {
-	return this.chain.top ? this.chain.pos.top : this.pos().top;
-};
-q.right = function () {
-	return this.left()+this.width();
-};
-q.bottom = function () {
-	return this.top()+this.height();
-};
-q.is = function (strQuery) {
-	var boolIs = false;
-	var boolIsNot = false;
-	this.each(function () {
-		var el = this;
-		var res = (el.matches || el.matchesSelector || el.msMatchesSelector || el.mozMatchesSelector || el.webkitMatchesSelector || el.oMatchesSelector).call(el, strQuery);
-		if (res)
-			boolIs = true;
-		else
-			boolIsNot = true;
-	});
-	return boolIs && !boolIsNot;
-};
-q.hasClass = function (strClassName) {
-	var boolHas = false;
-	var boolDoesntHave = false;
-	this.each(function () {
-		var node = this
-		q.each(strClassName.split(/ /), function (k) {
-			if (node.classList.contains(this)) {
-				boolHas = true;
-			} else {
-				boolDoesntHave = true;
-			}
-		});
-	});
-	return boolHas && !boolDoesntHave;
-};
-q.next = function (node) {
-	var boolNode = !!node;
-	if (!boolNode)
-		node = this[0];
-	node = node.nextElementSibling;
-	if (!boolNode)
-		this[0] = node;
-	return boolNode ? node : this;
-};
-q.prev = function (node) {
-	var boolNode = !!node;
-	if (!boolNode)
-		node = this[0];
-	node = node.previousElementSibling;
-	if (!boolNode)
-		this[0] = node;
-	return boolNode ? node : this;
-};
-q.parent = function (node) {
-	var boolNode = !!node;
-	if (!boolNode)
-		node = this[0];
-	node = node.parentNode;
-	if (!boolNode)
-		this[0] = node;
-	return boolNode ? node : this;
-};
-q.width = function () {
-	return this[0].innerWidth;
-};
-q.height = function () {
-	return this[0].innerHeight;
-};
-// - end of dom information dependencies
-// - start of ajax dependencies
-q.request = function (arrParams) {
-	var r = new XMLHttpRequest();
-	r.open("POST", arrParams.url, true);
-	var strParams = "";
-	if (arrParams.post)
-		strParams = typeof arrParams.post == 'object' ? q.serialize(arrParams.post) : arrParams.post;
-	r.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-	r.setRequestHeader("Content-length", strParams.length);
-	r.setRequestHeader("Connection", "close");
-	r.onreadystatechange = function () {
-		if (r.readyState != 4 || r.status != 200) return;
-		if (arrParams.success)
-			arrParams.success(r.responseText);
-	};
-	r.send(strParams);
-};
-q.val = function (strValue) {
-	if (strValue) {
-		this.each(function () {
-			this.value = strValue;
+			},
+			intNodeUid = q(node).uniqueId();
+			q(arrEvents).each(function () {
+				var 
+				arrEventNames = this.split(/\./),
+				strEventName = arrEventNames[0],
+				strEventCategory = arrEventNames[1];
+				window.addEventListener
+				? node.addEventListener(strEventName, method, true)
+				: node.attachEvent(arrAutoBind[strEventName] ? 'on' + strEventName : strEventName, method);
+				if (!objEventMomory[intNodeUid])
+					objEventMomory[intNodeUid] = {};
+				if (!objEventMomory[intNodeUid][strEventName])
+					objEventMomory[intNodeUid][strEventName] = {};
+				objEventMomory[intNodeUid][strEventName][strEventCategory] = method;
+			});
 		});
 		return this;
+	};
+
+	// Add short hand methods that call binders automatically defined by arrAutoBind variable
+	for (var intAutoBind in arrAutoBind) {
+		var strName = arrAutoBind[intAutoBind];
+		fun[strName] = (function (strName) {
+			return function (fnCallback) {
+				return this[!fnCallback ? "trigger" : "bind"](strName, fnCallback);
+			};
+		})(strName);
 	}
-	return this[0].value;
-}
-q.serialize = function(node) {
-	if (!node)
-		node = this[0];
-	var arrData = [];
-	if (q.type(node) == 'object') {
-		for(var p in node)
-			if (node.hasOwnProperty(p)) {
-				arrData.push(encodeURIComponent(p) + "=" + encodeURIComponent(node[p]));
-			}
-	} else if (q.type(node) == 'domelement') {
-		var objForm = q(node);
-		objForm.find('input:not([type="button"]):not([type="submit"]),textarea').each(function () {
-			var objInput = q(this);
-			if (!objInput.attr('name') || objInput.is('input[type="radio"]:not(:checked),input[type="checkbox"]:not(:checked)'))
-				return;
-			arrData.push(encodeURIComponent(objInput.attr('name')) + "=" + encodeURIComponent(objInput.val()));
+
+	// unbinds an event
+	fun.unbind = function (strEvents) {
+		var arrEvents = strEvents.split(/ /);
+		iterate(this,function (k,node) {
+			var qNodeUid = q(node).uniqueId();
+			iterate(arrEvents, function () {
+				var 
+				arrEventNames = this.split(/\./),
+				strEventName = arrEventNames[0],
+				strEventCategory = arrEventNames[1];
+				if (!objEventMomory[qNodeUid])
+					return;
+				if (strEventCategory) {
+					var fnCallback = objEventMomory[qNodeUid][strEventName][strEventCategory];
+					window.addEventListener
+					? node.removeEventListener(strEventName, fnCallback, true)
+					: node.detachEvent(arrAutoBind[strEventName] ? 'on' + strEventName : strEventName, fnCallback);
+					delete objEventMomory[qNodeUid][strEventName][strEventCategory];
+				} else {
+					// remove all event
+					var 
+					arrCallbacks = objEventMomory[qNodeUid][strEventName];
+					
+					if (!arrCallbacks)
+						return;
+					for (var strEventCategory in arrCallbacks) {
+						var fnCallback = arrCallbacks[strEventCategory];
+						window.addEventListener
+						? node.removeEventListener(strEventName, fnCallback, true)
+						: node.detachEvent(arrAutoBind[strEventName] ? 'on' + strEventName : strEventName, fnCallback);
+						delete objEventMomory[qNodeUid][strEventName][strEventCategory];
+					}
+				}
+			});
 		});
+		return this;
+	};
+
+	// triggers an event
+	fun.trigger = function (strEvent) {
+		var 
+		event = document.createEvent('HTMLEvents'),
+		that = this;
+		event.initEvent(strEvent, true, false);
+		iterate(this,function (k,node) {
+			node.dispatchEvent(event);
+		});
+		return this;
+	};
+	
+	// convert an object into a uri string ex: {k:"v"} to /k/v
+	fun.serialize = function() {
+		var str = [];
+		for(var p in this[0])
+			if (this[0].hasOwnProperty(p)) {
+				str.push(encodeURIComponent(p) + "/" + encodeURIComponent(this[0][p]));
+			}
+		return str.join("/");
+	};
+
+	// append something to the selection
+	fun.append = function (mixedVar, strAlternateMethod) {
+		var 
+		item = typeof mixedVar == 'string' ? q(mixedVar) : mixedVar,
+		strMethod = strAlternateMethod || "appendChild";
+		iterate(this,function () {
+			var node = this;
+			iterate(item,function () {
+				node[strMethod](this, node.firstChild);
+			});
+		});
+		return this;
+	};
+
+	// Prepend something to the selection
+	fun.prepend = function (mixedVar) {
+		return this.append(mixedVar, "insertBefore");
+	};
+
+	// Append self to a node
+	fun.appendTo = function (mixedVar) {
+		return q(mixedVar).append(this);
+	};
+
+	// Append self after node
+	fun.appendAfter = function (mixedVar, boolBefore) {
+		var 
+		qNode = q(mixedVar),
+		objNext = boolBefore ? qNode[0] : qNode['next']()[0],
+		qParent = qNode.parent();
+		if (objNext) {
+			qParent[0].insertBefore(this[0], objNext);
+		} else {
+			qParent[boolBefore ? 'prepend' : 'append'](this);
+		}
+		return this;
+	};
+
+	// Append self before a node
+	fun.appendBefore = function (mixedVar) {
+		return this.appendAfter(mixedVar, 1);
+	};
+
+	// Remove node
+	fun.remove = function () {
+		iterate(this,function () {
+			if (this.parentNode) // make sure its attached to something
+				this.parentNode.removeChild(this);
+		});
+		return this;
+	};
+
+	// Next sibling node
+	fun.next = function (strType) {
+		var qcopy = copy(fun),
+		i=0;
+		iterate(this,function () {
+			qcopy[i] = this[strType ? strType : "nextElementSibling"] || false;
+			i++;
+		});
+		qcopy.length = i;
+		return qcopy;
+	};
+
+	// Previous sibling node
+	fun.prev = function () {
+		return this.next("previousElementSibling");
+	};
+
+	// Parent node
+	fun.parent = function () {
+		return this.next("parentNode");
+	};
+
+	// Unix epoch in MS
+	q.mstime = function () {
+		return (new Date()).getTime();
+	};
+
+	// Closest parent to the current selection
+	fun.closest = function (strQuery) {
+		var el = q(this[0]);
+		if (el.is(strQuery))
+			return el;
+		if (el.is("body"))
+			return {};
+		var parent = el.parent();
+		return parent.closest(strQuery);
+	};
+	
+	// creates a unique id that can be used to save or reference to an object using a hash code
+	// not to be confused with the setting the ID attribute on the DOM, this function is for internal indexing
+	var 
+	intUniqueIdIterator = 1,
+	objUniqueIdLib = [];
+	q.uniqueId = fun.uniqueId = function (strIdToLoad) {
+		if (strIdToLoad == undefined) {
+			// generate an new ID
+			var 
+			node = this[0];
+			if (node.__q_uid) {
+				return node.__q_uid;
+			} else {
+				node.__q_uid = intUniqueIdIterator++;
+			}
+			objUniqueIdLib.push(node);
+			return node.__q_uid;
+		} else {
+			return objUniqueIdLib[strIdToLoad] || undefined;
+		}
+	};
+	
+	q.rand = function (min,max) {
+		if (typeof max == 'undefined') {
+			max=min;
+			min=0;
+		}
+		if (min > max) {
+			var mintemp = min;
+			min = max;
+			max = mintemp;
+		}
+		var divider = 1;
+		while (
+			min > 0 && min < 1
+		) {
+			min*=10;
+			max*=10;
+			divider*=10;
+		}
+		var dif = min;
+		min = 0;
+		max -= dif-1;
+		return ((Math.floor(Math.random()*max)+dif)/divider);
 	}
-	return arrData.join("&");
-};
-q.type = function (mixedVar) {
-	var type = typeof(mixedVar);
-	if(type != "object") {
-		return type;
-	}
-	switch(mixedVar) {
-		case null:
-			return 'null';
-		case window:
-			return 'window';
-		case document:
-			return 'document';
-		case window.event:
-			return 'event';
-		default:
-			break;
-	}
-	switch(mixedVar.constructor) {
-		case Array:
-			return 'array';
-		case Boolean:
-			return 'boolean';
-		case Date:
-			return 'date';
-		case Object:
-			return 'object';
-		case RegExp:
-			return 'regexp';
-		case ReferenceError:
-		case Error:
-			return 'error';
-		case null:
-		default:
-			break;
-	}
-	switch(mixedVar.nodeType) {
-		case 1:
-			return 'domelement';
-		case 3:
-			return 'string';
-		case null:
-		default:
-			break;
-	}
-	return 'Unknown';
-};
+
+	// Ajax reqiest
+	q.request = function (arrParams) {
+		if (typeof XMLHttpRequest === "undefined") {
+		  XMLHttpRequest = function () {
+		    try { return new ActiveXObject("Msxml2.XMLHTTP.6.0"); }
+		    catch (e) {}
+		    try { return new ActiveXObject("Msxml2.XMLHTTP.3.0"); }
+		    catch (e) {}
+		    try { return new ActiveXObject("Microsoft.XMLHTTP"); }
+		    catch (e) {}
+		    throw new Error("This browser does not support XMLHttpRequest.");
+		  };
+		}
+		var r = new XMLHttpRequest(),
+		strParams = typeof arrParams.post == 'object' ? q(arrParams.post).serialize() : arrParams.post;
+		r.open("GET", arrParams.url+'/'+strParams, true);
+		r.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+		r.onreadystatechange = function () {
+			if (r.readyState == 4 ) {
+				if (r.status == 200) {
+	           		if (arrParams.success)
+						arrParams.success(r.responseText);
+				} else if (r.status == 400) {
+					arrParams.failure(r.responseText);
+				} else {
+					arrParams.failure(r.responseText);
+				}
+	        }
+		};
+		r.send(strParams);
+	};
+
+	fun.offsetParent = function () {
+		var node = this.parent();
+		while (node.length) {
+			var strPos = node.css("position");
+			if (strPos == "relative" || strPos == "absolute")
+				return node;
+			node = node.parent();
+		};
+		return copy(fun); // empty
+	};
+
+	// Animation easings
+	var easings = q.easings = {};
+    easings.linear = function(t, b, c, d) {return c * t / d + b;};
+    easings.easeInQuad = function(t, b, c, d) {return c * (t /= d) * t + b;};
+    easings.easeOutQuad = function(t, b, c, d) {return -c * (t /= d) * (t - 2) + b;};
+    easings.easeInOutQuad = function(t, b, c, d) {if ((t /= d / 2) < 1) return c / 2 * t * t + b;return -c / 2 * ((--t) * (t - 2) - 1) + b;};
+    easings.easeInCubic = function(t, b, c, d) {return c * (t /= d) * t * t + b;};
+    easings.easeOutCubic = function(t, b, c, d) {return c * ((t = t / d - 1) * t * t + 1) + b;};
+    easings.easeInOutCubic = function(t, b, c, d) {if ((t /= d / 2) < 1) return c / 2 * t * t * t + b;return c / 2 * ((t -= 2) * t * t + 2) + b;};
+    easings.easeInQuart = function(t, b, c, d) {return c * (t /= d) * t * t * t + b;};
+    easings.easeOutQuart = function(t, b, c, d) {return -c * ((t = t / d - 1) * t * t * t - 1) + b;};
+    easings.easeInOutQuart = function(t, b, c, d) {if ((t /= d / 2) < 1) return c / 2 * t * t * t * t + b;return -c / 2 * ((t -= 2) * t * t * t - 2) + b;};
+    easings.easeInQuint = function(t, b, c, d) {return c * (t /= d) * t * t * t * t + b;};
+    easings.easeOutQuint = function(t, b, c, d) {return c * ((t = t / d - 1) * t * t * t * t + 1) + b;};
+    easings.easeInOutQuint = function(t, b, c, d) {if ((t /= d / 2) < 1) return c / 2 * t * t * t * t * t + b;return c / 2 * ((t -= 2) * t * t * t * t + 2) + b;};
+    easings.easeInSine = function(t, b, c, d) {return -c * Math.cos(t / d * (Math.PI / 2)) + c + b;};
+    easings.easeOutSine = function(t, b, c, d) {return c * Math.sin(t / d * (Math.PI / 2)) + b;};
+	easings.easeInOutSine = function(t, b, c, d) {return -c / 2 * (Math.cos(Math.PI * t / d) - 1) + b;};
+	easings.easeInExpo = function(t, b, c, d) {return (t == 0) ? b : c * Math.pow(2, 10 * (t / d - 1)) + b;};
+	easings.easeOutExpo = function(t, b, c, d) {return (t == d) ? b + c : c * (-Math.pow(2, -10 * t / d) + 1) + b;};
+	easings.easeInOutExpo = function(t, b, c, d) {if (t == 0) return b;if (t == d) return b + c;if ((t /= d / 2) < 1) return c / 2 * Math.pow(2, 10 * (t - 1)) + b;return c / 2 * (-Math.pow(2, -10 * --t) + 2) + b;};
+	easings.easeInCirc = function(t, b, c, d) {return -c * (Math.sqrt(1 - (t /= d) * t) - 1) + b;};
+	easings.easeOutCirc = function(t, b, c, d) {return c * Math.sqrt(1 - (t = t / d - 1) * t) + b;};
+	easings.easeInOutCirc = function(t, b, c, d) {if ((t /= d / 2) < 1) return -c / 2 * (Math.sqrt(1 - t * t) - 1) + b;return c / 2 * (Math.sqrt(1 - (t -= 2) * t) + 1) + b;};
+	easings.easeInElastic = function(t, b, c, d) {var p = 0;var a = c;if (t == 0) return b;if ((t /= d) == 1) return b + c;if (!p) p = d * .3;if (a < Math.abs(c)) {a = c;var s = p / 4;}else var s = p / (2 * Math.PI) * Math.asin(c / a);return -(a * Math.pow(2, 10 * (t -= 1)) * Math.sin((t * d - s) * (2 * Math.PI) / p)) + b;};
+	easings.easeOutElastic = function(t, b, c, d) {var p = 0;var a = c;if (t == 0) return b;if ((t /= d) == 1) return b + c;if (!p) p = d * .3;if (a < Math.abs(c)) {a = c;var s = p / 4;}else var s = p / (2 * Math.PI) * Math.asin(c / a);return a * Math.pow(2, -10 * t) * Math.sin((t * d - s) * (2 * Math.PI) / p) + c + b;};
+	easings.easeInOutElastic = function(t, b, c, d) {var p = 0;var a = c;if (t == 0) return b;if ((t /= d / 2) == 2) return b + c;if (!p) p = d * (.3 * 1.5);if (a < Math.abs(c)) {a = c;var s = p / 4;}else var s = p / (2 * Math.PI) * Math.asin(c / a);if (t < 1) return -.5 * (a * Math.pow(2, 10 * (t -= 1)) * Math.sin((t * d - s) * (2 * Math.PI) / p)) + b;return a * Math.pow(2, -10 * (t -= 1)) * Math.sin((t * d - s) * (2 * Math.PI) / p) * .5 + c + b;};
+	easings.easeInBack = function(t, b, c, d, s) {if (s == undefined) s = 1.70158;return c * (t /= d) * t * ((s + 1) * t - s) + b;};
+	easings.easeOutBack = function(t, b, c, d, s) {if (s == undefined) s = 1.70158;return c * ((t = t / d - 1) * t * ((s + 1) * t + s) + 1) + b;};
+	easings.easeInOutBack = function(t, b, c, d, s) {if (s == undefined) s = 1.70158;if ((t /= d / 2) < 1) return c / 2 * (t * t * (((s *= (1.525)) + 1) * t - s)) + b;return c / 2 * ((t -= 2) * t * (((s *= (1.525)) + 1) * t + s) + 2) + b;};
+	easings.easeInBounce = function(t, b, c, d) {return c - easings.easeOutBounce(d - t, 0, c, d) + b;};
+	easings.easeOutBounce = function(t, b, c, d) {if ((t /= d) < (1 / 2.75)) {return c * (7.5625 * t * t) + b;} else if (t < (2 / 2.75)) {return c * (7.5625 * (t -= (1.5 / 2.75)) * t + .75) + b;} else if (t < (2.5 / 2.75)) {return c * (7.5625 * (t -= (2.25 / 2.75)) * t + .9375) + b;} else {return c * (7.5625 * (t -= (2.625 / 2.75)) * t + .984375) + b;}};
+	easings.easeInOutBounce = function(t, b, c, d) {if (t < d / 2) return easings.easeInBounce(t * 2, 0, c, d) * .5 + b;return easings.easeOutBounce(t * 2 - d, 0, c, d) * .5 + c * .5 + b;};
+    
+	// turns on or off asynchronous animations and pauses
+	fun.queue = function (boolOff) {
+		if (boolOff)
+			iterate(this, function (k,el) {
+				var intElUid = q(el).uniqueId();
+				delete objQueueChain[intElUid];
+			});
+		else
+			iterate(this, function (k,el) {
+				var intElUid = q(el).uniqueId();
+				if (!objQueueChain[intElUid])
+					objQueueChain[intElUid] = {
+						on : true,
+						sequence : []
+					};
+			});
+		return this;
+	};
+
+	// jump to the next item in the queue
+	q.queueNext = fun.queueNext = function (el) {
+		var that = this;
+		if (el)
+			runNext(el);
+		else 
+			iterate(this, function (k,el) {
+				runNext(el);
+			});
+		function runNext(el) {
+			var intElUid = q(el).uniqueId();
+			if (objQueueChain[intElUid]) {
+				if (objQueueChain[intElUid].sequence.length) {
+					var arrParams = objQueueChain[intElUid].sequence.shift();
+					that.animate.call(that, arrParams[0], arrParams[1], arrParams[2], arrParams[3], arrParams[4]);
+				} else {
+					delete objAnimationInstances[intElUid];
+				}
+			} else if (objAnimationInstances) {
+				delete objAnimationInstances[intElUid];
+			}
+		}
+		return that;
+	};
+
+	// turn of the animation queue
+	fun.dequeue = function () {
+		iterate(this, function (k,el) {
+			var intElUid = q(el).uniqueId();
+			if (objQueueChain[intElUid])
+				objQueueChain[intElUid].sequence = [];
+		});
+		return this;
+	};
+
+	fun.pause = function () {
+		return this.css({
+			"animation-play-state" : "paused"
+		});
+	};
+
+	fun.play = function () {
+		return this.css({
+			"animation-play-state" : "running"
+		});
+	};
+
+	fun.stop = function () {
+		var that = this;
+		iterate(this, function (k,el) {
+			var 
+			objAI = objAnimationInstances,
+			intElUid = q(el).uniqueId();
+			if (objAI[intElUid]) {
+				objAI[intElUid].stop();
+				delete objAI[intElUid];
+			}
+		});
+		return this.css({
+			"animation-play-state" : "paused"
+		}).dequeue();
+	};
+
+	q.delay = fun.delay = function (intMS, fnCallback) {
+		var that = this;
+		if (!that.length)
+			 window.setTimeout(function () {
+			 	if (fnCallback)
+			 		fnCallback();
+			 	that.queueNext();
+			 }, intMS);
+		else
+			iterate(this,function (intItem, el) {
+				var intElUid = q(el).uniqueId();
+				if (objQueueChain[intElUid]) {
+					if (objQueueChain[intElUid].active) {
+						// Add next animation to chain
+						objQueueChain[intElUid].sequence.push(["delay", intMS, fnCallback]);
+						return false;
+					}
+					objQueueChain[intElUid].active = true;
+				}
+			});
+		return this;
+	};
+
+    // Animation Created: Apr 13, 2018
+    fun.animationSettings = {};
+    fun.boolDebugMode = false;
+    fun.debug = function (boolOn) {
+    	this.boolDebugMode = boolOn == undefined || !!boolOn;
+    	return this;
+    };
+	fun.animate = function (objCssTo) {
+		if (typeof objCssTo == "string") {
+			if (objCssTo == "delay") {
+				var fnCallback = arguments[2];
+				var fnDone = function () {
+					fnCallback();
+				};
+				q.delay(arguments[1], fnDone);
+			} else {
+				this.animationSettings[objCssTo] = arguments[1];
+			}
+			return this;
+		}
+		var 
+		that = this,
+		intArgs = arguments.length,
+		intDuration = 750,
+		fnEasing = easings.linear,
+		strEasing = "linear",
+		objOptions = {
+			stopped : function () {}, // the animation was stopped without finishing
+			finished : function () {}, // redundant function works just like 
+			ended : function () {} // called when an animation is stopped or finishes on its own
+		},
+		fnCallback = function () {};
+		for (var intArg=1;intArg<intArgs;intArg++) {
+			var 
+			mixedValue = arguments[intArg],
+			strType = typeof mixedValue;
+			if (strType == "number" || strType == "float") {
+				intDuration = mixedValue;
+			} else if (strType == "string") {
+				strEasing = mixedValue;
+				fnEasing = easings[mixedValue] || easings.linear;
+			} else if (strType == "function") {
+				fnCallback = mixedValue;
+			} else if (strType == "object") {
+				extend(objOptions, mixedValue);
+			}
+		}
+		var 
+		intIterations = Math.ceil(intDuration/10),
+		regMatchNumbers = /(\-?[0-9]+(?:\.[0-9]+)?(?:[a-z]{2}?|%)?)/gi,
+		regSplitNumbers = /\-?[0-9]+(?:\.[0-9]+)?(?:[a-z]{2}?|%)?/gi,
+		boolAccelerate = this.animationSettings.accelerate; // Match measurement units
+		iterate(this,function (intItem, el) {
+			var intElUid = q(el).uniqueId();
+			if (objQueueChain[intElUid]) {
+				if (objQueueChain[intElUid].active) {
+					// Add next animation to chain
+					objQueueChain[intElUid].sequence.push([objCssTo, intDuration, strEasing, fnCallback, objOptions]);
+					return;
+				}
+				objQueueChain[intElUid].active = true;
+			}
+			if (typeof objCssTo == "function") {
+				objCssTo = objCssTo.call(that);
+			}
+			var 
+			objHistory = objTransformHistory[intElUid],
+			objCssFrom = {},
+			arrOutput = [],
+			strCurrentKey,
+			objStartStyles = getComputedStyle(el),
+			boolTransformsUsed = false;
+			if (!objHistory) {
+				objTransformHistory[intElUid] = {};
+				objHistory = objTransformHistory[intElUid];
+			}
+			for (var strCssToKey in objCssTo) {
+				var 
+				to = objCssTo[strCssToKey],
+				toRC = reverseCamel(strCssToKey);
+				// iterate the tranform in a slightly different way
+				if (toRC == "transform") {
+					if (objHistory)
+						objCssTo[strCssToKey] = to = q.extend(copy(objHistory),to);
+					boolTransformsUsed = true;
+					for (var strTransform in to) {
+						var 
+						strTransformTo = to[strTransform],
+						strTransformFrom = objHistory && typeof objHistory[strTransform] != "undefined" ? objHistory[strTransform] : (objTransformDefaults[strTransform] || 0);
+						tweenString(toRC+"-"+strTransform, toRC+"-"+strTransform, parseFloat(strTransformFrom), parseFloat(strTransformTo));
+					}
+				} else {
+					var
+					change = to - from,
+					from = objStartStyles[reverseCamel(strCssToKey)] || 0;
+					tweenString(strCssToKey, toRC, from, to);
+				}
+			}
+			function tweenString(strCssToKey, toRC,from,to) {
+				var 
+				intToValues = 1,
+				intDefaultFrom = toRC == "rgba" || toRC == "opacity" || toRC == "background-color" ? 1 : 0,
+				strOutput = '',
+				arrToValues = [to],
+				arrFromValues = [from],
+				arrToWrappers = [];
+			    if (typeof from == "string") {
+					arrFromValues = from.match(regMatchNumbers);
+				}
+				if (!arrFromValues) {
+					arrFromValues = [intDefaultFrom];
+				}
+				if (to[0] == "#") {
+					to = hexToRgb(to);
+				} else if (typeof to == "string") {
+					arrToWrappers = to.split(regSplitNumbers);
+					arrToValues = to.match(regMatchNumbers);
+					intToValues = arrToValues.length;
+				}
+				// itarete to values
+				if (intToValues == 3 && toRC == "background-color") {
+					intToValues++;
+					arrToValues[3] = 1;
+					arrToWrappers[3] = ", ";
+					arrToWrappers[4] = ")";
+					arrToWrappers[0] = "rgba(";
+				}
+				for (var intItem=0;intItem!=intToValues;intItem++) {
+					var
+					// unit conversinos will not be handled (might be too much code needed)
+					mixedFromValue = ((arrFromValues[intItem] || intDefaultFrom)+'').replace(/[a-z%]+/, '')*1,
+					mixedToValue = arrToValues[intItem],
+					matchToSuffix = typeof mixedToValue == 'string' ? mixedToValue.match(/([a-z%]+)/) : "",
+					strToSuffix = matchToSuffix ? matchToSuffix[1] : (typeof mixedToValue == 'string' || arrExcludePx[toRC] ? '' : 'px');
+					if (typeof mixedToValue == 'string')
+						mixedToValue = mixedToValue.replace(/[a-z%]+/, '')*1;
+					var mixedChange = mixedToValue - mixedFromValue;
+					// loop through time
+					for (var intItr=0;intItr!=intIterations;intItr++) {
+						if (intItem == 0) {
+							if (!arrOutput[intItr])
+								arrOutput[intItr] = Math.round(((intItr+1) / intIterations)*10000)/100 + "% {" + toRC + ":";
+							else if (strCurrentKey != toRC) {
+								arrOutput[intItr] += ";" + toRC + ":";
+							}
+						}
+						var pos = !mixedChange ? mixedFromValue : Math.floor(fnEasing(intItr+1, mixedFromValue, mixedChange, intIterations)*10000)/10000;
+						if (arrToWrappers[intItem])
+							arrOutput[intItr] += arrToWrappers[intItem];
+						arrOutput[intItr] += pos + strToSuffix;
+						if (intItem==intToValues-1 && arrToWrappers[intItem+1]) 
+							arrOutput[intItr] += arrToWrappers[intItem+1];
+					}
+				}
+			}
+			// reprocess transforms into proper CSS
+			if (boolTransformsUsed) {
+				var regTransform = /transform\-([a-z]+):([^;]+)(;?)/i;
+				for (var intOutput in arrOutput) {
+					var 
+					strLine = arrOutput[intOutput],
+					boolChange = false,
+					arrMatched;
+					while ((arrMatched = strLine.match(regTransform))) {
+						strLine = strLine.replace(regTransform, (!boolChange ? "transform:" : "") + arrMatched[1]+"(" + arrMatched[2] + ")" + (arrMatched[3] == ";" ? " " : ""));
+						boolChange = true;
+					}
+					if (boolChange) {
+						strLine = strLine.replace(/(transform:.+?) ([a-z]+:)/i, '$1;$2');
+						arrOutput[intOutput] = strLine;
+					}
+				}
+			}
+			var 
+			strKeyFrameName = "qStepAnim" + q.mstime() + (animations++), // generate an ID
+			strAnimation = "@keyframes " + strKeyFrameName + " {" + arrOutput.join("}\n") + "}",
+			style = document.createElement('style');
+			style.type = 'text/css';
+			style.innerHTML = strAnimation,
+			boolNewInstance = !objAnimationInstances[intElUid];
+			if (boolNewInstance)
+				objAnimationInstances[intElUid] = {
+					animationAttributes : {}
+				};
+			var objAI = objAnimationInstances[intElUid];
+			document.getElementsByTagName('body')[0].appendChild(style);
+			var 
+			// finalize an animation once its complete
+			fnDone = objAI.done = function () {
+				return (function (strKeyFrameName, objCssTo, el, toRC, fnDone, objAI, style, intElUid, objOptions) {
+					return (function () {
+						// reprocess transforms into proper CSS
+						if (objCssTo.transform) {
+							objTransformHistory[intElUid] = objCssTo.transform;
+							objCssTo.transform = stringifyTransformData(objCssTo.transform);
+						}
+						q(el).css(objCssTo);
+						cleanUp(el,fnDone,style,intElUid);
+						fnCallback();
+						strCurrentKey = toRC;
+						q.queueNext.call(that,el);
+						objOptions.ended();
+						objOptions.finished();
+					})();
+				})(strKeyFrameName, objCssTo, el, toRC, fnDone, objAI, style, intElUid, objOptions);
+			};
+			// stop an animation before complete
+			objAI.stop = function () {
+				return (function (that, objAI, intDuration, arrOutput, fnDone, el, style, intElUid, objOptions) {
+					return (function () {
+						if (that.boolDebugMode)
+							bark(['stop', that]);
+						window.clearTimeout(objAI.timeout);
+						var 
+						intElapsed = q.mstime() - objAI.startTime,
+						intPercentage = 0,
+						intElapsedPercentage = (intElapsed / intDuration) * 100,
+						strMatched = "";
+						// fetch the position out of the raw output data
+						for (var intOutput in arrOutput) {
+							var 
+							strOutput = arrOutput[intOutput],
+							arrMatchedPecenteage = strOutput.match(/^([0-9\.]+)/);
+							intPercentage = arrMatchedPecenteage[1];
+							if (intPercentage > intElapsedPercentage) {
+								strMatched = strOutput.replace(/^[^\{]+\{/, '');
+								break;
+							}
+						}
+						var arrUnits = strMatched.split(/;/);
+						for (var intUnit in arrUnits) {
+							var 
+							arrKeyVal = arrUnits[intUnit].split(/:/),
+							strKey = arrKeyVal[0],
+							strValue = arrKeyVal[1];
+							if (strKey == "transform") {
+								objTransformHistory[intElUid] = parseTransformData(strValue);
+							}
+							el.style.setProperty(strKey, strValue);
+						}
+						cleanUp(el,fnDone,style, intElUid);
+						objOptions.ended();
+						objOptions.stopped();
+					})();
+				})(that, objAI, intDuration, arrOutput, fnDone, el, style, intElUid, objOptions);
+			};
+			var strAnimationEndEvent = 'animationend webkitAnimationEnd oanimationend MSAnimationEnd';
+			function cleanUp(el,fnDone,style, intElUid) {
+				if (objQueueChain[intElUid])
+					objQueueChain[intElUid].active = false;
+				el.style.setProperty("animation", "none");
+				//el.offsetHeight; // Trigger a reflow, flushing the CSS changes
+				q(style).remove();
+				delete style;
+				delete objAnimationInstances[intElUid];
+			}
+			objAI.startTime = q.mstime();
+			var strPrefix = boolNewInstance ? "" : Object.keys(objAI.animationAttributes).join(",") + ",";
+			var strAnimationAtrribute = strKeyFrameName + " " + intDuration + "ms forwards";
+			objAI.animationAttributes[strAnimationAtrribute] = 1;
+			el.style.setProperty("animation", strPrefix + strAnimationAtrribute);
+			q(el)
+			.play(); // make sure its unpaused
+			objAI.timeout = window.setTimeout(fnDone, intDuration);
+			//.bind(strAnimationEndEvent, fnDone);
+
+		});
+
+		return this;
+	};
+})();
