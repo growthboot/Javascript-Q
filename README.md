@@ -3,7 +3,8 @@
 
 QueryChain Library
 ----------------
-is a very small JavaScript library intended to reduce the data transfer and memory usage on your websites or apps compared to most standard libraries avialable. Our main goals behind this library is to maintain a very small core that can be used to build a dynamic UI easily while maintaining its ability to be expanded on with plugins. Yet, in most cases the core alone should be all that is needed to build a fully dynamic and ajax websites.
+Is a very small JavaScript library intended to reduce the data transfer and memory usage on your websites or apps compared to most standard libraries avialable. The library takes advanatge of modern functionality available in Javascript since HTML5 became standard. The idea is websites that want to service customers using pre HTML5 browsers can do so using vanilla HTML since they make up a very small portion of the market.
+
 
 ## Setup
 Include QueryChain q.js file into the head of your html document.
