@@ -1,4 +1,4 @@
-q.type = function (mixedVar) {
+$.type = function (mixedVar) {
 	var type = typeof(mixedVar);
 	if(type != "object") {
 		return type;
@@ -44,7 +44,7 @@ q.type = function (mixedVar) {
 	}
 	return 'Unknown';
 }
-q.alert = function (mixedValue) {
+$.alert = function (mixedValue) {
 	if (this.isJavascriptQ && !mixedValue)
 		mixedValue = this[0];
 	var recursion = function(obj, level) {
@@ -52,7 +52,7 @@ q.alert = function (mixedValue) {
 		if(!level) level = 0;
 		var dump = '', p = '';
 		for(i = 0; i < level; i++) p += strDel;
-		t = q.type(obj);
+		t = $.type(obj);
 		switch(t) {
 			 case "string":
 				return '"' + obj + '"';
@@ -66,14 +66,14 @@ q.alert = function (mixedValue) {
 				return "Date: " + obj.toLocaleString();
 			 case "array":
 				dump += 'Array[' + obj.length + '] ( \n';
-				q.each(obj, function(k,v) {
+				$.each(obj, function(k,v) {
 				   dump += p + strDel + k + ' => ' + recursion(v, level + 1) + '\n';
 				});
 				dump += p + ')';
 				break;
 			 case "object":
 				dump += 'Object [' + Object.keys(obj).length + '] { \n';
-				q.each(obj, function(k,v) {
+				$.each(obj, function(k,v) {
 				   dump += p + strDel + k + ': ' + recursion(v, level + 1) + '\n';
 				});
 				dump += p + '}';
@@ -91,9 +91,9 @@ q.alert = function (mixedValue) {
 					if (obj[arrSimpleItems[intKey]])
 						dump += p + strDel + arrSimpleItems[intKey] + ': ' + obj[arrSimpleItems[intKey]] + '\n';
 				}
-				var strCSS = q.css.call(obj);
+				var strCSS = $.css.call(obj);
 				if (strCSS.length)
-					dump += p + strDel + 'style: ' + q.css.call(obj) + '\n';
+					dump += p + strDel + 'style: ' + $.css.call(obj) + '\n';
 				if (obj.childNodes.length)
 				{
 					dump += p + strDel + 'innerHTML [' + obj.childNodes.length + ']: [ \n';
@@ -101,9 +101,9 @@ q.alert = function (mixedValue) {
 					for (i3 in obj.childNodes)
 					{
 						var v = obj.childNodes[i3];
-						if(q.type(v) == "string") {
+						if($.type(v) == "string") {
 							if(v.textContent.match(/[^\s]/))
-								dump += p + strDel + strDel + (i3-offset) + ' = String: ' + q.trim(v.textContent) + '\n';
+								dump += p + strDel + strDel + (i3-offset) + ' = String: ' + $.trim(v.textContent) + '\n';
 							else
 								offset++;
 						} else {
@@ -116,8 +116,8 @@ q.alert = function (mixedValue) {
 				break;
 			 case "function":
 				var match = obj.toString().match(/^(.*)\(([^\)]*)\)/im);
-				match[1] = q.trim(match[1].replace(new RegExp("[\\s]+", "g"), " "));
-				match[2] = q.trim(match[2].replace(new RegExp("[\\s]+", "g"), " "));
+				match[1] = $.trim(match[1].replace(new RegExp("[\\s]+", "g"), " "));
+				match[2] = $.trim(match[2].replace(new RegExp("[\\s]+", "g"), " "));
 				return match[1] + "(" + match[2] + ")";
 			 case "window":
 			 default:
