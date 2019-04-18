@@ -1,606 +1,554 @@
-<!DOCTYPE html>
+<!-- This document is badly commented... sorry. -->
 <html>
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>QueryChain Library - Unit Testing</title>
-		<script src="./js/lib/q.js"></script>
-		<script src="./js/lib/q.debug.js"></script>
-		<style>
-			body * {
-				max-width: 700px;
+<head>
+<script src="./q.js"></script>
+<script src="./q.debug.js"></script>
+</head>
+<body>
+<script type="text/javascript">
+var 
+objHTML = $("<div id='prependToBodyTest'></div>"),
+objHTMLChild = $("<span></span>");
+objHTML.css({
+	zIndex : 123,
+	//'z-index' : 123
+});
+//alert(objHTML.css("z-index"));
+//alert("next");
+document.write("<div><input type='button' id='fakePop1' value='Pop'></div>");
+$(function () {
+	$("#fakePop1").click(function () {
+		$("<div></div>")
+		.css({
+			position : 'fixed',
+			backgroundColor : '#000',
+			top : 0,
+			left : 0
+		})
+		.appendTo("body");
+	});
+	/*var objTest = {},
+	strUniqueId1 = $("<div>test</div>").uniqueId(),
+	strUniqueId2 = $("<div>test2</div>").uniqueId();
+	objTest[strUniqueId1] = 123;
+	objTest[strUniqueId2] = 321;
+	bark(objTest);
+	bark($.uniqueId(strUniqueId1));*/
+	
+	var obj1 = {
+		test : {
+			test : 1
+		}
+	};
+	var obj2 = {
+		test2 : 321,
+		test : {
+			test2 : 2
+		}
+	};
+	//bark($.extend(obj1, obj2));
+	var obj3 = $.extend({}, obj2);
+	obj3.test2 = 3;
+	//bark([obj2, obj3]);
+	
+	
+	$("#animationBox5").click(function () {
+		$("#animationBox5")
+		.css({
+			width:40,
+			height:40,
+			transformOrigin: 'left'
+		})
+		.animate({
+			transform : {
+				scaleX : 2
 			}
-			.title {
-				font-size:14pt;
-				font-weight: bold;
-				padding: 10px 0;
-				margin-top:30px;
-			}
-			.passfail {
+		},1008,'easeOutQuart');
+		window.setTimeout(function () {
+			//$("#animationContainer5").stop();
+		}, 500);
+	});
+	$(".colorChanger").click(function () {
+		//alert($(this).css("background-color"));
+		$("#colorAnimationContainer")
+		.stop()
+		.animate({
+			backgroundColor : $(this).css("background-color")
+		});
+	});
+	$("#colorAnimationContainer2").click(function () {
+		$("#colorAnimationContainer2")
+		.stop()
+		.css({
+			backgroundColor : 'rgba(0,0,0,0)'
+		});
+		$("#colorAnimationContainer2")
+		.stop()
+		.stop()
+		.animate({
+			backgroundColor : 'rgba(0,45,84,0.54)'
+		});
+	});
+});
+document.write("Color Animation:<button style='background-color:rgb(111,232,122);width:40px;height:40px;' id='colorStart1' class='colorChanger'></button><button style='background-color:rgba(7,39,7,0.77);width:40px;height:40px;' id='colorStart2' class='colorChanger'></button><button style='background-color:rgba(0,43,142,0.5);width:40px;height:40px;' id='colorStart3' class='colorChanger'></button><button style='background-color:#ccc' id='colorStop'>Stop</button><div id='colorAnimationContainer' style=';position:relative;height:40px;width:800px;border:1px solid #000;box-sizing:border-box;'><div id='colorAnimationContainer2' style='height:40px;width:40px;position:absolute;'></div></div>");
 
+$(function () {
+	$("#animationPop5").click(function () {
+		$("#animationBox5")
+		.stop()
+		.animate({
+			transform : {
+				scaleX : 5,
+				scaleY : 5
 			}
-			.passfail {
-				display: inline-block;
-				width:18px;
-				height:18px;
-				vertical-align: middle;
-				background-color:red;
-				border:1px solid #000;
+		}, 3000, 'easeOutBounce', {
+			ended : function () {
+				bark('pop ended');
 			}
-			.passfail.passed {
-				background-color: green;
+		});
+	});
+	$("#animationUnPop5").click(function () {
+		$("#animationBox5")
+		.stop()
+		.animate({
+			transform : {
+				scaleX : 0,
+				scaleY : 0
 			}
-			.passfail.failed,
-			.passfail.failed2 {
-				background-color: red;
+		}, 3000, 'easeOutBounce', {
+			ended : function () {
+				bark('unpop ended');
 			}
-			.testmessage {
-				display: inline-block;
-				height:16px;
-				vertical-align: middle;
-			}
-			.unit {
-				margin-top: 10px;
-				vertical-align: middle;
-			}
-			.sample {
-				display:none;
-			}
-		</style>
+		});
+	});
+	//$("#animationBox5").queue(); // asynchronous playback
+	var a,b;
+	$("#animationDown5").click(function () {
+		a = $("#animationBox5")
+		.stop()
+		.animate({
+			top:parseInt($("#animationBox5").css('top'))+30
+		}, 2000, "easeOutQuart");
+	});
+	$("#animationStart5").click(function () {
+		b = $("#animationBox5")
+		.queue()
+		.animate(function () {
+				return {
+					left:parseInt(this.css('left'))+30
+				};
+		}, 2000, "easeOutQuart");
+	});
+	$("#animationStop5").click(function () {
+		$("#animationBox5").stop();
+	});
+	$("#animationStart6").click(function () {
+		$("#animationBox5")
+		.stop()
+		.animate({
+			left:parseInt($("#animationBox5").css('left'))-30
+		}, 2000, "easeOutQuart");
+	});
+	$("#animationFadeOut").click(function () {
+		$("#animationBox5")
+		.stop()
+		.animate({
+			opacity: 0
+		},500);
+	});
+	$("#animationFadeIn").click(function () {
+		$("#animationBox5")
+		.stop()
+		.animate({
+			opacity: 1
+		},500);
+	});
+})
+document.write("Animation test:<button style='background-color:#ccc' id='animationFadeOut'>Fade Out</button> <button style='background-color:#ccc' id='animationFadeIn'>Fade In</button> <button style='background-color:#ccc' id='animationStart6'>Left</button> <button style='background-color:#ccc' id='animationStart5'>Right</button><button style='background-color:#ccc' id='animationDown5'>Down</button><button style='background-color:#ccc' id='animationStop5'>Stop</button><button style='background-color:#ccc' id='animationPop5'>Pop</button><button style='background-color:#ccc' id='animationUnPop5'>Un-Pop</button><div id='animationContainer5' style=';position:relative;height:40px;width:800px;border:1px solid #000;box-sizing:border-box;'><div id='animationBox5' style='height:40px;width:40px;background-color:rgb(0,0,0);position:absolute;'></div></div>");
 
-	</head>
-	<body>
-		<h1>QueryChain Library - Unit Testing</h1>
-		<p>
-			The following list is each test that was used to create the QueryChain library.
-			If a box is green the test worked correctly. If a box is red, it failed the test and a bug was detected in the library.
-		</p>
-		<div class="title">Basic selection testing</div>
-		<div id="test1">
-			<div class="unit">
-				<div class="passfail"  id="test1_result"></div>
-				<div class="testmessage">Selection of a single div using id selection.</div>
-			</div>
-			<script>
-				var objNode = $('#test1_result');
-				var boolTest = objNode && typeof objNode[0] == 'object';
-				if (boolTest) {
-					objNode[0].style.backgroundColor = 'green';
-				}
-			</script>
-		</div>
-		<div class="title">Css handling</div>
-		<div id="test2">
-			<div class="unit">
-				<div class="passfail" id="test2_result"></div>
-				<div class="testmessage">Alter background-color of a box.</div>
-			</div>
-			<script>
-				$('#test2_result').css({
-					'background-color' : 'green'
-				});
-			</script>
-		</div>
-		<div id="test27">
-			<div class="unit">
-				<div class="passfail" id="test27_result"></div>
-				<div class="testmessage">Set a single style.</div>
-			</div>
-			<script>
-				$('#test27_result').css('background-color', 'green');
-			</script>
-		</div>
-		<div id="test15">
-			<div class="unit">
-				<div class="passfail" id="test15_result"></div>
-				<div class="testmessage">Check width of box.</div>
-			</div>
-			<script>
-				if ($('#test15_result').css('width') == '18px')
-					$('#test15_result').css({
-						'background-color' : 'green'
+$(function () {
+	$("#animationStop4").click(function () {
+		$("#animationBox3").stop();
+		//console.log('stop');
+	});
+	$("#animationPause4").click(function () {
+		$("#animationBox3").pause();
+		//console.log('pause');
+	});
+	$("#animationPlay4").click(function () {
+		$("#animationBox3").play();
+		//console.log('play');
+	});
+	$("#animationStart4").click(function () {
+		$("#animationBox3")
+		.stop()
+		.queue() // asynchronous playback
+		.css({
+			width:20,
+			height:20,
+			top:0,
+			left:0
+		})
+		.animate({
+			width:175,
+			height:175
+		}, 750, "linear")
+		.animate({
+			width:20,
+			height:20
+		}, 750, "easeOutQuart")
+		.animate({
+			left : 175-22,
+			backgroundColor : "rgba(255,121,12,0.5)"
+		}, 750, "easeOutQuart")
+		.animate({
+			top : 175-22,
+			backgroundColor : "rgba(23,242,12,0.8)"
+		}, 750, "easeOutQuart")
+		.animate({
+			width:175,
+			left: 0,
+			height:175,
+			top : 0
+		}, 750, "easeOutQuart")
+		.animate({
+			left : 175-22,
+			width:20,
+			top : 175-22,
+			height:20
+		}, 750, "easeOutQuart")
+		.animate({
+			left : 0,
+			backgroundColor : "rgba(23,120,232,0.8)"
+		}, 750, "easeOutElastic")
+		.animate({
+			top : 0,
+			backgroundColor : "rgba(23,242,211,1)"
+		}, 750, "easeOutBack");
+	});
+});
+document.write("Animation test:<button style='background-color:#ccc' id='animationStart4'>Start</button><button style='background-color:#ccc' id='animationStop4'>Stop</button><button style='background-color:#ccc' id='animationPause4'>Pause</button><button style='background-color:#ccc' id='animationPlay4'>Play</button><div id='animationContainer3' style=';position:relative;height:175px;width:175px;border:1px solid #000;box-sizing:border-box;'><div id='animationBox3' style='height:20px;width:20px;background-color:rgb(0,0,0);position:absolute;'></div></div>");
+
+
+
+$(function () {
+
+	$("#animationStart3").click(function () {
+		$("#animationBox2")
+		.css({
+			left:0
+		})
+		.animate({
+			left : 500
+		}, 2500);
+	});
+	$("#animationStart2").click(function () {
+		$("#animationBox2")
+		.css({
+			left:0
+		})
+		.animate({
+			left : 100
+		}, 500, function () {
+			$("#animationBox2").animate({
+				left : 200
+			}, 500, function () {
+				$("#animationBox2").animate({
+					left : 300
+				}, 500, function () {
+					$("#animationBox2").animate({
+						left : 400
+					}, 500, function () {
+						$("#animationBox2").animate({
+							left : 500
+						}, 500, function () {
+							
+						});
 					});
-			</script>
-		</div>
-		<div id="test14">
-			<div class="unit">
-				<div class="passfail" id="test14_result"></div>
-				<div class="testmessage">Alter width of box.</div>
-			</div>
-			<script>
-				$('#test14_result').css({
-					'width' : 100
 				});
-				if ($('#test14_result').css('width') == '100px')
-					$('#test14_result').css({
-						'background-color' : 'green'
+			});
+		});
+	});
+});
+
+// Test sequences with callbacks
+document.write("Animation test 2:<button style='background-color:#ccc' id='animationStart2'>Start</button> <button style='background-color:#ccc' id='animationStart3'>Start Plain</button><div id='animationContainer2' style=';position:relative;height:40px;width:540px;border:1px solid #000;box-sizing:border-box;'><div id='animationBox2' style='height:40px;width:40px;background-color:rgb(0,0,0);position:absolute;'></div></div>");
+
+$(function () {
+	$("#animationStart").click(function () {
+		$("#animationBox").animate({
+			left : 175-22,
+			backgroundColor : "rgba(255,121,12,0.5)"
+		}, 750, "easeOutQuart", function () {
+			$("#animationBox").animate({
+				top : 175-22,
+				backgroundColor : "rgba(23,242,12,0.8)"
+			}, 750, "easeOutQuart", function () {
+				$("#animationBox").animate({
+					left : 0,
+					backgroundColor : "rgba(23,120,232,0.8)"
+				}, 1000, "easeOutElastic", function () {
+					$("#animationBox").animate({
+						top : 0,
+						backgroundColor : "rgba(23,242,211,0.8)"
+					}, 750, "easeOutBack", function () {
+						
 					});
-				$('#test14_result').css({
-					'width' : 18
 				});
-			</script>
-		</div>
-		<div class="title">Chaining / Find operation</div>
-		<div id="test3">
-			<div class="unit">
-				<div class="passfail" id="test3_result"></div>
-				<div class="testmessage">Basic chained find operation.</div>
-			</div>
-			<script>
-				$('#test3').find('#test3_result').css({
-					'background-color' : 'green'
-				});
-			</script>
-		</div>
-		<div id="test4">
-			<div class="unit">
-				<div class="passfail" id="test4_result"></div>
-				<div class="testmessage">Check for false-positive in chained find operation.</div>
-			</div>
-			<script>
-				if (!$('#test3').find('#test4_result')[0]) {
-					$('#test4_result').css({
-						'background-color' : 'green'
-					});
-				}
-			</script>
-		</div>
-		<div id="test7">
-			<div class="unit">
-				<div class="passfail" id="test7_result"></div>
-				<div class="testmessage">Handle q object through variable.</div>
-			</div>
-			<script>
-				var objq = $('#test7_result');
-				objq.css({
-					'background-color' : 'green'
-				});
-			</script>
-		</div>
-		<div id="test21">
-			<div class="unit">
-				<div class="passfail" id="test21_result"></div>
-				<div class="testmessage">Use the .is method to check if something matches a selection.</div>
-			</div>
-			<script>
-				var objq = $('#test21_result');
-				if (objq.is('.passfail') && !objq.is('.failed')) {
-					objq.css({
-						'background-color' : 'green'
-					});
-				}
-			</script>
-		</div>
-		<div id="test22" class="test22_top">
-			<div class="unit">
-				<div class="passfail" id="test22_result"></div>
-				<div class="testmessage">Test the .closest method to find the nearest matching element up the dom tree.</div>
-			</div>
-			<script>
-				var objq1 = $('#test22');
-				var objq2 = $('#test22_result').closest('.test22_top');
-				if (objq1[0] == objq2[0]) {
-					$('#test22_result').css({
-						'background-color' : 'green'
-					});
-				}
-			</script>
-		</div>
-		<div class="title">Class handling</div>
-		<div id="test5">
-			<div class="unit">
-				<div class="passfail" id="test5_result"></div>
-				<div class="testmessage">Add a class.</div>
-			</div>
-			<script>
-				$('#test5_result').addClass('passed');
-			</script>
-		</div>
-		<div id="test10">
-			<div class="unit">
-				<div class="passfail" id="test10_result"></div>
-				<div class="testmessage">Check if class exists.</div>
-			</div>
-			<script>
-				if ($('#test10_result').hasClass('passfail')) {
-					$('#test10_result').addClass('passed');
-				}
-			</script>
-		</div>
-		<div id="test12">
-			<div class="unit">
-				<div class="passfail anotherclass" id="test12_result"></div>
-				<div class="testmessage">Check for multiple classes.</div>
-			</div>
-			<script>
-				if ($('#test12_result').hasClass('passfail anotherclass')) {
-					$('#test12_result').addClass('passed');
-				}
-			</script>
-		</div>
-		<div id="test13">
-			<div class="unit">
-				<div class="passfail" id="test13_result"></div>
-				<div class="testmessage">Check hasClass for false-positive.</div>
-			</div>
-			<script>
-				if (
-					!$('#test13_result').hasClass('passfail anotherclass')
-					&& $('#test13_result').hasClass('passfail')
-				) {
-					$('#test13_result').addClass('passed');
-				}
-			</script>
-		</div>
-		<div id="test6">
-			<div class="unit">
-				<div class="passfail failed passed" id="test6_result"></div>
-				<div class="testmessage">Remove a class.</div>
-			</div>
-			<script>
-				$('#test6_result').removeClass('failed');
-			</script>
-		</div>
-		<div id="test9">
-			<div class="unit">
-				<div class="passfail" id="test9_result"></div>
-				<div class="testmessage">Add multiple classes.</div>
-			</div>
-			<script>
-				$('#test9_result')
-					.addClass('failed passed')
-					.removeClass('failed');
-			</script>
-		</div>
-		<div id="test11">
-			<div class="unit">
-				<div class="passfail passed failed failed2" id="test11_result"></div>
-				<div class="testmessage">Remove multiple classes.</div>
-			</div>
-			<script>
-				$('#test11_result').removeClass('failed failed2');
-			</script>
-		</div>
-		<div class="title">Chained iteration</div>
-		<div id="test17">
-			<div class="unit">
-				<div class="passfail" id="test17_result"></div>
-				<div class="testmessage">Placeholder for next text.</div>
-			</div>
-		</div>
-		<div id="test18">
-			<div class="unit">
-				<div class="passfail" id="test18_result"></div>
-				<div class="testmessage">The each function is working correctly if this box and the above box is green.</div>
-			</div>
-			<script>
-				$('#test17_result,#test18_result').each(function () {
-					$(this).addClass('passed');
-				});
-			</script>
-		</div>
-		<div class="title">None chain-able resources</div>
-		<div id="test16">
-			<div class="unit">
-				<div class="passfail" id="test16_result"></div>
-				<div class="testmessage">On document load.</div>
-			</div>
-			<script>
-				$(function () {
-					$('#test16_result')
-						.addClass('passed');
-				});
-			</script>
-		</div>
-		<div class="title">Altering attributes</div>
-		<div id="test19">
-			<div class="unit">
-				<div class="passfail" id="test19_result"></div>
-				<div class="testmessage">Set an attribute and read to see if it was set/read correctly.</div>
-			</div>
-			<script>
-				var strAttr = "abcd1234";
-				var strAttrResult = $('#test19_result').attr('custome_attr', strAttr).attr('custome_attr');
-				if (strAttrResult == strAttr)
-					$('#test19_result').addClass('passed');
-			</script>
-		</div>
-		<div id="test20">
-			<div class="unit">
-				<div class="passfail" id="test20_result"></div>
-				<div class="testmessage">Check if a attr can be removed correctly.</div>
-			</div>
-			<script>
-				var strAttrResult = $('#test19_result').removeAttr('custome_attr').attr('custome_attr');
-				if (strAttrResult == null) {
-					$('#test20_result').addClass('passed');
-				}
-			</script>
-		</div>
-		<div id="test26">
-			<div class="unit">
-				<div class="passfail" id="test26_result"></div>
-				<div class="testmessage">Set multiple attributes.</div>
-			</div>
-			<script>
-				$('#test26_result').attr({
-					test1 : '123',
-					test2 : '321'
-				});
-				if (
-					$('#test26_result').attr('test1') == '123'
-					&& $('#test26_result').attr('test2') == '321'
-				) {
-					$('#test26_result').addClass('passed');
-				}
-			</script>
-		</div>
-		<div id="test38">
-			<div class="unit">
-				<div class="passfail" id="test38_result"></div>
-				<div class="testmessage">Check the value of an input.</div>
-				<div class="sample"><input type="text" value="test123" /></div>
-			</div>
-			<script>
-				if ($("#test38 .sample input").val() == "test123") {
-					$("#test38_result").addClass("passed");
-				}
-			</script>
-		</div>
-		<div id="test39">
-			<div class="unit">
-				<div class="passfail" id="test39_result"></div>
-				<div class="testmessage">Change the value of an input.</div>
-				<div class="sample"><input type="text" value="test123" /></div>
-			</div>
-			<script>
-				$("#test39 .sample input").val("another test 123");
-				if ($("#test39 .sample input").val() == "another test 123") {
-					$("#test39_result").addClass("passed");
-				}
-			</script>
-		</div>
-		<div class="title">Custom each iteration</div>
-		<div id="test23">
-			<div class="unit">
-				<div class="passfail" id="test23_result"></div>
-				<div class="testmessage">Iterate an object.</div>
-			</div>
-			<script>
-				var objSampleData = {
-					123:'abc',
-					4:5,
-					'd':6,
-					'e':'f'
-				};
-				var i =0;
-				$.each(objSampleData,function (k,v) {
-					i++;
-				});
-				if (i==4) {
-					$('#test23_result').addClass('passed');
-				}
-			</script>
-		</div>
-		<div id="test24">
-			<div class="unit">
-				<div class="passfail" id="test24_result"></div>
-				<div class="testmessage">Iterate an array.</div>
-			</div>
-			<script>
-				var objSampleData = [
-					'abc',
-					1,
-					2,
-					'asa123'
-				];
-				var i =0;
-				$.each(objSampleData,function (k,v) {
-					i++;
-				});
-				if (i==4) {
-					$('#test24_result').addClass('passed');
-				}
-			</script>
-		</div>
-		<div id="test25">
-			<div class="unit">
-				<div class="passfail" id="test25_result"></div>
-				<div class="testmessage">Iterate QueryChain.</div>
-			</div>
-			<script>
-				var objSampleData = [
-					'abc',
-					1,
-					2,
-					'asa123'
-				];
-				var i =0;
-				$(objSampleData).each(function (k,v) {
-					i++;
-				});
-				if (i==4) {
-					$('#test25_result').addClass('passed');
-				}
-			</script>
-		</div>
-		<div class="title">Ajax</div>
-		<div id="test28">
-			<div class="unit">
-				<div class="passfail" id="test28_result"></div>
-				<div class="testmessage">Create a simple get request.</div>
-			</div>
-			<script>
-				$.request({
-					url : 'test-ajax.php',
-					success : function (strResponse) {
-						if (strResponse.replace(/\r?\n/g, '') == 'array(0) {}array(0) {}') {
-							$('#test28_result').addClass('passed');
-						}
-					}
-				});
-			</script>
-		</div>
-		<div id="test29">
-			<div class="unit">
-				<div class="passfail" id="test29_result"></div>
-				<div class="testmessage">Create a simple post request.</div>
-			</div>
-			<script>
-				$.request({
-					url : 'test-ajax.php',
-					post : {
-						'test_key' : 'test_value'
-					},
-					success : function (strResponse) {
-						if (strResponse.replace(/\r?\n/g, '') == 'array(0) {}array(1) {  ["test_key"]=>  string(10) "test_value"}') {
-							$('#test29_result').addClass('passed');
-						}
-					}
-				});
-			</script>
-		</div>
-		<div id="test30">
-			<div class="unit">
-				<div class="passfail" id="test30_result"></div>
-				<div class="testmessage">Serialize a form.</div>
-			</div>
-			<div class="sample">
-				<form>
-					<input type="hidden" name="test1" value="value1" />
-					<input type="button" name="test2" value="value2" />
-					<input type="text" name="test3" value="value3" />
-					<input type="checkbox" checked="checked" name="test4" value="value4" />
-					<input type="checkbox" name="test5" value="value5" />
-					<input type="radio" name="test6" value="value6_1" />
-					<input type="radio" name="test6" checked="checked" value="value6_2" />
-					<input type="radio" name="test6" value="value6_3" />
-					<input type="text" name="test7" value="value7_1" />
-					<input type="text" name="test7" value="value7_2" />
-					<input type="submit" name="test8" value="value8" />
-					<input type="text" name="test10" value="" />
-					<textarea name="test11">value11</textarea>
-					<button>test button 1</button>
-					<button name="test9">test button 2</button>
-				</form>
-			</div>
-			<script>
-				var strExpected = "test1=value1&test3=value3&test4=value4&test6=value6_2&test7=value7_1&test7=value7_2&test10=&test11=value11";
-				if ($('#test30 form').serialize() == strExpected) {
-					$('#test30_result').addClass('passed');
-				}
-			</script>
-		</div>
-		<div id="test31">
-			<div class="unit">
-				<div class="passfail" id="test31_result"></div>
-				<div class="testmessage">Serialize an array.</div>
-			</div>
-			<script>
-				var objSampleData = {
-					123:'abc',
-					4:5,
-					'd':6,
-					'e':'f'
-				};
-				var strExpected = "4=5&123=abc&d=6&e=f";
-				if ($.serialize(objSampleData) == strExpected) {
-					$('#test31_result').addClass('passed');
-				}
-			</script>
-		</div>
-		<div class="title">DOM navigation</div>
-		<div id="test32">
-			<div class="unit">
-				<div class="passfail" id="test32_result"></div>
-				<div class="testmessage">Get parent element.</div>
-			</div>
-			<script>
-				var node = $('#test32_result').parent();
-				if (node.hasClass('unit')) {
-					$('#test32_result').addClass('passed');
-				}
-			</script>
-		</div>
-		<div id="test33">
-			<div class="unit">
-				<div class="passfail" id="test33_result"></div>
-				<div class="testmessage">Get next element.</div>
-			</div>
-			<script>
-				var node = $('#test33_result').next();
-				if (node.hasClass('testmessage')) {
-					$('#test33_result').addClass('passed');
-				}
-			</script>
-		</div>
-		<div id="test34">
-			<div class="unit">
-				<span class="test_element"></span>
-				<div class="passfail" id="test34_result"></div>
-				<div class="testmessage">Get previous element.</div>
-			</div>
-			<script>
-				var node = $('#test34_result').prev();
-				if (node.hasClass('test_element')) {
-					$('#test34_result').addClass('passed');
-				}
-			</script>
-		</div>
-		<div id="test35">
-			<div class="unit">
-				<div class="passfail" id="test35_result"></div>
-				<div class="testmessage">Get previous element when none is available.</div>
-			</div>
-			<script>
-				var node = $('#test35_result').prev();
-				if (node[0] == null) {
-					$('#test35_result').addClass('passed');
-				}
-			</script>
-		</div>
-		<div class="title">DOM manipulation</div>
-		<div id="test36">
-			<div class="unit">
-				<div class="passfail" id="test36_result"></div>
-				<div class="testmessage">Add a div to the dom using html method.</div>
-				<div class="sample"></div>
-			</div>
-			<script>
-				$('#test36 .sample').html("<div class='sample_passed'>123</div>");
-				if ($("#test36 .sample .sample_passed")[0] != null) {
-					$('#test36_result').addClass('passed');
-				}
-			</script>
-		</div>
-		<div id="test37">
-			<div class="unit">
-				<div class="passfail" id="test37_result"></div>
-				<div class="testmessage">Replace a div with another.</div>
-				<div class="sample_test"></div>
-			</div>
-			<script>
-				$('#test37 .sample_test').replaceWith("<div class='sample'>123</div>");
-				if ($("#test37 .unit > .sample")[0] != null) {
-					$('#test37_result').addClass('passed');
-				}
-			</script>
-		</div>
-		<div id="test40">
-			<div class="unit">
-				<div class="passfail" id="test40_result"></div>
-				<div class="testmessage">Change the text of a div.</div>
-				<div class="sample"></div>
-			</div>
-			<script>
-				$('#test40 .sample_test').text("<div class='sample_test'>123</div>");
-				alert($('#test40 .sample_test').html());
-				if ($('#test40 .sample_test').html() == "<div class='sample_test'>123</div>") {
-					$('#test40_result').addClass('passed');
-				}
-			</script>
-		</div>
-		<div style="padding:40px 20px">
-			Test count: <script>document.write($('.unit').count);</script>
-		</div>
-	</body>
+			});
+		});
+	});
+});
+document.write("Animation test:<button style='background-color:#ccc' id='animationStart'>Start</button><div id='animationContainer' style=';position:relative;height:175px;width:175px;border:1px solid #000;box-sizing:border-box;'><div id='animationBox' style='height:20px;width:20px;background-color:rgb(0,0,0);position:absolute;'></div></div>");
+
+var 
+strPass = "PASSED",
+strFail = "*****@@@***** FAILED *****@@@*****";
+
+function output (strKey, strText) {
+	document.write("<div>" + strKey + ": " + strText + "</div>");
+}
+// Assets for testing
+document.write("<div style='background:#ccc;padding:10px;margin:10px 0'>");
+output("*", "Source data used in tests.");
+output("*Source for DOM manipulation", "<span id='domManSource'><span class='cell1 cell'>1</span><span class='cell2 cell'>2</span><span style='background:#000;color:#fff;padding:0 10px;' class='cell3 cell'>3<span>deep</span></span></span>");
+output("*Check click binding manually", "<a href='#' style='padding:10px 20px;margin:4px;display:inline-block;border:1px solid #000;' id='clickBinding'>0</a>");
+output("*Source for CSS change", "<span id='cssSource'><span class='cell1 cell'>1</span><span class='cell2 cell'>2</span><span style='background:#000;color:#fff;padding:0 10px;' class='cell3 cell'>3<span>deep</span></span></span>");
+output("*Source of things to replace", "<span id='replaceSource'><span class='cell1 cell'>1</span><span class='cell2 cell'>2</span><span style='background:#000;color:#fff;padding:0 10px;' class='cell3 cell'>3<span>deep</span></span></span>");
+output("*Source of things to clone", "<span id='cloneSource'><span class='cell1 cell'>1</span><span class='cell2 cell'>2</span><span style='background:#000;color:#fff;padding:0 10px;' class='cell3 cell'>3<span>deep</span></span></span>");
+document.write("</div>");
+
+// offsetParent
+output("Offset Parent", ($("#animationBox3").offsetParent().html() == '<div id="animationBox3" style="height:20px;width:20px;background-color:rgb(0,0,0);position:absolute;"></div>' ? strPass : strFail));
+
+// .append
+$("#domManSource .cell1").append("<span>abc</span>");
+output("Append html", $("#domManSource .cell1").html() == "1<span>abc</span>" ? strPass : strFail);
+$("#domManSource .cell2").append($("#domManSource .cell1")[0]);
+output("Append DOM object", $("#domManSource .cell2").html() == '2<span class="cell1 cell">1<span>abc</span></span>' ? strPass : strFail);
+
+// .prepend
+$("#domManSource .cell3").prepend($("#domManSource .cell1")[0]);
+output("Prepend", ($("#domManSource .cell3").html() == '<span class="cell1 cell">1<span>abc</span></span>3<span>deep</span>' ? strPass : strFail));
+
+objHTML.prepend(objHTMLChild);
+$("body").prepend(objHTML);
+//alert($("#prependToBodyTest").outer());
+//alert($("body").html());
+output("Prepend from query", objHTML.outer() == "<div><span></span></div>" ? strPass : strFail);
+
+// .appendTo
+$("#domManSource .cell1").appendTo("#domManSource");
+output("Append to", $("#domManSource").html() == '<span class="cell2 cell">2</span><span style="background:#000;color:#fff;padding:0 10px;" class="cell3 cell">3<span>deep</span></span><span class="cell1 cell">1<span>abc</span></span>' ? strPass : strFail);
+
+// .appendAfter
+$("#domManSource .cell1").appendAfter("#domManSource .cell2");
+output("Append after", $("#domManSource").html() == '<span class="cell2 cell">2</span><span class="cell1 cell">1<span>abc</span></span><span style="background:#000;color:#fff;padding:0 10px;" class="cell3 cell">3<span>deep</span></span>' ? strPass : strFail);
+
+// .appendBefore
+$("#domManSource .cell1").appendBefore("#domManSource .cell2");
+output("Append before", $("#domManSource").html() == '<span class="cell1 cell">1<span>abc</span></span><span class="cell2 cell">2</span><span style="background:#000;color:#fff;padding:0 10px;" class="cell3 cell">3<span>deep</span></span>' ? strPass : strFail);
+
+// .parent
+output("Get parent", $("#domManSource .cell3 span").html() == "deep" ? strPass : strFail);
+
+// .next
+output("Get next", $("#domManSource .cell1").next().html() == "2" ? strPass : strFail);
+
+// .prev
+output("Get prev", $("#domManSource .cell2").prev().html() == "1<span>abc</span>" ? strPass : strFail);
+
+// .remove
+$("#domManSource .cell3").remove();
+output("Remove node", $("#domManSource").html() == '<span class="cell1 cell">1<span>abc</span></span><span class="cell2 cell">2</span>' ? strPass : strFail);
+
+// .text
+output("Get Text", $("#domManSource").text() == "1abc2" ? strPass : strFail);
+$("#domManSource .cell1").text("<div>1</div>");
+output("Set Text", $("#domManSource .cell1").html() == '&lt;div&gt;1&lt;/div&gt;' ? strPass : strFail);
+
+// .closest
+output("Closest", $("#cssSource .cell3 span").closest("#cssSource").text() == "123deep" ? strPass : strFail);
+output("Closest self", $("#cssSource .cell3 span").closest("span").html() == "deep" ? strPass : strFail);
+output("Closest body", $("#cssSource .cell3 span").closest("body").length ? strPass : strFail);
+
+// .mstime
+$("#domManSource").append("<span>" + $.mstime() + "</span>");
+output("MS Time", $("#domManSource span:last-child").html().length == 13 ? strPass : strFail);
+
+// .request // todo
+output("Request", "<span id='customRequestAnswer'>" + strFail + "</span>");
+//$.reuqest();
+
+// $.serialize
+output("Serialzie object", ($({abc : 123 }).serialize() == "abc/123" ? strPass : strFail));
+
+// .unbind
+output("Unbind trigger", "<span id='customTriggerAnswer2'>" + strPass + "</span>");
+$("#cssSource").bind("customTrigger2", function () {
+	$("#customTriggerAnswer2").html(strFail);
+});
+$("#cssSource").unbind("customTrigger2");
+$("#cssSource").trigger("customTrigger2");
+
+// .trigger
+output("Custom Trigger", "<span id='customTriggerAnswer'>" + strFail + "</span>");
+$("#cssSource").bind("customTrigger", function () {
+	$("#customTriggerAnswer").html(strPass);
+});
+$("#cssSource").trigger("customTrigger");
+
+// .bind
+$("#clickBinding").bind("click", function (e) {
+	e.preventDefault();
+	$(this).html($(this).html()*1+1);
+});
+$("#clickBinding").click();
+output("Custom binder short hand", $("#clickBinding").html() == 1 ? strPass : strFail);
+
+$("#clickBinding").bind("mouseover.customName", function () {
+	$(this).html($(this).html()*1+10);
+});
+$("#clickBinding").trigger("mouseover");
+$("#clickBinding").unbind("mouseover.customName");
+$("#clickBinding").trigger("mouseover");
+output("Custom binder .name", $("#clickBinding").html() == 11 ? strPass : strFail);
+
+// .each
+var strEachTest = "";
+$("#cssSource > *").each(function (k,v) {
+	strEachTest += $(this).html();
+});
+output("Each", strEachTest == '123<span>deep</span>' ? strPass : strFail);
+
+var strEachTest = "";
+$("#cssSource > *").each(function (k,v) {
+	strEachTest += $(v).html();
+});
+output("Each Second Run", strEachTest == '123<span>deep</span>' ? strPass : strFail);
+
+var strEachTest = "";
+$([1, 2, 'a']).each(function (k,v) {
+	strEachTest += v;
+});
+output("Each Array", strEachTest == '12a' ? strPass : strFail);
+var strEachTest = 0;
+$({
+	1 : 2,
+	"a" : 3,
+	"b" : "c"
+}).each(function (k,v) {
+	strEachTest += v.a;
+});
+output("Each Object", strEachTest == 3 ? strPass : strFail);
+var strEachTest = 0;
+$([{
+	1 : 2,
+	"a" : 3,
+	"b" : "c"
+},{
+	1 : 2,
+	"a" : 3,
+	"b" : "c"
+}]).each(function (k,v) {
+	strEachTest += v.a;
+});
+output("Each Array of Objects", strEachTest == 6 ? strPass : strFail);
+
+// .get
+output("Get query", $("#cssSource *").get()[3] == $("#cssSource *")[3] ? strPass : strFail);
+
+// .attr
+$("#cssSource .cell1").attr("testAttr", 123);
+output("Attr read/write", $("#cssSource .cell1").attr("testAttr") == "123" ? strPass : strFail);
+$("#cssSource .cell1").removeAttr("testAttr");
+output("Remove Attr", $("#cssSource .cell1").attr("testAttr") != "123" ? strPass : strFail);
+
+// .addClass
+$("#cssSource .cell1").addClass("somethingItNowHas");
+output("Add Class", $("#cssSource .cell1").hasClass("somethingItNowHas") ? strPass : strFail);
+
+// .removeClass
+$("#cssSource .cell1").removeClass("somethingItNowHas");
+output("Remove Class", !$("#cssSource .cell1").hasClass("somethingItNowHas") ? strPass : strFail);
+
+// .hasClass
+output("Has and hasn't classs", $("#cssSource .cell1").hasClass("cell") && !$("#cssSource .cell1").hasClass("somethingItDoesntHave") ? strPass : strFail);
+
+// .css
+$("#cssSource .cell2").css({
+	'border-top' : "4px solid #000",
+	borderBottom : "4px solid #000"
+});
+output("Get CSS with camel", $("#cssSource .cell2").css("borderBottomWidth") == "4px" ? strPass : strFail);
+output("Get CSS", $("#cloneSource .cell3").css("background-color") == "rgb(0, 0, 0)" ? strPass : strFail);
+
+// $.addCSS
+var intStartWidth = $("#cssSource .cell1").width();
+$.addCSS("#cssSource .cell1", {
+	padding:"10px"
+});
+
+// .width
+output("addCSS and width", $("#cssSource .cell1").width() != intStartWidth ? strPass : strFail);
+output("innerWidth and width", $("body").width() != $("body").innerWidth() ? strPass : strFail);
+
+
+// .position
+var objPos = $("#cloneSource").position();
+output("Gets a position", objPos.left > 0 && objPos.top > 0 ? strPass : strFail);
+
+// .data
+$("#cloneSource .cell").data('testData2', "testValue2");
+output("Save Data to multi DOM", $("#cloneSource .cell").data('testData2') == "testValue2,testValue2,testValue2" ? strPass : strFail);
+
+$("#cloneSource .cell1").data('testData', "testValue");
+output("Save Data to single DOM", $("#cloneSource .cell1").data('testData') == "testValue" ? strPass : strFail);
+
+// .clone
+output("Clone not deep thing", $("#cloneSource .cell3").clone(false).outer().match(/<span[^>]+><\/span>/) ? strPass : strFail);
+output("Multiple things cloned", $("#cloneSource .cell").clone().outer().match(/<span class="cell1 cell">1<\/span><span class="cell2 cell">2<\/span><span[^>]+>3<span>deep<\/span><\/span>/) ? strPass : strFail);
+output("Single thing cloned", $("#cloneSource .cell3").clone().outer().match(/<span[^>]+>3<span>deep<\/span><\/span>/) ? strPass : strFail);
+
+// .outer
+output("Test multiple NODE to OUTER", $("#cloneSource .cell").outer().match(/<span class="cell1 cell">1<\/span><span class="cell2 cell">2<\/span><span/) ? strPass : strFail);
+output("Single NODE to OUTER", $("#cloneSource .cell3").outer().match(/>3<span>deep<\/span><\/span>$/) ? strPass : strFail);
+$("#replaceSource .cell2").outer("outerReplace");
+output("OUTER replace text", $("#replaceSource .cell2").html() == '' ? strPass : strFail);
+
+// .html
+output("Test multiple NODE to HTML", $("#cloneSource .cell").html() == "123<span>deep</span>" ? strPass : strFail);
+output("Single NODE to HTML", $("#cloneSource .cell3").html() == '3<span>deep</span>' ? strPass : strFail);
+$("#replaceSource .cell1").html("abc");
+output("HTML replace text", $("#replaceSource .cell1").html() == 'abc' ? strPass : strFail);
+
+// .is
+output("IS Selector with TAGS", "<span id='isSelector3'>" + ($("#isSelector3").is("span") ? strPass : strFail) + "</span>");
+output("IS Selector no false positives", "<span id='isSelector2'>" + ($("#isSelector3").is(".somethingItsNot") ? strFail : strPass) + "</span>");
+output("IS Selector with IDs", "<span id='isSelector1'>" + ($("#isSelector1").is("#hasSelector") ? strPass : strFail) + "</span>");
+
+output("DOM Node Selection", $( $("#cloneSource .cell")[0] ).outer() == '<span class="cell1 cell">1</span>' ? strPass : strFail);
+
+output("Query False Find", $("#aSourceThatDoesntExist").find(".cell1").length == 0 ? strPass : strFail);
+//alert($("#cloneSource").find(".cell1").outer() == '<span class="cell1 cell">1</span>' && $("#fakeSource").find(".cell1").length);
+output("Query Find", $( $("#cloneSource .cell")[0] ).outer() == '<span class="cell1 cell">1</span>' ? strPass : strFail);
+
+// $("<HTML>")
+output("$(HTML)", $("<div>test<span>2</span></div>").outer() == "<div>test<span>2</span></div>" ? strPass : strFail);
+
+// $([DOM, DOM, DOM])
+var arrList = [ $("#cloneSource .cell1")[0], $("#cloneSource .cell2")[0], $("#cloneSource .cell3")[0] ];
+output("DOM List Selection", $(arrList).html() == "123<span>deep</span>" ? strPass : strFail);
+
+// $(SELECTOR)
+output("Selector Engine", "<span id='hasSelector'>" + strFail + "</span>");
+$("#hasSelector").html(strPass);
+
+$(function () {
+	$("#domReadyResult").html(strPass);
+});
+output("DOM Ready", "<span id='domReadyResult'>" + strFail + "</span>");
+
+</script>
+</body>
 </html>
