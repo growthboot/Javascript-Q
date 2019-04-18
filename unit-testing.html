@@ -61,7 +61,7 @@
 				<div class="testmessage">Selection of a single div using id selection.</div>
 			</div>
 			<script>
-				var objNode = q('#test1_result');
+				var objNode = $('#test1_result');
 				var boolTest = objNode && typeof objNode[0] == 'object';
 				if (boolTest) {
 					objNode[0].style.backgroundColor = 'green';
@@ -75,7 +75,7 @@
 				<div class="testmessage">Alter background-color of a box.</div>
 			</div>
 			<script>
-				q('#test2_result').css({
+				$('#test2_result').css({
 					'background-color' : 'green'
 				});
 			</script>
@@ -86,7 +86,7 @@
 				<div class="testmessage">Set a single style.</div>
 			</div>
 			<script>
-				q('#test27_result').css('background-color', 'green');
+				$('#test27_result').css('background-color', 'green');
 			</script>
 		</div>
 		<div id="test15">
@@ -95,8 +95,8 @@
 				<div class="testmessage">Check width of box.</div>
 			</div>
 			<script>
-				if (q('#test15_result').css('width') == '18px')
-					q('#test15_result').css({
+				if ($('#test15_result').css('width') == '18px')
+					$('#test15_result').css({
 						'background-color' : 'green'
 					});
 			</script>
@@ -107,14 +107,14 @@
 				<div class="testmessage">Alter width of box.</div>
 			</div>
 			<script>
-				q('#test14_result').css({
+				$('#test14_result').css({
 					'width' : 100
 				});
-				if (q('#test14_result').css('width') == '100px')
-					q('#test14_result').css({
+				if ($('#test14_result').css('width') == '100px')
+					$('#test14_result').css({
 						'background-color' : 'green'
 					});
-				q('#test14_result').css({
+				$('#test14_result').css({
 					'width' : 18
 				});
 			</script>
@@ -126,7 +126,7 @@
 				<div class="testmessage">Basic chained find operation.</div>
 			</div>
 			<script>
-				q('#test3').find('#test3_result').css({
+				$('#test3').find('#test3_result').css({
 					'background-color' : 'green'
 				});
 			</script>
@@ -137,8 +137,8 @@
 				<div class="testmessage">Check for false-positive in chained find operation.</div>
 			</div>
 			<script>
-				if (!q('#test3').find('#test4_result')[0]) {
-					q('#test4_result').css({
+				if (!$('#test3').find('#test4_result')[0]) {
+					$('#test4_result').css({
 						'background-color' : 'green'
 					});
 				}
@@ -150,7 +150,7 @@
 				<div class="testmessage">Handle q object through variable.</div>
 			</div>
 			<script>
-				var objq = q('#test7_result');
+				var objq = $('#test7_result');
 				objq.css({
 					'background-color' : 'green'
 				});
@@ -162,7 +162,7 @@
 				<div class="testmessage">Use the .is method to check if something matches a selection.</div>
 			</div>
 			<script>
-				var objq = q('#test21_result');
+				var objq = $('#test21_result');
 				if (objq.is('.passfail') && !objq.is('.failed')) {
 					objq.css({
 						'background-color' : 'green'
@@ -176,10 +176,10 @@
 				<div class="testmessage">Test the .closest method to find the nearest matching element up the dom tree.</div>
 			</div>
 			<script>
-				var objq1 = q('#test22');
-				var objq2 = q('#test22_result').closest('.test22_top');
+				var objq1 = $('#test22');
+				var objq2 = $('#test22_result').closest('.test22_top');
 				if (objq1[0] == objq2[0]) {
-					q('#test22_result').css({
+					$('#test22_result').css({
 						'background-color' : 'green'
 					});
 				}
@@ -192,7 +192,7 @@
 				<div class="testmessage">Add a class.</div>
 			</div>
 			<script>
-				q('#test5_result').addClass('passed');
+				$('#test5_result').addClass('passed');
 			</script>
 		</div>
 		<div id="test10">
@@ -201,8 +201,8 @@
 				<div class="testmessage">Check if class exists.</div>
 			</div>
 			<script>
-				if (q('#test10_result').hasClass('passfail')) {
-					q('#test10_result').addClass('passed');
+				if ($('#test10_result').hasClass('passfail')) {
+					$('#test10_result').addClass('passed');
 				}
 			</script>
 		</div>
@@ -212,8 +212,8 @@
 				<div class="testmessage">Check for multiple classes.</div>
 			</div>
 			<script>
-				if (q('#test12_result').hasClass('passfail anotherclass')) {
-					q('#test12_result').addClass('passed');
+				if ($('#test12_result').hasClass('passfail anotherclass')) {
+					$('#test12_result').addClass('passed');
 				}
 			</script>
 		</div>
@@ -224,10 +224,10 @@
 			</div>
 			<script>
 				if (
-					!q('#test13_result').hasClass('passfail anotherclass')
-					&& q('#test13_result').hasClass('passfail')
+					!$('#test13_result').hasClass('passfail anotherclass')
+					&& $('#test13_result').hasClass('passfail')
 				) {
-					q('#test13_result').addClass('passed');
+					$('#test13_result').addClass('passed');
 				}
 			</script>
 		</div>
@@ -237,7 +237,7 @@
 				<div class="testmessage">Remove a class.</div>
 			</div>
 			<script>
-				q('#test6_result').removeClass('failed');
+				$('#test6_result').removeClass('failed');
 			</script>
 		</div>
 		<div id="test9">
@@ -246,7 +246,7 @@
 				<div class="testmessage">Add multiple classes.</div>
 			</div>
 			<script>
-				q('#test9_result')
+				$('#test9_result')
 					.addClass('failed passed')
 					.removeClass('failed');
 			</script>
@@ -257,7 +257,7 @@
 				<div class="testmessage">Remove multiple classes.</div>
 			</div>
 			<script>
-				q('#test11_result').removeClass('failed failed2');
+				$('#test11_result').removeClass('failed failed2');
 			</script>
 		</div>
 		<div class="title">Chained iteration</div>
@@ -273,8 +273,8 @@
 				<div class="testmessage">The each function is working correctly if this box and the above box is green.</div>
 			</div>
 			<script>
-				q('#test17_result,#test18_result').each(function () {
-					q(this).addClass('passed');
+				$('#test17_result,#test18_result').each(function () {
+					$(this).addClass('passed');
 				});
 			</script>
 		</div>
@@ -285,8 +285,8 @@
 				<div class="testmessage">On document load.</div>
 			</div>
 			<script>
-				q(function () {
-					q('#test16_result')
+				$(function () {
+					$('#test16_result')
 						.addClass('passed');
 				});
 			</script>
@@ -299,9 +299,9 @@
 			</div>
 			<script>
 				var strAttr = "abcd1234";
-				var strAttrResult = q('#test19_result').attr('custome_attr', strAttr).attr('custome_attr');
+				var strAttrResult = $('#test19_result').attr('custome_attr', strAttr).attr('custome_attr');
 				if (strAttrResult == strAttr)
-					q('#test19_result').addClass('passed');
+					$('#test19_result').addClass('passed');
 			</script>
 		</div>
 		<div id="test20">
@@ -310,9 +310,9 @@
 				<div class="testmessage">Check if a attr can be removed correctly.</div>
 			</div>
 			<script>
-				var strAttrResult = q('#test19_result').removeAttr('custome_attr').attr('custome_attr');
+				var strAttrResult = $('#test19_result').removeAttr('custome_attr').attr('custome_attr');
 				if (strAttrResult == null) {
-					q('#test20_result').addClass('passed');
+					$('#test20_result').addClass('passed');
 				}
 			</script>
 		</div>
@@ -322,15 +322,15 @@
 				<div class="testmessage">Set multiple attributes.</div>
 			</div>
 			<script>
-				q('#test26_result').attr({
+				$('#test26_result').attr({
 					test1 : '123',
 					test2 : '321'
 				});
 				if (
-					q('#test26_result').attr('test1') == '123'
-					&& q('#test26_result').attr('test2') == '321'
+					$('#test26_result').attr('test1') == '123'
+					&& $('#test26_result').attr('test2') == '321'
 				) {
-					q('#test26_result').addClass('passed');
+					$('#test26_result').addClass('passed');
 				}
 			</script>
 		</div>
@@ -341,8 +341,8 @@
 				<div class="sample"><input type="text" value="test123" /></div>
 			</div>
 			<script>
-				if (q("#test38 .sample input").val() == "test123") {
-					q("#test38_result").addClass("passed");
+				if ($("#test38 .sample input").val() == "test123") {
+					$("#test38_result").addClass("passed");
 				}
 			</script>
 		</div>
@@ -353,9 +353,9 @@
 				<div class="sample"><input type="text" value="test123" /></div>
 			</div>
 			<script>
-				q("#test39 .sample input").val("another test 123");
-				if (q("#test39 .sample input").val() == "another test 123") {
-					q("#test39_result").addClass("passed");
+				$("#test39 .sample input").val("another test 123");
+				if ($("#test39 .sample input").val() == "another test 123") {
+					$("#test39_result").addClass("passed");
 				}
 			</script>
 		</div>
@@ -373,11 +373,11 @@
 					'e':'f'
 				};
 				var i =0;
-				q.each(objSampleData,function (k,v) {
+				$.each(objSampleData,function (k,v) {
 					i++;
 				});
 				if (i==4) {
-					q('#test23_result').addClass('passed');
+					$('#test23_result').addClass('passed');
 				}
 			</script>
 		</div>
@@ -394,11 +394,11 @@
 					'asa123'
 				];
 				var i =0;
-				q.each(objSampleData,function (k,v) {
+				$.each(objSampleData,function (k,v) {
 					i++;
 				});
 				if (i==4) {
-					q('#test24_result').addClass('passed');
+					$('#test24_result').addClass('passed');
 				}
 			</script>
 		</div>
@@ -415,11 +415,11 @@
 					'asa123'
 				];
 				var i =0;
-				q(objSampleData).each(function (k,v) {
+				$(objSampleData).each(function (k,v) {
 					i++;
 				});
 				if (i==4) {
-					q('#test25_result').addClass('passed');
+					$('#test25_result').addClass('passed');
 				}
 			</script>
 		</div>
@@ -430,11 +430,11 @@
 				<div class="testmessage">Create a simple get request.</div>
 			</div>
 			<script>
-				q.request({
+				$.request({
 					url : 'test-ajax.php',
 					success : function (strResponse) {
 						if (strResponse.replace(/\r?\n/g, '') == 'array(0) {}array(0) {}') {
-							q('#test28_result').addClass('passed');
+							$('#test28_result').addClass('passed');
 						}
 					}
 				});
@@ -446,14 +446,14 @@
 				<div class="testmessage">Create a simple post request.</div>
 			</div>
 			<script>
-				q.request({
+				$.request({
 					url : 'test-ajax.php',
 					post : {
 						'test_key' : 'test_value'
 					},
 					success : function (strResponse) {
 						if (strResponse.replace(/\r?\n/g, '') == 'array(0) {}array(1) {  ["test_key"]=>  string(10) "test_value"}') {
-							q('#test29_result').addClass('passed');
+							$('#test29_result').addClass('passed');
 						}
 					}
 				});
@@ -485,8 +485,8 @@
 			</div>
 			<script>
 				var strExpected = "test1=value1&test3=value3&test4=value4&test6=value6_2&test7=value7_1&test7=value7_2&test10=&test11=value11";
-				if (q('#test30 form').serialize() == strExpected) {
-					q('#test30_result').addClass('passed');
+				if ($('#test30 form').serialize() == strExpected) {
+					$('#test30_result').addClass('passed');
 				}
 			</script>
 		</div>
@@ -503,8 +503,8 @@
 					'e':'f'
 				};
 				var strExpected = "4=5&123=abc&d=6&e=f";
-				if (q.serialize(objSampleData) == strExpected) {
-					q('#test31_result').addClass('passed');
+				if ($.serialize(objSampleData) == strExpected) {
+					$('#test31_result').addClass('passed');
 				}
 			</script>
 		</div>
@@ -515,9 +515,9 @@
 				<div class="testmessage">Get parent element.</div>
 			</div>
 			<script>
-				var node = q('#test32_result').parent();
+				var node = $('#test32_result').parent();
 				if (node.hasClass('unit')) {
-					q('#test32_result').addClass('passed');
+					$('#test32_result').addClass('passed');
 				}
 			</script>
 		</div>
@@ -527,9 +527,9 @@
 				<div class="testmessage">Get next element.</div>
 			</div>
 			<script>
-				var node = q('#test33_result').next();
+				var node = $('#test33_result').next();
 				if (node.hasClass('testmessage')) {
-					q('#test33_result').addClass('passed');
+					$('#test33_result').addClass('passed');
 				}
 			</script>
 		</div>
@@ -540,9 +540,9 @@
 				<div class="testmessage">Get previous element.</div>
 			</div>
 			<script>
-				var node = q('#test34_result').prev();
+				var node = $('#test34_result').prev();
 				if (node.hasClass('test_element')) {
-					q('#test34_result').addClass('passed');
+					$('#test34_result').addClass('passed');
 				}
 			</script>
 		</div>
@@ -552,9 +552,9 @@
 				<div class="testmessage">Get previous element when none is available.</div>
 			</div>
 			<script>
-				var node = q('#test35_result').prev();
+				var node = $('#test35_result').prev();
 				if (node[0] == null) {
-					q('#test35_result').addClass('passed');
+					$('#test35_result').addClass('passed');
 				}
 			</script>
 		</div>
@@ -566,9 +566,9 @@
 				<div class="sample"></div>
 			</div>
 			<script>
-				q('#test36 .sample').html("<div class='sample_passed'>123</div>");
-				if (q("#test36 .sample .sample_passed")[0] != null) {
-					q('#test36_result').addClass('passed');
+				$('#test36 .sample').html("<div class='sample_passed'>123</div>");
+				if ($("#test36 .sample .sample_passed")[0] != null) {
+					$('#test36_result').addClass('passed');
 				}
 			</script>
 		</div>
@@ -579,9 +579,9 @@
 				<div class="sample_test"></div>
 			</div>
 			<script>
-				q('#test37 .sample_test').replaceWith("<div class='sample'>123</div>");
-				if (q("#test37 .unit > .sample")[0] != null) {
-					q('#test37_result').addClass('passed');
+				$('#test37 .sample_test').replaceWith("<div class='sample'>123</div>");
+				if ($("#test37 .unit > .sample")[0] != null) {
+					$('#test37_result').addClass('passed');
 				}
 			</script>
 		</div>
@@ -592,15 +592,15 @@
 				<div class="sample"></div>
 			</div>
 			<script>
-				q('#test40 .sample_test').text("<div class='sample_test'>123</div>");
-				alert(q('#test40 .sample_test').html());
-				if (q('#test40 .sample_test').html() == "<div class='sample_test'>123</div>") {
-					q('#test40_result').addClass('passed');
+				$('#test40 .sample_test').text("<div class='sample_test'>123</div>");
+				alert($('#test40 .sample_test').html());
+				if ($('#test40 .sample_test').html() == "<div class='sample_test'>123</div>") {
+					$('#test40_result').addClass('passed');
 				}
 			</script>
 		</div>
 		<div style="padding:40px 20px">
-			Test count: <script>document.write(q('.unit').count);</script>
+			Test count: <script>document.write($('.unit').count);</script>
 		</div>
 	</body>
 </html>
