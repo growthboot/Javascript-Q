@@ -1,16 +1,16 @@
 /**
- * q.js v2.03
+ * q.js v2.04
  * Javascript Q
  * @author exitget.com
  * Copyright (c) exitget.com
  */
 
-(function() {
+(function(handle) {
 
 	var 
 
 	// Initialize Q
-	q = window.$ = function (mixedQuery) {
+	q = window[handle] = function (mixedQuery) {
 		var that = copy(fun);
 		return that.put(mixedQuery);
 	},
@@ -396,9 +396,8 @@
 				var objParams = {
 					top: destinationOffset
 				};
-				if (mixedDuration == "smooth") {
+				if (mixedDuration == "smooth")
 					objParams.behavior = "smooth";
-				}
 				return window.scroll(objParams);
 			}
 			var that = this;
@@ -904,7 +903,7 @@
 		var node = this.parent();
 		while (node.length) {
 			var strPos = node.css("position");
-			if (strPos == "relative" || strPos == "absolute")
+			if (strPos == "relative" || strPos == "absolute" || strPos == "fixed")
 				return node;
 			node = node.parent();
 		};
@@ -1286,4 +1285,4 @@
 
 		return this;
 	};
-})();
+})(typeof JAVASCRIPT_Q_HANDLE == "undefined" ? "$" : JAVASCRIPT_Q_HANDLE);
