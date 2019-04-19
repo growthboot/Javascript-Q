@@ -14,6 +14,7 @@ Include the library q.js file into the head of your html document.
 
 ## The library handle
 The library is used and controlled using the $ variable by default. If you're using another library that uses the same handle there could be a conflict. You can choose to customize the handle variable name by setting a variable called JAVASCRIPT_Q_HANDLE before the q.js is loaded.
+
 Example:
 ```html
 <script>
