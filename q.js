@@ -1,5 +1,5 @@
 /**
- * q.js v2.04
+ * q.js v2.041
  * Javascript Q
  * @author exitget.com
  * Copyright (c) exitget.com
@@ -631,7 +631,7 @@
 	};
 
 	// Bind events
-	fun.bind = function (strEvents, fnCallback) {
+	fun.on = fun.bind = function (strEvents, fnCallback) {
 		var arrEvents = strEvents.split(/ /);
 		iterate(this,function (k,node) {
 			var method = function (e) {
