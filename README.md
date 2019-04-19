@@ -94,7 +94,7 @@ if (container.is('div.some_class')) {
 ```
 
 ### Set / get attributes on elements
-Set a signle attribute
+Set a single attribute
 ```javascript
 $("#my_div01").attr('any_attribute', 'any_value');
 ```
