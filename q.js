@@ -1015,13 +1015,13 @@
 		return this;
 	};
 
-    // Animation Created: Apr 13, 2018
-    fun.animationSettings = {};
-    fun.boolDebugMode = false;
-    fun.debug = function (boolOn) {
-    	this.boolDebugMode = boolOn == undefined || !!boolOn;
-    	return this;
-    };
+	// Animation Created: Apr 13, 2018
+	fun.animationSettings = {};
+	fun.boolDebugMode = false;
+	fun.debug = function (boolOn) {
+		this.boolDebugMode = boolOn == undefined || !!boolOn;
+		return this;
+	};
 	fun.animate = function (objCssTo) {
 		if (typeof objCssTo == "string") {
 			if (objCssTo == "delay") {
