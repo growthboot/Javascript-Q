@@ -205,19 +205,25 @@ $.request({
 
 ### List of methods
 - **find**: Search from any point in the DOM tree for a selection `some_element.find(".some_class")`.
+- **get**: Get a specific item from the selection using its index `$(".sometags").get(2)`.
 - **parent**: Get the parent of an element `$("...").parent()`.
+- **children**: Get the children of the objects in the selection
 - **next**: Get the next sibiling of an element on the DOM tree `$("...").next()`.
 - **prev**: Get the previous sibiling of an element on the DOM tree `$("...").prev()`.
 - **is**: Check if elements match a selection `some_elements.is(".some_class")` resturns true if it matches the selection.
 - **css**: Add styles on any selection `$("p").css("padding":"5px")` or `$("p").css({"paddding","5px","color","#333"})`. Get a specific style from an element `$('#my_element').css("width")`.
+- **disableSelect**: Sets the css to disable text selection of the selected elements
 - **html**: Change the inner HTML of any element `$("#my_element").html("<b>Some html</b>")` or get the inner HTML of an element `$("#my_element").html()`.
+- **outer**: Change the outer HTML of any element `$("#my_element").outer("<b>Some html</b>")` or get the outer HTML of an element `$("#my_element").outer()`.
 - **val**: Get the value of an input `$("#my_input").val()`.
 - **text**: Change the inner text of any element `$("#my_element").text("Some text")`.
 - **replaceWith**: Replace an element either some html `$("#my_element").html("<b>Some html</b>")`.
+- **hasClass**: Check if elements has a specific css class attached to it
 - **addClass**: Add a style sheet class to an element `$('h1').addClass("headline")`. Add multipule classes by seperating them by spaces. Inject a css class into the DOM `$.addClass(".headline", {position:"absolute",top:0,left:0})`.
 - **removeClass**: Remove a style sheet class from dom elements `$('h1').removeClass("headline")`.
 - **attr**: Add an attribute to elements `$("#headline").attr("more_data", "value")`. Get the value of an attribute `$("#headline").attr("more_data")` returns `"value"`.
 - **removeAttr**: Remove an attribute from elements `$("h3").removeAttr("more_data")`.
+- **data**: Get and set any type of data from any dom element
 - **bind**: Bind events to elements `$("body").bind("mouseover mouseout", function () {...})`.
 - **unbind**: Unbind an event from elements `$("body").unbind("mouseover mouseout")`.
 - **trigger**: Fire an event that was bund to an element `$("body").trigger("mouseover")`.
@@ -228,14 +234,21 @@ $.request({
 - **make**: Convert a string of html into a DOM object `$.make("<div><b>testing</b></div>")`. Another way to do the same thing `$("<div><b>testing</b></div>")`.
 - **append**: Add elements on to the end of an element on the DOM tree `$("body").append("<div>testing</div>")`.
 - **prepend**: Add elements on to the beggining of an element on the DOM tree `$("body").prepend("<div>testing</div>")`.
+- **appendTo**: Append html to a selected element `$("<div>test</div>").appendTo("#tagtoappendto")`.
+- **appendAfter**: Append html after a selected element `$("<div>test</div>").appendAfter("#foo")`.
+- **appendBefore**: Append html before a selected element `$("<div>test</div>").appendBefore("#foo")`.
 - **remove**: Remove elements from the the DOM tree `$("#my_element").remove()`.
-- **pos**: Return an object of the top and left position of an element `$("#my_element").pos()` example returns `{top:15px,left:15px}`.
+- **position**: Return an object of the top and left position of an element `$("#my_element").pos()` example returns `{top:15px,left:15px}`.
+- **offsetParent**: Find the nearest object with a `relative`, `absolute`, or `fixed` position.
+- **scrollTop**: Get and set the scrolltop location
 - **left**: Returns the left position of an object and stores the top position in memory incase you need it `$("#my_element").left()`.
 - **top**: Returns the top position of an object and stores the left position in memory incase you need it `$("#my_element").top()`.
 - **right**: Combines left + width methods `$("#my_element").right()`.
 - **bottom**: Combines top + height methods `$("#my_element").bottom()`.
 - **width**: Get the width of an element `$("#my_element").width()`.
+- **innerWidth**: Get the inner width of an element
 - **height**: Get the height of an element `$("#my_element").height()`.
+- **innerHeight**: Get the inner height of an element
 - **trim**: Remove any spaces from the start and end of a string `$.trim(" abc  ")` results in "abc".
 - **ltrim**: Remove any spaces from the start of a string `$.trim(" abc  ")` results in "abc  ".
 - **rtrim**: Remove any spaces from the end of a string `$.trim(" abc  ")` results in " abc".
@@ -244,3 +257,12 @@ $.request({
 - **request**: Make an AJAX GET request `$.request({url:"...",success:function() {...}})` or a POST request `$.request({url:"...",post:{some_key:"some_value"},success:function() {...}})`.
 - **serialize**: Serialize an array for a post string `$.serialize({some_key1:"some_value1",some_key2:"some_value2"})` returns `"some_key1=some_value1&some_key2=some_value2"`. Serialize all form elements from a specific point in the DOM tree `$("#some_element").serialize()`.
 - **type**: Return what type an element is `$.type(some_variable)` could possibly return an one of these values `null, window, document, event, array, boolean, date, object, regexp, error, domelement, string or Unknown`
+- **queue**: Turns on or off asynchronous animations and pauses (defualt off) `$("#foo").queue(true).animate(...).animate(...);
+- **queueNext**: Jump to the next item in the queue
+- **dequeue**: Turn of the animation queue
+- **pause**: Pause the animation
+- **play**: Resume the animation
+- **stop**: Stop and reset the animation
+- **delay**: Create a delay before the next animation sequence
+- **animate**: CSS based Animation `$("#foo").animate({left:100})`
+
