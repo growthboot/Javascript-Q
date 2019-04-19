@@ -1,18 +1,18 @@
 ## VERSION
 2.0
 
-QueryChain Library
+Q Library
 ----------------
 Is a very small JavaScript library intended to reduce the data transfer and memory usage on your websites or apps compared to most standard libraries avialable. The library takes advanatge of modern functionality available in Javascript since HTML5 became standard. The idea is websites that want to service customers using pre HTML5 browsers can do so using vanilla HTML since they make up a very small portion of the market.
 
 
 ## Setup
-Include QueryChain q.js file into the head of your html document.
+Include the library q.js file into the head of your html document.
 ```html
 <script src="q.js"></script>
 ```
 
-## QueryChain q.js Examples
+## q.js Examples
 
 ### Document ready
 ```javascript
@@ -198,7 +198,7 @@ $.request({
 - **trim**: Remove any spaces from the start and end of a string `$.trim(" abc  ")` results in "abc".
 - **ltrim**: Remove any spaces from the start of a string `$.trim(" abc  ")` results in "abc  ".
 - **rtrim**: Remove any spaces from the end of a string `$.trim(" abc  ")` results in " abc".
-- **functionTrim**: Remove all items from a specific point on function index. For example  `$('div').functionTrim(0)` would empty the QueryChain selection. 
+- **functionTrim**: Remove all items from a specific point on function index. For example  `$('div').functionTrim(0)` would empty the Q selection. 
 - **mstime**: Get the current unix timestamp in milliseconds `$.mstime()`.
 - **request**: Make an AJAX GET request `$.request({url:"...",success:function() {...}})` or a POST request `$.request({url:"...",post:{some_key:"some_value"},success:function() {...}})`.
 - **serialize**: Serialize an array for a post string `$.serialize({some_key1:"some_value1",some_key2:"some_value2"})` returns `"some_key1=some_value1&some_key2=some_value2"`. Serialize all form elements from a specific point in the DOM tree `$("#some_element").serialize()`.
