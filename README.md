@@ -3,7 +3,7 @@
 
 JavaScript Q Library
 ----------------
-Is a very small JavaScript library intended to reduce the data transfer and memory usage on your websites or apps compared to most standard libraries avialable. The library takes advanatge of modern functionality available in Javascript since HTML5 became standard. The idea is websites that want to service customers using pre HTML5 browsers can do so using vanilla HTML since they make up a very small portion of the market.
+Is a very small JavaScript library intended to reduce the data transfer and memory usage on your websites or apps compared to most standard libraries available. The library takes advanatge of modern functionality in Javascript since HTML5 became standard. The idea is websites that want to service customers using pre HTML5 browsers can do so using vanilla HTML since they make up a very small portion of the market.
 
 
 ## Setup
@@ -280,4 +280,4 @@ $.request({
 - **$.delay(msTime, callbackFunction)**: perform a delay just like setTimeout
 
 ## FINAL NOTES
-This library was created [for the Exitget platform](https://exitget.com/) because of the need for an ultra light weight library to use that also has super fast animation capabilities. It was needed to help bring down the code size for the customer facing resource that's used to genereate popups on their clients sites. Exitget has been has been using and evolving this code for over 5 years now.
+This library was created [for the Exitget platform](https://exitget.com/) because of the need for an ultra light weight library to use that also has super fast animation capabilities. It was needed to help bring down the code size for the customer facing resource that's used to generate popups on their clients sites. Exitget has been using and evolving this code for over 5 years now.
