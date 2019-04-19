@@ -204,6 +204,7 @@ $.request({
 ```
 
 ### List of methods
+- **uniqueId**: Get a unique ID that represents a specific DOM element
 - **find**: Search from any point in the DOM tree for a selection `some_element.find(".some_class")`.
 - **get**: Get a specific item from the selection using its index `$(".sometags").get(2)`.
 - **parent**: Get the parent of an element `$("...").parent()`.
