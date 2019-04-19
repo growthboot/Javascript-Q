@@ -226,6 +226,7 @@ $.request({
 - **removeAttr**: Remove an attribute from elements `$("h3").removeAttr("more_data")`.
 - **data**: Get and set any type of data from any dom element
 - **bind**: Bind events to elements `$("body").bind("mouseover mouseout", function () {...})`.
+- **on**: Shorthand for bind
 - **unbind**: Unbind an event from elements `$("body").unbind("mouseover mouseout")`.
 - **trigger**: Fire an event that was bund to an element `$("body").trigger("mouseover")`.
 - **each**: Iterate a selection from the DOM `$("p").each(function () {...})`, iterate an object `$.each(obj,function (k,v) {...})`.
