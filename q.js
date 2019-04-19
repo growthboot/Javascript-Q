@@ -1,5 +1,5 @@
 /**
- * q.js v2.02
+ * q.js v2.03
  * Javascript Q
  * @author exitget.com
  * Copyright (c) exitget.com
@@ -18,14 +18,6 @@
 	// Duplicates an object
 	copy = q.copy = function (obj) {
 		return extend({}, obj);
-		/*
-		//if (null == obj || "object" != typeof obj) return obj;
-		var copy = obj.constructor();
-		for (var attr in obj) {
-			if (obj.hasOwnProperty(attr)) copy[attr] = obj[attr];
-		}
-		return copy;
-		*/
 	},
 	
 	extend = q.extend = function (obj1, obj2) {
@@ -396,27 +388,36 @@
 	    };
 	};
 
-	fun.scrollTop = function (mixedTop, intDuration, strEasing, fnCallback) {
+	fun.scrollTop = function (mixedTop, mixedDuration, strEasing, fnCallback) {
 		// set
 		if (typeof mixedTop != "undefined") {
-			var start = this.scrollTop();
+			var destinationOffset = typeof mixedTop == "number" ? mixedTop : $(mixedTop).position().top;
+			if (!mixedDuration || mixedDuration == "smooth") {
+				var objParams = {
+					top: destinationOffset
+				};
+				if (mixedDuration == "smooth") {
+					objParams.behavior = "smooth";
+				}
+				return window.scroll(objParams);
+			}
+			var that = this;
+			var start = that.scrollTop();
 			var startTime = 'now' in window.performance ? performance.now() : new Date().getTime();
 			var documentHeight = $(document).height();
-			console.log(documentHeight);
-			return;
 			var windowHeight = $(window).height();
-			var destinationOffset = typeof mixedTop == "number" ? mixedTop : $(mixedTop).position().top;
 			var destinationOffsetToScroll = Math.round(documentHeight - destinationOffset < windowHeight ? documentHeight - windowHeight : destinationOffset);
 			var fnEasing = easings[strEasing||'linear'];
-			if (typeof intDuration == "undefined")
-				intDuration = 0;
+			if (typeof mixedDuration == "undefined")
+				mixedDuration = 0;
 			function scroll() {
 				var now = 'now' in window.performance ? performance.now() : new Date().getTime();
-				var time = Math.min(1, ((now - startTime) / intDuration));
-				var timeFunction = fnEasing(time);
-				window.scroll(0, Math.ceil((timeFunction * (destinationOffsetToScroll - start)) + start));
+				var time = Math.min(1, ((now - startTime) / mixedDuration));
+				var timeFunction = fnEasing(time, 0, 1, 1);
+				var x = Math.ceil((timeFunction * (destinationOffsetToScroll - start)) + start);
+				window.scroll(0, x);
 
-				if (window.pageYOffset === destinationOffsetToScroll) {
+				if (that.scrollTop() === destinationOffsetToScroll) {
 					if (fnCallback) {
 						fnCallback();
 					}
@@ -436,28 +437,27 @@
 		}
 	};
 
-	// DOM width
-	fun.width = function () {
+	function getWidthHeight(strType) {
 		if (this[0] == document) {
+			var db = document.body,
+			de = document.documentElement;
 			return Math.max(
-				document.body.scrollWidth, document.documentElement.scrollWidth,
-				document.body.offsetWidth, document.documentElement.offsetWidth,
-				document.body.clientWidth, document.documentElement.clientWidth
+				db["scroll" + strType], de["scroll" + strType],
+				db["offset" + strType], de["offset" + strType],
+				db["client" + strType], de["client" + strType]
 			);
 		}
-		return this[0].innerWidth || this[0].offsetWidth || this[0].clientWidth;
+		return this[0]["inner" + strType] || this[0]["offset" + strType] || this[0]["client" + strType];
+	}
+
+	// DOM width
+	fun.width = function () {
+		return getWidthHeight.call(this,"Width");
 	};
 	
 	// DOM height
 	fun.height = function () {
-		if (this[0] == document) {
-			return Math.max(
-				document.body.scrollHeight, document.documentElement.scrollHeight,
-				document.body.offsetHeight, document.documentElement.offsetHeight,
-				document.body.clientHeight, document.documentElement.clientHeight
-			);
-		}
-		return this[0].innerHeight || this[0].offsetHeight || this[0].clientHeight;
+		return getWidthHeight.call(this,"Height");
 	};
 
 	// DOM innerWidth (not counting scrollbars)
