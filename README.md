@@ -266,3 +266,15 @@ $.request({
 - **delay**: Create a delay before the next animation sequence
 - **animate**: CSS based Animation `$("#foo").animate({left:100})`
 
+### List of tools
+- **$.copy(obj)**: Copy an object
+- **$.extend(obj1, obj2)**: Copy an object
+- **$.hexToRgb(hexString)**: Change HAX to RGB `#0000FF` -> `0,0,255`
+- **$.easing**: Access to the object with all easing functions `linear`, `easeInQuad`, `easeOutQuad`, `easeInOutQuad`, `easeInCubic`, `easeOutCubic`, `easeInOutCubic`, `easeInQuart`, `easeOutQuart`, `easeInOutQuart`, `easeInQuint`, `easeOutQuint`, `easeInOutQuint`, `easeInSine`, `easeOutSine`, `easeInOutSine`, `easeInExpo`, `easeOutExpo`, `easeInOutExpo`, `easeInCirc`, `easeOutCirc`, `easeInOutCirc`, `easeInElastic`, `easeOutElastic`, `easeInOutElastic`, `easeInBack`, `easeOutBack`, `easeInOutBack`, `easeInBounce`, `easeOutBounce`, `easeInOutBounce`
+- **$.addCSS(name, obj)**: Add some CSS to the dom.
+- **$.mstime()**: Get the current time in milliseconds
+- **$.rand(min,max)**: Get a random number between to numbers
+- **$.request(obj)**: Perform an AJAX request
+- **$.delay(msTime, callbackFunction)**: perform a delay just like setTimeout
+
+
