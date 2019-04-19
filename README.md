@@ -1,7 +1,7 @@
 ## VERSION
 2.4
 
-Q Library
+JavaScript Q Library
 ----------------
 Is a very small JavaScript library intended to reduce the data transfer and memory usage on your websites or apps compared to most standard libraries avialable. The library takes advanatge of modern functionality available in Javascript since HTML5 became standard. The idea is websites that want to service customers using pre HTML5 browsers can do so using vanilla HTML since they make up a very small portion of the market.
 
