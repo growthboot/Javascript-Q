@@ -132,6 +132,31 @@ $.request({
 	}
 });
 ```
+### Get or set the scrollTop location
+Get the scroll location of an object
+```javascript
+$("#idoftag").scrollTop()
+```
+Get the scroll location of the window
+```javascript
+$("body").scrollTop()
+```
+Set the scroll location of the window
+```javascript
+$("body").scrollTop(123)
+```
+Set the scroll location of the window based on the location of an object
+```javascript
+$("body").scrollTop("#idoftag");
+```
+Make the scrolling animate using the smooth scrolling affect from the browser
+```javascript
+$("body").scrollTop("#idoftag", "smooth");
+```
+Make the scrolling animate using a custom easing function and call a function when done
+```javascript
+$("body").scrollTop("#idoftag", 2000, 'easeOutExpo', fnDone);
+```
 ### Create a post using form feilds from a specific part of the dom tree
 ```html
 <form>
