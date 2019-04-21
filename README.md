@@ -3,7 +3,7 @@
 
 JavaScript Q Library
 ----------------
-Is a very small JavaScript library intended to reduce the data transfer and memory usage on your websites or apps compared to most standard libraries available. The library takes advanatge of modern functionality in Javascript since HTML5 became standard. The idea is websites that want to service customers using pre HTML5 browsers can do so using vanilla HTML since they make up a very small portion of the market.
+This is a small JavaScript library intended to reduce the data transfer and memory usage on your websites or apps compared to most standard libraries available. The library takes advantage of modern functionality in Javascript since HTML5 became standard. The idea is websites that want to service customers using pre HTML5 browsers can do so using vanilla HTML since they make up a very small portion of the market.
 
 ## CDN
 https://cdn.jsdelivr.net/gh/AugmentLogic/Javascript-Q@master/q.js
@@ -35,10 +35,10 @@ Example:
  - Cross browser compliant
  - GPU optimized animations
  - AJAX support
- - Traverse and manupulate the DOM
+ - Traverse and manipulate the DOM
  - Event handling
  - Data to DOM storage
- - Object dimention and position processing
+ - Object dimension and position processing
  - Added general functionality (rand, extend, mstime, etc...)
 
 ## Disadvantages
@@ -53,12 +53,12 @@ $(function () {
 })
 ```
 
-### Access all h3 dom objects and remove them
+### Access all h3 DOM objects and remove them
 ```javascript
 $("h3").remove();
 ```
 
-### Iterate each dom object found and change their color
+### Iterate each DOM object found and change their color
 ```javascript
 $("h3").each(function () {
   $(this).css({
@@ -68,7 +68,7 @@ $("h3").each(function () {
 });
 ```
 
-### Get the dimentions of an object
+### Get the dimensions of an object
 ```html
 <div id="my_div01" style="width:20px;height:25px"></div>
 ```
@@ -86,7 +86,7 @@ $("#my_div01").right(); // returns the left position + the element width
 ```
 
 
-### Find all checkboxes from a specific point inside the dom
+### Find all checkboxes from a specific point inside the DOM
 ```javascript
 var container =  $("#my_container01");
 var allDivs = container.find("input[type='checkbox']");
@@ -114,7 +114,7 @@ Set a single attribute
 ```javascript
 $("#my_div01").attr('any_attribute', 'any_value');
 ```
-Set multipule attributes
+Set multiple attributes
 ```javascript
 $("#my_div01").attr({
   'multiple_attrs' : 'can_be_set',
@@ -127,11 +127,11 @@ console.log("Some key: " + $("#my_div01").attr("some_key")); // outputs: Some ke
 ```
 
 ### Set / get css on elements
-Set a signle style on an element
+Set a single style on an element
 ```javascript
 $("#my_div01").css('color', '#000');
 ```
-Set multipule styles on multiple elements
+Set multiple styles on multiple elements
 ```javascript
 $("#my_div01 h3").css({
   'color' : '#fff',
@@ -189,7 +189,7 @@ Make the scrolling animate using a custom easing function and call a function wh
 ```javascript
 $("body").scrollTop("#idoftag", 2000, 'easeOutExpo', fnDone);
 ```
-### Create a post using form feilds from a specific part of the dom tree
+### Create a post using form fields from a specific part of the DOM tree
 ```html
 <form>
 	<input type="hidden" name="test1" value="value1" />
@@ -225,18 +225,18 @@ $.request({
 - **get**: Get a specific item from the selection using its index `$(".sometags").get(2)`.
 - **parent**: Get the parent of an element `$("...").parent()`.
 - **children**: Get the children of the objects in the selection
-- **next**: Get the next sibiling of an element on the DOM tree `$("...").next()`.
-- **prev**: Get the previous sibiling of an element on the DOM tree `$("...").prev()`.
-- **is**: Check if elements match a selection `some_elements.is(".some_class")` resturns true if it matches the selection.
+- **next**: Get the next sibling of an element on the DOM tree `$("...").next()`.
+- **prev**: Get the previous sibling of an element on the DOM tree `$("...").prev()`.
+- **is**: Check if elements match a selection `some_elements.is(".some_class")` returns true if it matches the selection.
 - **css**: Add styles on any selection `$("p").css("padding":"5px")` or `$("p").css({"paddding","5px","color","#333"})`. Get a specific style from an element `$('#my_element').css("width")`.
-- **disableSelect**: Sets the css to disable text selection of the selected elements
+- **disableSelect**: Sets the CSS to disable text selection of the selected elements
 - **html**: Change the inner HTML of any element `$("#my_element").html("<b>Some html</b>")` or get the inner HTML of an element `$("#my_element").html()`.
 - **outer**: Change the outer HTML of any element `$("#my_element").outer("<b>Some html</b>")` or get the outer HTML of an element `$("#my_element").outer()`.
 - **val**: Get the value of an input `$("#my_input").val()`.
 - **text**: Change the inner text of any element `$("#my_element").text("Some text")`.
 - **replaceWith**: Replace an element either some html `$("#my_element").html("<b>Some html</b>")`.
 - **hasClass**: Check if elements has a specific css class attached to it
-- **addClass**: Add a style sheet class to an element `$('h1').addClass("headline")`. Add multipule classes by seperating them by spaces. Inject a css class into the DOM `$.addClass(".headline", {position:"absolute",top:0,left:0})`.
+- **addClass**: Add a style sheet class to an element `$('h1').addClass("headline")`. Add multiple classes by separating them by spaces. Inject a CSS class into the DOM `$.addClass(".headline", {position:"absolute",top:0,left:0})`.
 - **removeClass**: Remove a style sheet class from dom elements `$('h1').removeClass("headline")`.
 - **attr**: Add an attribute to elements `$("#headline").attr("more_data", "value")`. Get the value of an attribute `$("#headline").attr("more_data")` returns `"value"`.
 - **removeAttr**: Remove an attribute from elements `$("h3").removeAttr("more_data")`.
@@ -251,7 +251,7 @@ $.request({
 - **clone**: Clone a DOM element `$("#my_element").clone()`.
 - **make**: Convert a string of html into a DOM object `$.make("<div><b>testing</b></div>")`. Another way to do the same thing `$("<div><b>testing</b></div>")`.
 - **append**: Add elements on to the end of an element on the DOM tree `$("body").append("<div>testing</div>")`.
-- **prepend**: Add elements on to the beggining of an element on the DOM tree `$("body").prepend("<div>testing</div>")`.
+- **prepend**: Add elements on to the beginning of an element on the DOM tree `$("body").prepend("<div>testing</div>")`.
 - **appendTo**: Append html to a selected element `$("<div>test</div>").appendTo("#tagtoappendto")`.
 - **appendAfter**: Append html after a selected element `$("<div>test</div>").appendAfter("#foo")`.
 - **appendBefore**: Append html before a selected element `$("<div>test</div>").appendBefore("#foo")`.
@@ -259,8 +259,8 @@ $.request({
 - **position**: Return an object of the top and left position of an element `$("#my_element").pos()` example returns `{top:15px,left:15px}`.
 - **offsetParent**: Find the nearest object with a `relative`, `absolute`, or `fixed` position.
 - **scrollTop**: Get and set the scrolltop location
-- **left**: Returns the left position of an object and stores the top position in memory incase you need it `$("#my_element").left()`.
-- **top**: Returns the top position of an object and stores the left position in memory incase you need it `$("#my_element").top()`.
+- **left**: Returns the left position of an object and stores the top position in memory encase you need it `$("#my_element").left()`.
+- **top**: Returns the top position of an object and stores the left position in memory encase you need it `$("#my_element").top()`.
 - **right**: Combines left + width methods `$("#my_element").right()`.
 - **bottom**: Combines top + height methods `$("#my_element").bottom()`.
 - **width**: Get the width of an element `$("#my_element").width()`.
@@ -275,7 +275,7 @@ $.request({
 - **request**: Make an AJAX GET request `$.request({url:"...",success:function() {...}})` or a POST request `$.request({url:"...",post:{some_key:"some_value"},success:function() {...}})`.
 - **serialize**: Serialize an array for a post string `$.serialize({some_key1:"some_value1",some_key2:"some_value2"})` returns `"some_key1=some_value1&some_key2=some_value2"`. Serialize all form elements from a specific point in the DOM tree `$("#some_element").serialize()`.
 - **type**: Return what type an element is `$.type(some_variable)` could possibly return an one of these values `null, window, document, event, array, boolean, date, object, regexp, error, domelement, string or Unknown`
-- **queue**: Turns on or off asynchronous animations and pauses (defualt off) `$("#foo").queue(true).animate(...).animate(...);
+- **queue**: Turns on or off asynchronous animations and pauses (default off) `$("#foo").queue(true).animate(...).animate(...);
 - **queueNext**: Jump to the next item in the queue
 - **dequeue**: Turn of the animation queue
 - **pause**: Pause the animation
@@ -296,4 +296,4 @@ $.request({
 - **$.delay(msTime, callbackFunction)**: perform a delay just like setTimeout
 
 ## FINAL NOTES
-This library was created [for the Exitget platform](https://exitget.com/) because of the need for an ultra light weight library to use that also has super fast animation capabilities. It was needed to help bring down the code size for the customer facing resource that's used to generate popups on their clients sites. Exitget has been using and evolving this code for over 5 years now.
+This library was created [for the Exitget platform](https://exitget.com/) because of the need for an ultra light weight library to use that also has super fast animation capabilities. It was needed to help bring down the code size for the customer facing resource that's used to generate popups on their client's sites. Exitget has been using and evolving this code for over 5 years now.
