@@ -888,7 +888,9 @@
 			if (r.readyState == 4 ) {
 				if (r.status == 200) {
 	           		if (arrParams.success)
-						arrParams.success(r.responseText);
+					arrParams.success(r.responseText);
+				} else if (!arrParams.failure) {
+					// no failure handle; do nothing
 				} else if (r.status == 400) {
 					arrParams.failure(r.responseText);
 				} else {
