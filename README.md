@@ -5,6 +5,20 @@ JavaScript Q Library
 ----------------
 This is a small JavaScript library intended to reduce the data transfer and memory usage on your websites or apps compared to most standard libraries available. The library takes advantage of modern functionality in Javascript since HTML5 became standard. The idea is websites that want to service customers using pre HTML5 browsers can do so using vanilla HTML since they make up a very small portion of the market.
 
+## Features
+ - Ultra lightweight
+ - Cross browser compliant
+ - GPU optimized animations
+ - AJAX support
+ - Traverse and manipulate the DOM
+ - Event handling
+ - Data to DOM storage
+ - Object dimension and position processing
+ - Added general functionality (rand, extend, mstime, etc...)
+
+## Disadvantages
+ - Only supports HTML5 compliant browsers
+
 ## CDN
 https://cdn.jsdelivr.net/gh/AugmentLogic/Javascript-Q@latest/q.js
 
@@ -29,20 +43,6 @@ Example:
 	});
 </script>
 ```
-
-## Features
- - Ultra lightweight
- - Cross browser compliant
- - GPU optimized animations
- - AJAX support
- - Traverse and manipulate the DOM
- - Event handling
- - Data to DOM storage
- - Object dimension and position processing
- - Added general functionality (rand, extend, mstime, etc...)
-
-## Disadvantages
- - Only supports HTML5 compliant browsers
 
 ## q.js Examples
 
