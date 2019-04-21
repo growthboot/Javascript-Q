@@ -14,6 +14,7 @@ objHTML.css({
 	//'z-index' : 123
 });
 document.write("<div><input type='button' id='fakePop1' value='Pop'></div>");
+document.write("<div><input type='button' onclick='$(\"body\").scrollTop(1000,\"smooth\");' value='Scroll'></div>");
 $(function () {
 	$("#fakePop1").click(function () {
 		$("<div></div>")
