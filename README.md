@@ -39,6 +39,7 @@ Example:
  - Event handling
  - Data to DOM storage
  - Object dimention and position processing
+ - Added general functionality (rand, extend, mstime, etc...)
 
 ## Disadvantages
  - Only supports HTML5 compliant browsers
