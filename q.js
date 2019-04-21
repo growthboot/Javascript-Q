@@ -1,8 +1,8 @@
 /**
  * q.js v2.044
  * Javascript Q
- * @author exitget.com
- * Copyright (c) exitget.com
+ * GitHub: https://github.com/AugmentLogic/Javascript-Q
+ * CDN: https://cdn.jsdelivr.net/gh/AugmentLogic/Javascript-Q@latest/q.js
  */
 
 (function(handle) {
