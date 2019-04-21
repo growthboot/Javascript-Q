@@ -30,6 +30,19 @@ Example:
 </script>
 ```
 
+## Features
+ - Ultra lightweight
+ - Cross browser compliant
+ - GPU optimized animations
+ - AJAX support
+ - Traverse and manupulate the DOM
+ - Event handling
+ - Data to DOM storage
+ - Object dimention and position processing
+
+## Disadvantages
+ - Only supports HTML5 compliant browsers
+
 ## q.js Examples
 
 ### Document ready
