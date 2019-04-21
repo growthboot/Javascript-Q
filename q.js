@@ -1,5 +1,5 @@
 /**
- * q.js v2.041
+ * q.js v2.042
  * Javascript Q
  * @author exitget.com
  * Copyright (c) exitget.com
