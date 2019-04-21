@@ -6,12 +6,12 @@ JavaScript Q Library
 This is a small JavaScript library intended to reduce the data transfer and memory usage on your websites or apps compared to most standard libraries available. The library takes advantage of modern functionality in Javascript since HTML5 became standard. The idea is websites that want to service customers using pre HTML5 browsers can do so using vanilla HTML since they make up a very small portion of the market.
 
 ## CDN
-https://cdn.jsdelivr.net/gh/AugmentLogic/Javascript-Q@master/q.js
+https://cdn.jsdelivr.net/gh/AugmentLogic/Javascript-Q@latest/q.js
 
 ## Setup
 Include the library q.js file into the head of your html document.
 ```html
-<script src="https://cdn.jsdelivr.net/gh/AugmentLogic/Javascript-Q@master/q.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/AugmentLogic/Javascript-Q@latest/q.js"></script>
 ```
 
 ## The library handle
