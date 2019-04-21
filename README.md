@@ -17,7 +17,7 @@ This is a small JavaScript library intended to reduce the data transfer and memo
  - Added general functionality (rand, extend, mstime, etc...)
 
 ## Disadvantages
- - Only supports HTML5 compliant browsers
+ - Only supported by HTML5 compliant browsers
 
 ## CDN
 https://cdn.jsdelivr.net/gh/AugmentLogic/Javascript-Q@latest/q.js
