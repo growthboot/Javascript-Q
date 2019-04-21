@@ -367,10 +367,21 @@ output("MS Time", $("#domManSource span:last-child").html().length == 13 ? strPa
 
 // .request // todo
 output("Request", "<span id='customRequestAnswer'>" + strFail + "</span>");
-//$.reuqest();
+$.request({
+	url : "./test-ajax.php?bar=2",
+	post : {
+		foo : "1"
+	},
+	response : "JSON",
+	success : function (objResponse) {
+		console.log(objResponse);
+		if (objResponse.POST.foo && objResponse.GET.bar && objResponse.POST.foo == 1 && objResponse.GET.bar == 2)
+			$("#customRequestAnswer").html(strPass);
+	}
+});
 
 // $.serialize
-output("Serialzie object", ($({abc : 123 }).serialize() == "abc/123" ? strPass : strFail));
+output("Serialzie object", ($({abc : 123, efg : 321}).serialize("/", "/") == "abc/123/efg/321" ? strPass : strFail));
 
 // .unbind
 output("Unbind trigger", "<span id='customTriggerAnswer2'>" + strPass + "</span>");

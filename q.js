@@ -1,5 +1,5 @@
 /**
- * q.js v2.042
+ * q.js v2.043
  * Javascript Q
  * @author exitget.com
  * Copyright (c) exitget.com
@@ -722,13 +722,17 @@
 	};
 	
 	// convert an object into a uri string ex: {k:"v"} to /k/v
-	fun.serialize = function() {
+	fun.serialize = function(delimiter1, delimiter2) {
+		if (!delimiter1)
+			delimiter1 = "=";
+		if (!delimiter2)
+			delimiter2 = "&";
 		var str = [];
 		for(var p in this[0])
 			if (this[0].hasOwnProperty(p)) {
-				str.push(encodeURIComponent(p) + "/" + encodeURIComponent(this[0][p]));
+				str.push(encodeURIComponent(p) + delimiter1 + encodeURIComponent(this[0][p]));
 			}
-		return str.join("/");
+		return str.join(delimiter2);
 	};
 
 	// append something to the selection
@@ -880,15 +884,20 @@
 		    throw new Error("This browser does not support XMLHttpRequest.");
 		  };
 		}
-		var r = new XMLHttpRequest(),
-		strParams = typeof arrParams.post == 'object' ? q(arrParams.post).serialize() : arrParams.post;
-		r.open("GET", arrParams.url+'/'+strParams, true);
+		var r = new XMLHttpRequest();
+		r.open(arrParams.post ? "POST" : "GET", arrParams.url);
+		if (arrParams.cross)
+			r.withCredentials = true;
 		r.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 		r.onreadystatechange = function () {
 			if (r.readyState == 4 ) {
 				if (r.status == 200) {
-	           		if (arrParams.success)
-					arrParams.success(r.responseText);
+					if (arrParams.success) {
+						var res = r.responseText;
+						if (arrParams.response == "JSON")
+							res = JSON.parse(res);
+						arrParams.success(res);
+					}
 				} else if (!arrParams.failure) {
 					// no failure handle; do nothing
 				} else if (r.status == 400) {
@@ -896,9 +905,9 @@
 				} else {
 					arrParams.failure(r.responseText);
 				}
-	        }
+			}
 		};
-		r.send(strParams);
+		r.send(arrParams.post ? encodeURI(q(arrParams.post).serialize()) : null);
 	};
 
 	fun.offsetParent = function () {

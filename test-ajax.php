@@ -1,4 +1,6 @@
 <?php
-var_dump($_GET);
-var_dump($_POST);
+print json_encode(array(
+	"GET" => $_GET,
+	"POST" => $_POST
+));
 ?>
