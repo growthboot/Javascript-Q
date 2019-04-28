@@ -623,7 +623,7 @@
 
 	// Get a results from the query and return as a new q selection
 	fun.select = function (intIndex) {
-		return $(this.get(intIndex));
+		return q(this.get(intIndex));
 	};
 
 	// Loop though a query
