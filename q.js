@@ -1,5 +1,5 @@
 /**
- * q.js v2.046
+ * q.js v2.047
  * Javascript Q
  * GitHub: https://github.com/AugmentLogic/Javascript-Q
  * CDN: https://cdn.jsdelivr.net/gh/AugmentLogic/Javascript-Q@latest/q.js
@@ -622,7 +622,7 @@
 	};
 
 	// Get a results from the query and return as a new q selection
-	fun.select = function (intIndex) {
+	fun.become = function (intIndex) {
 		return q(this.get(intIndex));
 	};
 
