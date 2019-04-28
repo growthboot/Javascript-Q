@@ -606,6 +606,9 @@
 
 	// Get a results from the query
 	fun.get = function (intIndex) {
+		if (intIndex < 0) {
+			intIndex = this.length + intIndex;
+		}
 		if (typeof intIndex != "undefined") {
 			if (this[intIndex])
 				return this[intIndex];
