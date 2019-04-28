@@ -1,5 +1,5 @@
 /**
- * q.js v2.045
+ * q.js v2.046
  * Javascript Q
  * GitHub: https://github.com/AugmentLogic/Javascript-Q
  * CDN: https://cdn.jsdelivr.net/gh/AugmentLogic/Javascript-Q@latest/q.js
@@ -619,6 +619,11 @@
 			});
 			return arrResult;
 		}
+	};
+
+	// Get a results from the query and return as a new q selection
+	fun.select = function (intIndex) {
+		return $(this.get(intIndex));
 	};
 
 	// Loop though a query
