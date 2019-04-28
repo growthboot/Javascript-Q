@@ -223,7 +223,7 @@ $.request({
 - **uniqueId**: Get a unique ID that represents a specific DOM element
 - **find**: Search from any point in the DOM tree for a selection `some_element.find(".some_class")`.
 - **get**: Get a specific item from the selection using its index `$(".sometags").get(2)`. Get the last time of the index `.get(-1)`.
-- **select**: Simular functionality to get except it returns a new q selection rather than just the value. `$(".sometags").select(2).remove()`
+- **become**: Simular functionality to get except it returns a new q selection rather than just the value. `$(".sometags").become(-1).remove()`
 - **parent**: Get the parent of an element `$("...").parent()`.
 - **children**: Get the children of the objects in the selection
 - **next**: Get the next sibling of an element on the DOM tree `$("...").next()`.
