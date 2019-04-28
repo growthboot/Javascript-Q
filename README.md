@@ -1,5 +1,5 @@
 ## VERSION
-2.044
+2.045
 
 JavaScript Q Library
 ----------------
@@ -222,7 +222,7 @@ $.request({
 ### List of methods
 - **uniqueId**: Get a unique ID that represents a specific DOM element
 - **find**: Search from any point in the DOM tree for a selection `some_element.find(".some_class")`.
-- **get**: Get a specific item from the selection using its index `$(".sometags").get(2)`.
+- **get**: Get a specific item from the selection using its index `$(".sometags").get(2)`. Get the last time of the index `.get(-1)`.
 - **parent**: Get the parent of an element `$("...").parent()`.
 - **children**: Get the children of the objects in the selection
 - **next**: Get the next sibling of an element on the DOM tree `$("...").next()`.
