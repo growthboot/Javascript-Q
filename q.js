@@ -92,8 +92,8 @@
 
 	objQueueChain = {}, // holds information for queuing animations for asynchronous playback
 
-	// Resource needed for adding px by default to css that doesnt have a prefix provided
-	arrExcludePx = {'transform-scaleX':1,'transform-scaleY':1,'transform-scale':1,'column-count': 1,'fill-opacity': 1,'font-weight': 1,'line-height': 1,opacity: 1,orphans: 1,widows: 1,'z-index': 1,zoom: 1,'background-color': 1},
+	// Don't add px postfix to these values
+	arrExcludePx = {'transform-scaleX':1,'transform-scaleY':1,'transform-scale':1,'column-count': 1,'fill-opacity': 1,'font-weight': 1,opacity: 1,orphans: 1,widows: 1,'z-index': 1,zoom: 1,'background-color': 1},
 
 	// create new methods in the q variable that call bind ex: q(mixed).click(function);
 	arrAutoBind = ["click","mousedown","mouseup","mouseover","mousemove","mouseleave","mouseenter","change","load","dblclick","focus","focusin","focusout","input","keydown","keypress","keyup","resize","reset","scroll","select","touchcancel","touchend","touchmove","touchstart","transitionend","unload","wheel"],
@@ -376,7 +376,7 @@
 		return this;
 	}
 
-	// Find the top left position of an DOM object
+	// Find the top left position of a DOM object
 	fun.position = function () {
 		var el = this[0],
 		rect = el.getBoundingClientRect(), 
@@ -387,15 +387,22 @@
 	    	left: rect.left + scrollLeft 
 	    };
 	};
+	
+	// Find the top left position of a DOM relative to the nearest relative, absolute or fixed positioned object
+	fun.offset = function () {
+		return this.offsetParent().position();
+	};
 
 	fun.scrollTop = function (mixedTop, mixedDuration, strEasing, fnCallback) {
+		var strType = typeof mixedTop;
 		// set
-		if (typeof mixedTop != "undefined") {
-			var destinationOffset = typeof mixedTop == "number" ? mixedTop : $(mixedTop).position().top;
+		if (strType != "undefined") {
+			var destinationOffset = strType == "number" ? mixedTop : $(mixedTop).position().top;
 			if (!mixedDuration || mixedDuration == "smooth") {
 				var objParams = {
 					top: destinationOffset
 				};
+				console.log(objParams);
 				if (mixedDuration == "smooth")
 					objParams.behavior = "smooth";
 				return window.scroll(objParams);
@@ -522,11 +529,15 @@
 		if (typeof mixedCss == "function") {
 			mixedCss = mixedCss.call(that);
 		}
-		if (typeof mixedCss == 'undefined') {
-			return getComputedStyle(that[0]);
-		} else if (typeof mixedCss == 'string') {
-			var objStyle = getComputedStyle(that[0]);
-			return objStyle ? objStyle[reverseCamel(mixedCss)] : 0;
+		try {
+			if (typeof mixedCss == 'undefined') {
+				return getComputedStyle(that[0]);
+			} else if (typeof mixedCss == 'string') {
+				var objStyle = getComputedStyle(that[0]);
+				return objStyle ? objStyle[reverseCamel(mixedCss)] : 0;
+			}
+		} catch (e) {
+			return false;
 		}
 		for (var strKey in mixedCss) {
 			var strValue = mixedCss[strKey];
@@ -925,6 +936,10 @@
 			if (strPos == "relative" || strPos == "absolute" || strPos == "fixed")
 				return node;
 			node = node.parent();
+			if (!node.length)
+				return;
+			if (node[0].tagName == "BODY")
+				return node;
 		};
 		return copy(fun); // empty
 	};
@@ -1013,12 +1028,16 @@
 
 	q.delay = fun.delay = function (intMS, fnCallback) {
 		var that = this;
-		if (!that.length)
-			 window.setTimeout(function () {
+		if (!that.is_q)
+			window.setTimeout(function () {
+				fnCallback();
+			},intMS);
+		else if (!that.length)
+			 q.delay(intMS, function () {
 			 	if (fnCallback)
 			 		fnCallback();
 			 	that.queueNext();
-			 }, intMS);
+			 });
 		else
 			iterate(this,function (intItem, el) {
 				var intElUid = q(el).uniqueId();
@@ -1297,7 +1316,7 @@
 			el.style.setProperty("animation", strPrefix + strAnimationAtrribute);
 			q(el)
 			.play(); // make sure its unpaused
-			objAI.timeout = window.setTimeout(fnDone, intDuration);
+			objAI.timeout = q.delay(intDuration, fnDone);
 			//.bind(strAnimationEndEvent, fnDone);
 
 		});
