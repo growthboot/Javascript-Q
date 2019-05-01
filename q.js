@@ -403,7 +403,7 @@
 	};
 	
 	// Find out if something has scrolled into the visible range of the screen
-	fun.inView = function () {
+	fun.inViewY = function () {
 		var 
 		intTop = this.scrollTop(),
 		intHeight = this.height(),
