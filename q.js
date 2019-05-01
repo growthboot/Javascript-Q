@@ -396,6 +396,16 @@
 		return this.position().top;
 	};
 	
+	// Find out if something has scrolled into the visible range of the screen
+	fun.inView = function () {
+		var 
+		intTop = this.scrollTop(),
+		intHeight = this.height(),
+		intAmount = Math.max(0, Math.min(intHeight, intTop + intHeight));
+		intAmount -= Math.max(0, Math.min(intHeight, intTop - $(window).height() + intHeight));
+		return intAmount;
+	};
+	
 	// Find the top left position of a DOM relative to the nearest relative, absolute or fixed positioned object
 	fun.offset = function () {
 		var 
