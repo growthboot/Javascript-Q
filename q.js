@@ -1,5 +1,5 @@
 /**
- * q.js v2.047
+ * q.js v2.048
  * Javascript Q
  * GitHub: https://github.com/AugmentLogic/Javascript-Q
  * CDN: https://cdn.jsdelivr.net/gh/AugmentLogic/Javascript-Q@latest/q.js
