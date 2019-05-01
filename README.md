@@ -261,6 +261,7 @@ $.request({
 - **offset**: Return an object with the top and left position of an element `$("#my_element").offset()` relative to the nearest `relative`, `absolute`, or `fixed` position.
 - **offsetParent**: Find the nearest object with a `relative`, `absolute`, or `fixed` position.
 - **scrollTop**: Get and set the scrolltop location
+- **inViewY**: Get the amount of pixels of the object are currently in view on the Y axis
 - **left**: Returns the left position of an object and stores the top position in memory encase you need it `$("#my_element").left()`.
 - **top**: Returns the top position of an object and stores the left position in memory encase you need it `$("#my_element").top()`.
 - **right**: Combines left + width methods `$("#my_element").right()`.
