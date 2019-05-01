@@ -388,6 +388,14 @@
 	    };
 	};
 	
+	// Get the left or top position of something (if you need both left and top use position for higher performance)
+	fun.left = function () {
+		return this.position().left;
+	};
+	fun.top = function () {
+		return this.position().top;
+	};
+	
 	// Find the top left position of a DOM relative to the nearest relative, absolute or fixed positioned object
 	fun.offset = function () {
 		var 
