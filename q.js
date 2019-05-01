@@ -408,7 +408,6 @@
 				var objParams = {
 					top: destinationOffset
 				};
-				console.log(objParams);
 				if (mixedDuration == "smooth")
 					objParams.behavior = "smooth";
 				return window.scroll(objParams);
@@ -445,7 +444,7 @@
 		if (el == window) {
 			return window.pageYOffset || document.documentElement.scrollTop;
 		} else {
-			return el.scrollTop;
+			return this.position().top-q(window).scrollTop();
 		}
 	};
 
