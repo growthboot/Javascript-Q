@@ -257,7 +257,8 @@ $.request({
 - **appendAfter**: Append html after a selected element `$("<div>test</div>").appendAfter("#foo")`.
 - **appendBefore**: Append html before a selected element `$("<div>test</div>").appendBefore("#foo")`.
 - **remove**: Remove elements from the the DOM tree `$("#my_element").remove()`.
-- **position**: Return an object of the top and left position of an element `$("#my_element").pos()` example returns `{top:15px,left:15px}`.
+- **position**: Return an object with the top and left position of an element `$("#my_element").pos()` example returns `{top:15px,left:15px}`.
+- **offset**: Return an object with the top and left position of an element `$("#my_element").offset()` relative to the nearest `relative`, `absolute`, or `fixed` position.
 - **offsetParent**: Find the nearest object with a `relative`, `absolute`, or `fixed` position.
 - **scrollTop**: Get and set the scrolltop location
 - **left**: Returns the left position of an object and stores the top position in memory encase you need it `$("#my_element").left()`.
