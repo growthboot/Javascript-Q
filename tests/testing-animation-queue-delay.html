@@ -1,13 +1,23 @@
 <!-- This document is badly commented... sorry. -->
 <html>
 <head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 <script src="./../q.js"></script>
 <script type="text/javascript">
 $(function () {
 	$("<div>")
+	.queue()
 	.appendTo("body")
 	.css({
-		backgroundColor : 'rgb(0,0,255)'
+		position : "absolute",
+		backgroundColor : 'rgb(255,0,0)',
+		width : 100,
+		height : 100
+	})
+	.delay(1000)
+	.animate({
+		backgroundColor : 'rgb(0,255,0)',
+		left: 100
 	});
 });
 </script>

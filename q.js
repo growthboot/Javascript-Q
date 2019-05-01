@@ -1078,6 +1078,12 @@
 						return false;
 					}
 					objQueueChain[intElUid].active = true;
+					$.delay(intMS, function () {
+					 	if (fnCallback)
+					 		fnCallback();
+					 	objQueueChain[intElUid].active = false;
+					 	that.queueNext();
+					});
 				}
 			});
 		return this;
