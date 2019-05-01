@@ -390,7 +390,13 @@
 	
 	// Find the top left position of a DOM relative to the nearest relative, absolute or fixed positioned object
 	fun.offset = function () {
-		return this.offsetParent().position();
+		var 
+		selfPos = this.position(),
+		parentPos = this.offsetParent().position();
+		return {
+			left : selfPos.left-parentPos.left,
+			top : selfPos.top-parentPos.top
+		};
 	};
 
 	fun.scrollTop = function (mixedTop, mixedDuration, strEasing, fnCallback) {
