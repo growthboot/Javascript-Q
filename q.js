@@ -804,7 +804,8 @@
 
 	// Append self to a node
 	fun.appendTo = function (mixedVar) {
-		return q(mixedVar).append(this);
+		q(mixedVar).append(this);
+		return this;
 	};
 
 	// Append self after node
