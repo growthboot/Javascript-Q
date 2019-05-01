@@ -1,5 +1,5 @@
 ## VERSION
-2.046
+2.048
 
 JavaScript Q Library
 ----------------
