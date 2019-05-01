@@ -388,12 +388,18 @@
 	    };
 	};
 	
-	// Get the left or top position of something (if you need both left and top use position for higher performance)
+	// Get the left or top, right or bottom position of something (if you need both left and top use position for higher performance)
 	fun.left = function () {
 		return this.position().left;
 	};
 	fun.top = function () {
 		return this.position().top;
+	};
+	fun.bottom = function () {
+		return this.position().top+this.height();
+	};
+	fun.right = function () {
+		return this.position().left+this.width();
 	};
 	
 	// Find out if something has scrolled into the visible range of the screen
