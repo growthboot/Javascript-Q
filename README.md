@@ -181,7 +181,7 @@ Set the scroll location of the window based on the location of an object
 ```javascript
 $("body").scrollTop("#idoftag");
 ```
-Make the scrolling animate using the smooth scrolling affect from the browser
+Make the scrolling animate using the smooth scrolling effect provided by the browser
 ```javascript
 $("body").scrollTop("#idoftag", "smooth");
 ```
