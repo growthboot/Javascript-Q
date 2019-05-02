@@ -1,5 +1,5 @@
 ## VERSION
-2.048
+2.1
 
 JavaScript Q Library
 ----------------
@@ -65,6 +65,28 @@ $("h3").each(function () {
     "background-color" : "#000",
     "color" : "#fff"
   });
+});
+```
+### Delay stuff from happening
+```javascript
+$("<div>")
+.queue() // Tell queue that were going to have stuff wait for delays and animations to finish before moving on
+.delay(1000) // Delay 1 second
+.appendTo("body") // this will only happen after the delay
+.css({
+	position : "absolute",
+	backgroundColor : 'rgb(255,0,0)',
+	width : 100,
+	height : 100
+})
+.delay(1000)
+.css({
+	backgroundColor : 'rgb(0,255,0)',
+})
+.delay(1000)
+.remove()
+.delay(1000, function () { // run a callback function after a delay
+	alert('hi');
 });
 ```
 
