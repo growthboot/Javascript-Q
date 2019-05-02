@@ -1,5 +1,5 @@
 /**
- * q.js v2.11
+ * q.js v2.111
  * Javascript Q
  * GitHub: https://github.com/AugmentLogic/Javascript-Q
  * CDN: https://cdn.jsdelivr.net/gh/AugmentLogic/Javascript-Q@latest/q.js
@@ -174,8 +174,12 @@
 	
 	fun.ready = function (fnCallback) {
 		if ( document.readyState === "complete" ) {
-			fnCallback();
+			if (fnCallback)
+				fnCallback();
+			return true;
 		} else {
+			if (!fnCallback)
+				return false;
 			// Create the promise
 			arrReadyPromises.push(fnCallback);
 			// Set the even listeners
@@ -227,8 +231,7 @@
 		that = this,
 		queryType = typeof mixedQuery;
 		if (queryType == 'function') {
-			// DOM ready
-			that.ready(mixedQuery);
+			return that.ready(mixedQuery); // DOM ready
 		} else if (queryType == 'object') {
 			var i=0;
 			if (isNode(mixedQuery)) {
@@ -1430,8 +1433,7 @@
 			var strAnimationAtrribute = strKeyFrameName + " " + intDuration + "ms forwards";
 			objAI.animationAttributes[strAnimationAtrribute] = 1;
 			el.style.setProperty("animation", strPrefix + strAnimationAtrribute);
-			q(el)
-			.play(); // make sure its unpaused
+			q(el).play(); // make sure its unpaused
 			objAI.timeout = q.delay(intDuration, fnDone);
 			//.bind(strAnimationEndEvent, fnDone);
 
