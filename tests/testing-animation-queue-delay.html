@@ -20,7 +20,10 @@ $(function () {
 		backgroundColor : 'rgb(0,255,0)',
 	})
 	.delay(1000)
-	.remove();
+	.remove()
+	.delay(1000, function () {
+		alert('hi');
+	});
 	/*
 	.delay(1000)
 	.animate({
