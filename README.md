@@ -9,6 +9,7 @@ This is a small JavaScript library intended to reduce the data transfer and memo
  - Ultra lightweight
  - Cross browser compliant
  - GPU optimized animations
+ - Delay and animation synchronization queue
  - AJAX support
  - Traverse and manipulate the DOM
  - Event handling
