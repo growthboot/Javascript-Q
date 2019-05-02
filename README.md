@@ -67,6 +67,25 @@ $("h3").each(function () {
   });
 });
 ```
+### Delay stuff from happening
+```javascript
+$("<div>")
+.queue()
+.delay(1000)
+.appendTo("body")
+.css({
+	position : "absolute",
+	backgroundColor : 'rgb(255,0,0)',
+	width : 100,
+	height : 100
+})
+.delay(1000)
+.css({
+	backgroundColor : 'rgb(0,255,0)',
+})
+.delay(1000)
+.remove();
+```
 
 ### Get the dimensions of an object
 ```html
