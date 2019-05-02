@@ -7,6 +7,7 @@
 $(function () {
 	$("<div>")
 	.queue()
+	.delay(1000)
 	.appendTo("body")
 	.css({
 		position : "absolute",
@@ -15,10 +16,17 @@ $(function () {
 		height : 100
 	})
 	.delay(1000)
+	.css({
+		backgroundColor : 'rgb(0,255,0)',
+	})
+	.delay(1000)
+	.remove();
+	/*
+	.delay(1000)
 	.animate({
 		backgroundColor : 'rgb(0,255,0)',
 		left: 100
-	});
+	});*/
 });
 </script>
 </head>

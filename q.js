@@ -1,5 +1,5 @@
 /**
- * q.js v2.048
+ * q.js v2.1
  * Javascript Q
  * GitHub: https://github.com/AugmentLogic/Javascript-Q
  * CDN: https://cdn.jsdelivr.net/gh/AugmentLogic/Javascript-Q@latest/q.js
@@ -77,6 +77,35 @@
 			document.detachEvent( "onreadystatechange", completed );
 			window.detachEvent( "onload", completed );
 		}
+	},
+
+	prospect_queue = function (arrArgs,strParentName) {
+		var that = this,
+		boolParentProceeds = true;
+		arrArgs = Array.prototype.slice.call(arrArgs);
+		arrArgsSequence = arrArgs.slice(0);
+		arrArgsSequence.unshift(strParentName);
+		iterate(that,function (intItem, el) {
+			var intElUid = q(el).uniqueId();
+			if (objQueueChain[intElUid]) {
+				if (objQueueChain[intElUid].skip_queue) {
+					boolParentProceeds = false;
+					return false;
+				}
+				if (objQueueChain[intElUid].active) {
+					boolParentProceeds = false;
+					objQueueChain[intElUid].sequence.push(arrArgsSequence);
+					return false;
+				}
+				objQueueChain[intElUid].skip_queue = true;
+				objQueueChain[intElUid].active = true;
+				q(el)[strParentName].apply(that, arrArgs);
+				objQueueChain[intElUid].active = false;
+				objQueueChain[intElUid].skip_queue = false;
+				that.queueNext.call(that);
+			}
+		});
+		return boolParentProceeds;
 	},
 
 	animations = 0, // the current amount of animations that have been started
@@ -310,18 +339,21 @@
 
 	// Get all the HTML currently held as nodes in the current query
 	fun.html = function (strHTML, strAttrKey) {
+		var that = this;
+		if (!prospect_queue.call(that,arguments,'html'))
+			return that;
 		var htmlAttr = strAttrKey || "innerHTML";
 		if (strHTML == undefined) {
 			strHTML = "";
-			iterate(this,function (k,el) {
+			iterate(that,function (k,el) {
 				strHTML += el[htmlAttr];
 			});
 			return strHTML;
 		}
-		iterate(this,function (k,el) {
+		iterate(that,function (k,el) {
 			el[htmlAttr] = strHTML;
 		});
-		return this;
+		return that;
 	};
 	
 	fun.children = function () {
@@ -341,8 +373,11 @@
 	};
 	
 	fun.disableSelect = function () {
+		var that = this;
+		if (!prospect_queue.call(that,arguments,'disableSelect'))
+			return that;
 		var none = "none";
-		iterate(this,function (k,el) {
+		iterate(that,function (k,el) {
 			q(el).css({
 				'-webkit-touch-callout': none, /* iOS Safari */
 			    '-webkit-user-select': none, /* Safari */
@@ -353,7 +388,7 @@
 			                                  supported by Chrome and Opera */
 			})
 		});
-		return this;
+		return that;
 	}
 
 	// Same as .html except with the outer html
@@ -368,12 +403,15 @@
 	
 	// set the value of an input
 	fun.val = function (strVal) {
-		if (!this[0])
+		var that = this;
+		if (!prospect_queue.call(that,arguments,'val'))
+			return that;
+		if (!that[0])
 			return;
 		if (strVal == undefined)
-			return this[0].value;
-		this[0].value = strVal;
-		return this;
+			return that[0].value;
+		that[0].value = strVal;
+		return that;
 	}
 
 	// Find the top left position of a DOM object
@@ -424,6 +462,9 @@
 	};
 
 	fun.scrollTop = function (mixedTop, mixedDuration, strEasing, fnCallback) {
+		var that = this;
+		if (!prospect_queue.call(that,arguments,'scrollTop'))
+			return that;
 		var strType = typeof mixedTop;
 		// set
 		if (strType != "undefined") {
@@ -436,7 +477,6 @@
 					objParams.behavior = "smooth";
 				return window.scroll(objParams);
 			}
-			var that = this;
 			var start = that.scrollTop();
 			var startTime = 'now' in window.performance ? performance.now() : new Date().getTime();
 			var documentHeight = $(document).height();
@@ -464,11 +504,11 @@
 			return;
 		}
 		// get
-		var el = this[0];
+		var el = that[0];
 		if (el == window) {
 			return window.pageYOffset || document.documentElement.scrollTop;
 		} else {
-			return this.position().top-q(window).scrollTop();
+			return that.position().top-q(window).scrollTop();
 		}
 	};
 
@@ -510,6 +550,9 @@
 
 	// Dynamically adds a CSS stylesheet
 	q.addCSS = function (strCss, arrCss) {
+		var that = this;
+		if (!prospect_queue.call(that,arguments,'addCSS'))
+			return that;
 		if (typeof arrCss == 'object') {
 			var strTempCss = strCss + ' {';
 			for (var strName in arrCss) {
@@ -529,7 +572,7 @@
 			s.insertRule(strCss, l);
 		else
 			s.addRule(strCss, -1); //IE
-		return this;
+		return that;
 	};
 	
 	function stringifyTransformData(objTransform) {
@@ -555,6 +598,8 @@
 	// Request or define CSS
 	fun.css = function (mixedCss) {
 		var that = this;
+		if (!prospect_queue.call(that,arguments,'css'))
+			return that;
 		if (typeof mixedCss == "function") {
 			mixedCss = mixedCss.call(that);
 		}
@@ -614,34 +659,46 @@
 
 	// Add a class to the selection
 	fun.addClass = function (strClassName, boolRemove) {
+		var that = this;
+		if (!prospect_queue.call(that,arguments,'addClass'))
+			return that;
 		var strEvent = boolRemove ? "remove" : "add";
-		iterate(this,function ()  {
+		iterate(that,function ()  {
 			this.classList[strEvent](strClassName);
 		});
-		return this;
+		return that;
 	};
 
 	// Remove a class
 	fun.removeClass = function (strClassName) {
-		return this.addClass(strClassName, 1);
+		var that = this;
+		if (!prospect_queue.call(that,arguments,'removeClass'))
+			return that;
+		return that.addClass(strClassName, 1);
 	};
 
 	// Set an attribute
 	fun.attr = function (strKey, strVal, boolRemove) {
+		var that = this;
+		if (!prospect_queue.call(that,arguments,'attr'))
+			return that;
 		if (!strVal)
-			return this[0].getAttribute(strKey);
-		iterate(this,function () {
+			return that[0].getAttribute(strKey);
+		iterate(that,function () {
 			this.setAttribute(strKey, strVal);
 		});
-		return this;
+		return that;
 	};
 
 	// Remove an attribute
 	fun.removeAttr = function (strKey) {
-		iterate(this,function () {
+		var that = this;
+		if (!prospect_queue.call(that,arguments,'removeAttr'))
+			return that;
+		iterate(that,function () {
 			this.removeAttribute(strKey);
 		});
-		return this;
+		return that;
 	};
 
 	// Get a results from the query
@@ -652,13 +709,8 @@
 		if (typeof intIndex != "undefined") {
 			if (this[intIndex])
 				return this[intIndex];
-		} else {
-			var arrResult = [];
-			iterate(this,function () {
-				arrResult.push(this);
-			});
-			return arrResult;
-		}
+		} else
+			return Array.prototype.slice.call(this);
 	};
 
 	// Get a results from the query and return as a new q selection
@@ -668,7 +720,10 @@
 
 	// Loop though a query
 	fun.each = function (fnCallback) {
-		iterate(this, function (k,v) {
+		var that = this;
+		if (!prospect_queue.call(that,arguments,'each'))
+			return that;
+		iterate(that, function (k,v) {
 			return fnCallback.call(this,k,v);
 		});
 	};
@@ -680,8 +735,11 @@
 
 	// Bind events
 	fun.on = fun.bind = function (strEvents, fnCallback) {
+		var that = this;
+		if (!prospect_queue.call(that,arguments,'on'))
+			return that;
 		var arrEvents = strEvents.split(/ /);
-		iterate(this,function (k,node) {
+		iterate(that,function (k,node) {
 			var method = function (e) {
 				e = e || window.event;
 				e.target = e.target || e.srcElement;
@@ -706,7 +764,7 @@
 				objEventMomory[intNodeUid][strEventName][strEventCategory] = method;
 			});
 		});
-		return this;
+		return that;
 	};
 
 	// Add short hand methods that call binders automatically defined by arrAutoBind variable
@@ -721,8 +779,11 @@
 
 	// unbinds an event
 	fun.unbind = function (strEvents) {
+		var that = this;
+		if (!prospect_queue.call(that,arguments,'unbind'))
+			return that;
 		var arrEvents = strEvents.split(/ /);
-		iterate(this,function (k,node) {
+		iterate(that,function (k,node) {
 			var qNodeUid = q(node).uniqueId();
 			iterate(arrEvents, function () {
 				var 
@@ -754,19 +815,20 @@
 				}
 			});
 		});
-		return this;
+		return that;
 	};
 
 	// triggers an event
 	fun.trigger = function (strEvent) {
-		var 
-		event = document.createEvent('HTMLEvents'),
-		that = this;
+		var that = this;
+		if (!prospect_queue.call(that,arguments,'trigger'))
+			return that;
+		var event = document.createEvent('HTMLEvents');
 		event.initEvent(strEvent, true, false);
-		iterate(this,function (k,node) {
+		iterate(that,function (k,node) {
 			node.dispatchEvent(event);
 		});
-		return this;
+		return that;
 	};
 	
 	// convert an object into a uri string ex: {k:"v"} to /k/v
@@ -785,16 +847,19 @@
 
 	// append something to the selection
 	fun.append = function (mixedVar, strAlternateMethod) {
+		var that = this;
+		if (!prospect_queue.call(that,arguments,'append'))
+			return that;
 		var 
 		item = typeof mixedVar == 'string' ? q(mixedVar) : mixedVar,
 		strMethod = strAlternateMethod || "appendChild";
-		iterate(this,function () {
+		iterate(that,function () {
 			var node = this;
 			iterate(item,function () {
 				node[strMethod](this, node.firstChild);
 			});
 		});
-		return this;
+		return that;
 	};
 
 	// Prepend something to the selection
@@ -811,15 +876,18 @@
 	// Append self after node
 	fun.appendAfter = function (mixedVar, boolBefore) {
 		var 
+		that = this,
 		qNode = q(mixedVar),
 		objNext = boolBefore ? qNode[0] : qNode['next']()[0],
 		qParent = qNode.parent();
 		if (objNext) {
-			qParent[0].insertBefore(this[0], objNext);
+			if (!prospect_queue.call(that,arguments,'appendAfter'))
+				return that;
+			qParent[0].insertBefore(that[0], objNext);
 		} else {
-			qParent[boolBefore ? 'prepend' : 'append'](this);
+			qParent[boolBefore ? 'prepend' : 'append'](that);
 		}
-		return this;
+		return that;
 	};
 
 	// Append self before a node
@@ -829,11 +897,14 @@
 
 	// Remove node
 	fun.remove = function () {
-		iterate(this,function () {
+		var that = this;
+		if (!prospect_queue.call(that,arguments,'remove'))
+			return that;
+		iterate(that,function () {
 			if (this.parentNode) // make sure its attached to something
 				this.parentNode.removeChild(this);
 		});
-		return this;
+		return that;
 	};
 
 	// Next sibling node
@@ -976,13 +1047,14 @@
     
 	// turns on or off asynchronous animations and pauses
 	fun.queue = function (boolOff) {
+		var that = this;
 		if (boolOff)
-			iterate(this, function (k,el) {
+			iterate(that, function (k,el) {
 				var intElUid = q(el).uniqueId();
 				delete objQueueChain[intElUid];
 			});
 		else
-			iterate(this, function (k,el) {
+			iterate(that, function (k,el) {
 				var intElUid = q(el).uniqueId();
 				if (!objQueueChain[intElUid])
 					objQueueChain[intElUid] = {
@@ -990,7 +1062,7 @@
 						sequence : []
 					};
 			});
-		return this;
+		return that;
 	};
 
 	// jump to the next item in the queue
@@ -999,7 +1071,7 @@
 		if (el)
 			runNext(el);
 		else 
-			iterate(this, function (k,el) {
+			iterate(that, function (k,el) {
 				runNext(el);
 			});
 		function runNext(el) {
@@ -1007,7 +1079,8 @@
 			if (objQueueChain[intElUid]) {
 				if (objQueueChain[intElUid].sequence.length) {
 					var arrParams = objQueueChain[intElUid].sequence.shift();
-					that.animate.call(that, arrParams[0], arrParams[1], arrParams[2], arrParams[3], arrParams[4]);
+					var strFnName = arrParams.shift();
+					that[strFnName].apply(that, arrParams);
 				} else {
 					delete objAnimationInstances[intElUid];
 				}
@@ -1020,28 +1093,37 @@
 
 	// turn of the animation queue
 	fun.dequeue = function () {
-		iterate(this, function (k,el) {
+		var that = this;
+		iterate(that, function (k,el) {
 			var intElUid = q(el).uniqueId();
 			if (objQueueChain[intElUid])
 				objQueueChain[intElUid].sequence = [];
 		});
-		return this;
+		return that;
 	};
 
 	fun.pause = function () {
-		return this.css({
+		var that = this;
+		if (!prospect_queue.call(that,arguments,'pause'))
+			return that;
+		return that.css({
 			"animation-play-state" : "paused"
 		});
 	};
 
 	fun.play = function () {
-		return this.css({
+		var that = this;
+		if (!prospect_queue.call(that,arguments,'play'))
+			return that;
+		return that.css({
 			"animation-play-state" : "running"
 		});
 	};
 
 	fun.stop = function () {
 		var that = this;
+		if (!prospect_queue.call(that,arguments,'stop'))
+			return that;
 		iterate(this, function (k,el) {
 			var 
 			objAI = objAnimationInstances,
@@ -1097,7 +1179,7 @@
 		return this;
 	};
 	fun.animate = function (objCssTo) {
-		if (typeof objCssTo == "string") {
+		/*if (typeof objCssTo == "string") {
 			if (objCssTo == "delay") {
 				var fnCallback = arguments[2];
 				var fnDone = function () {
@@ -1108,9 +1190,11 @@
 				this.animationSettings[objCssTo] = arguments[1];
 			}
 			return this;
-		}
-		var 
-		that = this,
+		}*/
+		var that = this;
+		if (!prospect_queue.call(that,arguments,'animate'))
+			return that;
+		var
 		intArgs = arguments.length,
 		intDuration = 750,
 		fnEasing = easings.linear,
