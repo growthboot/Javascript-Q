@@ -1,4 +1,4 @@
-![alt text](https://imgur.com/HWFV8DI)
+![Javascript Q](http://img18105.imagevenue.com/img.php?image=761082772_q_122_44lo.jpg)
 
 ## VERSION
 2.1
