@@ -70,9 +70,9 @@ $("h3").each(function () {
 ### Delay stuff from happening
 ```javascript
 $("<div>")
-.queue()
-.delay(1000)
-.appendTo("body")
+.queue() // Tell queue that were going to have stuff wait for delays and animations to finish before moving on
+.delay(1000) // Delay 1 second
+.appendTo("body") // this will only happen after the delay
 .css({
 	position : "absolute",
 	backgroundColor : 'rgb(255,0,0)',
@@ -84,7 +84,10 @@ $("<div>")
 	backgroundColor : 'rgb(0,255,0)',
 })
 .delay(1000)
-.remove();
+.remove()
+.delay(1000, function () { // run a callback function after a delay
+	alert('hi');
+});
 ```
 
 ### Get the dimensions of an object
