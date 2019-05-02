@@ -9,13 +9,13 @@
 
 	var 
 
-	BYPASS_QUEUE = 'BYPASS_QUEUE_CONSTANT',
-
 	// Initialize Q
 	q = window[JavascriptQ] = function (mixedQuery) {
 		var that = copy(fun);
 		return that.put(mixedQuery);
 	},
+	
+	BYPASS_QUEUE = q.BYPASS_QUEUE = 'BYPASS_QUEUE_CONSTANT',
 
 	// Duplicates an object
 	copy = q.copy = function (obj) {
@@ -103,7 +103,7 @@
 		scale3d : "1,1,1",
 	},
 
-	objQueueChain = {}, // holds information for queuing animations for asynchronous playback
+	objQueueChain = {}, // holds information for queuing animations for synchronous playback
 
 	// Don't add px postfix to these values
 	arrExcludePx = {'transform-scaleX':1,'transform-scaleY':1,'transform-scale':1,'column-count': 1,'fill-opacity': 1,'font-weight': 1,opacity: 1,orphans: 1,widows: 1,'z-index': 1,zoom: 1,'background-color': 1},
@@ -171,7 +171,56 @@
 
 	// define prototype object
 	q.prototype = fun;
+	
+	fun.ready = function (fnCallback) {
+		if ( document.readyState === "complete" ) {
+			fnCallback();
+		} else {
+			// Create the promise
+			arrReadyPromises.push(fnCallback);
+			// Set the even listeners
+			if (!boolReadyEventsOn) {
+				boolReadyEventsOn = true;
+				var
+				// call all the promised functions
+				ready = function () {
+					for (var intItr in arrReadyPromises) {
+						arrReadyPromises[intItr]();
+					}
+				},
+				// attach event for dom ready
+				completed = function( event ) {
+					if ( document.addEventListener || event.type === "load" || document.readyState === "complete" ) {
+						detach();
+						ready();
+					}
+				},
+				// detatch completed function
+				detach = function() {
+					if ( document.addEventListener ) {
+						document.removeEventListener( "DOMContentLoaded", completed, false );
+						window.removeEventListener( "load", completed, false );
 
+					} else {
+						document.detachEvent( "onreadystatechange", completed );
+						window.detachEvent( "onload", completed );
+					}
+				};
+				if ( document.addEventListener ) {
+					document.addEventListener( "DOMContentLoaded", completed, false );
+					// A fallback to window.onload, that will always work
+					window.addEventListener( "load", completed, false );
+				// If IE event model is used
+				} else {
+					// Ensure firing before onload, maybe late but safe also for iframes
+					document.attachEvent( "onreadystatechange", completed );
+					// A fallback to window.onload, that will always work
+					window.attachEvent( "onload", completed );
+				}
+			}
+		}
+	};
+	
 	// gives a q something to do. used when q is called as a function
 	fun.put = function (mixedQuery) {
 		var 
@@ -179,52 +228,7 @@
 		queryType = typeof mixedQuery;
 		if (queryType == 'function') {
 			// DOM ready
-			if ( document.readyState === "complete" ) {
-				mixedQuery();
-			} else {
-				// Create the promise
-				arrReadyPromises.push(mixedQuery);
-				// Set the even listeners
-				if (!boolReadyEventsOn) {
-					boolReadyEventsOn = true;
-					var
-					// call all the promised functions
-					ready = function () {
-						for (var intItr in arrReadyPromises) {
-							arrReadyPromises[intItr]();
-						}
-					},
-					// attach event for dom ready
-					completed = function( event ) {
-						if ( document.addEventListener || event.type === "load" || document.readyState === "complete" ) {
-							detach();
-							ready();
-						}
-					},
-					// detatch completed function
-					detach = function() {
-						if ( document.addEventListener ) {
-							document.removeEventListener( "DOMContentLoaded", completed, false );
-							window.removeEventListener( "load", completed, false );
-
-						} else {
-							document.detachEvent( "onreadystatechange", completed );
-							window.detachEvent( "onload", completed );
-						}
-					};
-					if ( document.addEventListener ) {
-						document.addEventListener( "DOMContentLoaded", completed, false );
-						// A fallback to window.onload, that will always work
-						window.addEventListener( "load", completed, false );
-					// If IE event model is used
-					} else {
-						// Ensure firing before onload, maybe late but safe also for iframes
-						document.attachEvent( "onreadystatechange", completed );
-						// A fallback to window.onload, that will always work
-						window.attachEvent( "onload", completed );
-					}
-				}
-			}
+			that.ready(mixedQuery);
 		} else if (queryType == 'object') {
 			var i=0;
 			if (isNode(mixedQuery)) {
