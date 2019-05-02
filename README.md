@@ -37,7 +37,7 @@ Example:
 <script>
 	var JAVASCRIPT_Q_HANDLE = "q";
 </script>
-<script src="https://cdn.jsdelivr.net/gh/AugmentLogic/Javascript-Q@master/q.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/AugmentLogic/Javascript-Q@latest/q.js"></script>
 <script>
 	q(function () {
 		alert("I'm alive!");
