@@ -1,4 +1,4 @@
-![Javascript Q](http://img18105.imagevenue.com/img.php?image=761082772_q_122_44lo.jpg)
+![Javascript Q](http://img28105.imagevenue.com/aAfkjfp01fo1i-3407/loc44/761082772_q_122_44lo.jpg)
 
 ## VERSION
 2.1
