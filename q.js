@@ -1,16 +1,18 @@
 /**
- * q.js v2.1
+ * q.js v2.11
  * Javascript Q
  * GitHub: https://github.com/AugmentLogic/Javascript-Q
  * CDN: https://cdn.jsdelivr.net/gh/AugmentLogic/Javascript-Q@latest/q.js
  */
 
-(function(handle) {
+(function(JavascriptQ) {
 
 	var 
 
+	BYPASS_QUEUE = 'BYPASS_QUEUE_CONSTANT',
+
 	// Initialize Q
-	q = window[handle] = function (mixedQuery) {
+	q = window[JavascriptQ] = function (mixedQuery) {
 		var that = copy(fun);
 		return that.put(mixedQuery);
 	},
@@ -20,13 +22,14 @@
 		return extend({}, obj);
 	},
 	
+	// Extends the properties of an object
 	extend = q.extend = function (obj1, obj2) {
 		var keys = Object.keys(obj2);
-	    for (var i = 0; i < keys.length; i += 1) {
-	      var val = obj2[keys[i]];
-	      obj1[keys[i]] = ['object', 'array'].indexOf(typeof val) != -1 ? extend(obj1[keys[i]] || {}, val) : val;
-	    }
-	    return obj1;
+		for (var i = 0; i < keys.length; i += 1) {
+			var val = obj2[keys[i]];
+			obj1[keys[i]] = ['object', 'array'].indexOf(typeof val) != -1 ? extend(obj1[keys[i]] || {}, val) : val;
+		}
+		return obj1;
 	},
 
 	iterate = function (that, fnCallback) {
@@ -46,8 +49,9 @@
 		}
 		return !!l;
 	},
-
-	reverseCamel = function (strInput) {
+	
+	// change camel case for dashes
+	camelToDash = q.camelToDash = function (strInput) {
 		return strInput
 			.replace(/([a-z])([A-Z])/g, '$1-$2')
 			.toLowerCase();
@@ -56,35 +60,15 @@
 	// Handle DOM ready
 	boolReadyEventsOn = false,
 	arrReadyPromises = [],
-	ready = function () {
-		for (var intItr in arrReadyPromises) {
-			arrReadyPromises[intItr]();
-		}
-	},
-	completed = function( event ) {
-		// readyState === "complete" is good enough for us to call the dom ready in oldIE
-		if ( document.addEventListener || event.type === "load" || document.readyState === "complete" ) {
-			detach();
-			ready();
-		}
-	},
-	detach = function() {
-		if ( document.addEventListener ) {
-			document.removeEventListener( "DOMContentLoaded", completed, false );
-			window.removeEventListener( "load", completed, false );
-
-		} else {
-			document.detachEvent( "onreadystatechange", completed );
-			window.detachEvent( "onload", completed );
-		}
-	},
-
+	// check if there's a queue open and if there is add the call the sequence, if not just call it
 	prospect_queue = function (arrArgs,strParentName) {
 		var that = this,
 		boolParentProceeds = true;
 		arrArgs = Array.prototype.slice.call(arrArgs);
 		arrArgsSequence = arrArgs.slice(0);
 		arrArgsSequence.unshift(strParentName);
+		if (arrArgs.includes(BYPASS_QUEUE))
+			return true;
 		iterate(that,function (intItem, el) {
 			var intElUid = q(el).uniqueId();
 			if (objQueueChain[intElUid]) {
@@ -107,10 +91,10 @@
 		});
 		return boolParentProceeds;
 	},
-
 	animations = 0, // the current amount of animations that have been started
 	objAnimationInstances = {},
 	objTransformHistory = {}, // css transforms are lost in the matrix so we gotta keep track of them
+	// default transform scales
 	objTransformDefaults = {
 		scale : "1,1",
 		scaleX : 1,
@@ -125,12 +109,13 @@
 	arrExcludePx = {'transform-scaleX':1,'transform-scaleY':1,'transform-scale':1,'column-count': 1,'fill-opacity': 1,'font-weight': 1,opacity: 1,orphans: 1,widows: 1,'z-index': 1,zoom: 1,'background-color': 1},
 
 	// create new methods in the q variable that call bind ex: q(mixed).click(function);
-	arrAutoBind = ["click","mousedown","mouseup","mouseover","mousemove","mouseleave","mouseenter","change","load","dblclick","focus","focusin","focusout","input","keydown","keypress","keyup","resize","reset","scroll","select","touchcancel","touchend","touchmove","touchstart","transitionend","unload","wheel"],
+	arrAutoBind = ["click","mousedown","mouseup","mouseover","mousemove","mouseleave","mouseenter","change","load","dblclick","focus","focusin","focusout","input","keydown","keypress","keyup","resize","reset","scroll","select","touchcancel","touchend","touchmove","touchstart","transitionend","unload","wheel","contextmenu"],
 
 	// Support for .data
 	arrDataMemory = {},
 	// Support for: .bind .unbind .trigger
 	objEventMomory = {},
+	// the start of the fun return variable
 	fun = {
 		length : 0,
 		is_q : 1,
@@ -149,9 +134,9 @@
 	        g: parseInt(result[2], 16),
 	        b: parseInt(result[3], 16)
 	    } : null;
-	};
+	},
 	// Animation easings
-	var easings = q.easings = {};
+	easings = q.easings = {};
 	easings.linear = function(t, b, c, d) {return c * t / d + b;};
 	easings.easeInQuad = function(t, b, c, d) {return c * (t /= d) * t + b;};
 	easings.easeOutQuad = function(t, b, c, d) {return -c * (t /= d) * (t - 2) + b;};
@@ -202,6 +187,31 @@
 				// Set the even listeners
 				if (!boolReadyEventsOn) {
 					boolReadyEventsOn = true;
+					var
+					// call all the promised functions
+					ready = function () {
+						for (var intItr in arrReadyPromises) {
+							arrReadyPromises[intItr]();
+						}
+					},
+					// attach event for dom ready
+					completed = function( event ) {
+						if ( document.addEventListener || event.type === "load" || document.readyState === "complete" ) {
+							detach();
+							ready();
+						}
+					},
+					// detatch completed function
+					detach = function() {
+						if ( document.addEventListener ) {
+							document.removeEventListener( "DOMContentLoaded", completed, false );
+							window.removeEventListener( "load", completed, false );
+
+						} else {
+							document.detachEvent( "onreadystatechange", completed );
+							window.detachEvent( "onload", completed );
+						}
+					};
 					if ( document.addEventListener ) {
 						document.addEventListener( "DOMContentLoaded", completed, false );
 						// A fallback to window.onload, that will always work
@@ -551,8 +561,6 @@
 	// Dynamically adds a CSS stylesheet
 	q.addCSS = function (strCss, arrCss) {
 		var that = this;
-		if (!prospect_queue.call(that,arguments,'addCSS'))
-			return that;
 		if (typeof arrCss == 'object') {
 			var strTempCss = strCss + ' {';
 			for (var strName in arrCss) {
@@ -608,7 +616,7 @@
 				return getComputedStyle(that[0]);
 			} else if (typeof mixedCss == 'string') {
 				var objStyle = getComputedStyle(that[0]);
-				return objStyle ? objStyle[reverseCamel(mixedCss)] : 0;
+				return objStyle ? objStyle[camelToDash(mixedCss)] : 0;
 			}
 		} catch (e) {
 			return false;
@@ -625,7 +633,7 @@
 				strValue = stringifyTransformData(strValue);
 			}
 			var 
-			strParam = reverseCamel(strKey),
+			strParam = camelToDash(strKey),
 			strImportant = /!important *$/.test(mixedCss[strKey]) ? 'important' : '';
 			if (typeof strValue == 'string')
 				strValue = strValue.replace(/ *!important *$/, '');
@@ -1066,7 +1074,7 @@
 	};
 
 	// jump to the next item in the queue
-	q.queueNext = fun.queueNext = function (el) {
+	q.queueNext = fun.queueNext = function (el,boolApplyByPass) {
 		var that = this;
 		if (el)
 			runNext(el);
@@ -1080,6 +1088,8 @@
 				if (objQueueChain[intElUid].sequence.length) {
 					var arrParams = objQueueChain[intElUid].sequence.shift();
 					var strFnName = arrParams.shift();
+					if (boolApplyByPass)
+						arrParams.push(undefined,undefined,undefined,undefined,undefined,BYPASS_QUEUE);
 					that[strFnName].apply(that, arrParams);
 				} else {
 					delete objAnimationInstances[intElUid];
@@ -1139,6 +1149,9 @@
 	};
 
 	q.delay = fun.delay = function (intMS, fnCallback) {
+		var arrArgs = Array.prototype.slice.call(arguments);
+		var boolByPassQueue = arrArgs.includes(BYPASS_QUEUE);
+			
 		var that = this;
 		if (!that.is_q)
 			window.setTimeout(function () {
@@ -1154,47 +1167,26 @@
 			iterate(this,function (intItem, el) {
 				var intElUid = q(el).uniqueId();
 				if (objQueueChain[intElUid]) {
-					if (objQueueChain[intElUid].active) {
+					if (!boolByPassQueue && objQueueChain[intElUid].active) {
 						// Add next animation to chain
 						objQueueChain[intElUid].sequence.push(["delay", intMS, fnCallback]);
 						return false;
 					}
 					objQueueChain[intElUid].active = true;
-					$.delay(intMS, function () {
+					q.delay(intMS, function () {
 					 	if (fnCallback)
 					 		fnCallback();
 					 	objQueueChain[intElUid].active = false;
 					 	that.queueNext();
-					});
+					},BYPASS_QUEUE);
 				}
 			});
 		return this;
 	};
 
 	// Animation Created: Apr 13, 2018
-	fun.animationSettings = {};
-	fun.boolDebugMode = false;
-	fun.debug = function (boolOn) {
-		this.boolDebugMode = boolOn == undefined || !!boolOn;
-		return this;
-	};
 	fun.animate = function (objCssTo) {
-		/*if (typeof objCssTo == "string") {
-			if (objCssTo == "delay") {
-				var fnCallback = arguments[2];
-				var fnDone = function () {
-					fnCallback();
-				};
-				q.delay(arguments[1], fnDone);
-			} else {
-				this.animationSettings[objCssTo] = arguments[1];
-			}
-			return this;
-		}*/
-		var that = this;
-		if (!prospect_queue.call(that,arguments,'animate'))
-			return that;
-		var
+		var that = this,
 		intArgs = arguments.length,
 		intDuration = 750,
 		fnEasing = easings.linear,
@@ -1220,24 +1212,26 @@
 				extend(objOptions, mixedValue);
 			}
 		}
+		arrArgs = Array.prototype.slice.call(arguments);
+		arrArgsSequence = arrArgs.slice(0);
+		arrArgsSequence.unshift("animate");
 		var 
+		boolBypassQueue = arrArgs.includes(BYPASS_QUEUE),
 		intIterations = Math.ceil(intDuration/10),
 		regMatchNumbers = /(\-?[0-9]+(?:\.[0-9]+)?(?:[a-z]{2}?|%)?)/gi,
-		regSplitNumbers = /\-?[0-9]+(?:\.[0-9]+)?(?:[a-z]{2}?|%)?/gi,
-		boolAccelerate = this.animationSettings.accelerate; // Match measurement units
-		iterate(this,function (intItem, el) {
+		regSplitNumbers = /\-?[0-9]+(?:\.[0-9]+)?(?:[a-z]{2}?|%)?/gi;
+		iterate(that,function (intItem, el) {
 			var intElUid = q(el).uniqueId();
 			if (objQueueChain[intElUid]) {
-				if (objQueueChain[intElUid].active) {
-					// Add next animation to chain
-					objQueueChain[intElUid].sequence.push([objCssTo, intDuration, strEasing, fnCallback, objOptions]);
+				if (!boolBypassQueue && objQueueChain[intElUid].active) {
+					objQueueChain[intElUid].sequence.push(arrArgsSequence);
 					return;
 				}
+				objQueueChain[intElUid].skip_queue =
 				objQueueChain[intElUid].active = true;
 			}
-			if (typeof objCssTo == "function") {
+			if (typeof objCssTo == "function")
 				objCssTo = objCssTo.call(that);
-			}
 			var 
 			objHistory = objTransformHistory[intElUid],
 			objCssFrom = {},
@@ -1252,7 +1246,7 @@
 			for (var strCssToKey in objCssTo) {
 				var 
 				to = objCssTo[strCssToKey],
-				toRC = reverseCamel(strCssToKey);
+				toRC = camelToDash(strCssToKey);
 				// iterate the tranform in a slightly different way
 				if (toRC == "transform") {
 					if (objHistory)
@@ -1267,7 +1261,7 @@
 				} else {
 					var
 					change = to - from,
-					from = objStartStyles[reverseCamel(strCssToKey)] || 0;
+					from = objStartStyles[camelToDash(strCssToKey)] || 0;
 					tweenString(strCssToKey, toRC, from, to);
 				}
 			}
@@ -1369,7 +1363,7 @@
 							objTransformHistory[intElUid] = objCssTo.transform;
 							objCssTo.transform = stringifyTransformData(objCssTo.transform);
 						}
-						q(el).css(objCssTo);
+						q(el).css(objCssTo, BYPASS_QUEUE);
 						cleanUp(el,fnDone,style,intElUid);
 						fnCallback();
 						strCurrentKey = toRC;
@@ -1383,8 +1377,6 @@
 			objAI.stop = function () {
 				return (function (that, objAI, intDuration, arrOutput, fnDone, el, style, intElUid, objOptions) {
 					return (function () {
-						if (that.boolDebugMode)
-							bark(['stop', that]);
 						window.clearTimeout(objAI.timeout);
 						var 
 						intElapsed = q.mstime() - objAI.startTime,

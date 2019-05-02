@@ -172,7 +172,7 @@ $(function () {
 	$("#animationStart4").click(function () {
 		$("#animationBox3")
 		.stop()
-		.queue() // asynchronous playback
+		.queue()
 		.css({
 			width:20,
 			height:20,
@@ -316,7 +316,6 @@ $("#domManSource .cell1").append("<span>abc</span>");
 output("Append html", $("#domManSource .cell1").html() == "1<span>abc</span>" ? strPass : strFail);
 $("#domManSource .cell2").append($("#domManSource .cell1")[0]);
 output("Append DOM object", $("#domManSource .cell2").html() == '2<span class="cell1 cell">1<span>abc</span></span>' ? strPass : strFail);
-
 // .prepend
 $("#domManSource .cell3").prepend($("#domManSource .cell1")[0]);
 output("Prepend", ($("#domManSource .cell3").html() == '<span class="cell1 cell">1<span>abc</span></span>3<span>deep</span>' ? strPass : strFail));
