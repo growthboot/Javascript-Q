@@ -300,9 +300,6 @@ $.request({
 - **innerWidth**: Get the inner width of an element
 - **height**: Get the height of an element `$("#my_element").height()`.
 - **innerHeight**: Get the inner height of an element
-- **trim**: Remove any spaces from the start and end of a string `$.trim(" abc  ")` results in "abc".
-- **ltrim**: Remove any spaces from the start of a string `$.ltrim(" abc  ")` results in "abc  ".
-- **rtrim**: Remove any spaces from the end of a string `$.rtrim(" abc  ")` results in " abc".
 - **functionTrim**: Remove all items from a specific point on function index. For example  `$('div').functionTrim(0)` would empty the Q selection. 
 - **mstime**: Get the current unix timestamp in milliseconds `$.mstime()`.
 - **request**: Make an AJAX GET request `$.request({url:"...",success:function() {...}})` or a POST request `$.request({url:"...",post:{some_key:"some_value"},success:function() {...}})`.
@@ -329,6 +326,9 @@ $.request({
 - **$.request(obj)**: Perform an AJAX request
 - **$.delay(msTime, callbackFunction)**: perform a delay just like setTimeout
 - **$.each(array, function(key,value) {...})**: Iterate an array
+- **$.trim**: Remove any spaces from the start and end of a string `$.trim(" abc  ")` results in "abc".
+- **$.ltrim**: Remove any spaces from the start of a string `$.ltrim(" abc  ")` results in "abc  ".
+- **$.rtrim**: Remove any spaces from the end of a string `$.rtrim(" abc  ")` results in " abc".
 
 ## FINAL NOTES
 This library was created [for the Exitget platform](https://exitget.com/) because of the need for an ultra light weight library to use that also has super fast animation capabilities. It was needed to help bring down the code size for the customer facing resource that's used to generate popups on their client's sites. Exitget has been using and evolving this code for over 5 years now.
