@@ -1,4 +1,4 @@
-# JavaScript Q Library
+# JavaScript Q Library (JSQL)
 ----------------
 This is a small JavaScript library intended to reduce the data transfer and memory usage on your websites or apps by reducing redundant and repetitive coding. The library takes advantage of HTML5 functionality in Javascript since it became standard to keep it's size small. The idea is websites that want to service customers using pre HTML5 browsers can do so using vanilla HTML since they make up a very small portion of the market.
 
@@ -247,6 +247,8 @@ $.request({
 ### List of methods
 - **uniqueId**: Get a unique ID that represents a specific DOM element
 - **find**: Search from any point in the DOM tree for a selection `some_element.find(".some_class")`.
+- **if**: Result passed to function will change if the following queries run or not
+- **else**: Used after `if`, will run the queries that are after the else only if the previous `if` was false
 - **get**: Get a specific item from the selection using its index `$(".sometags").get(2)`. Get the last time of the index `.get(-1)`.
 - **become**: Simular functionality to get except it returns a new q selection rather than just the value. `$(".sometags").become(-1).remove()`
 - **parent**: Get the parent of an element `$("...").parent()`.
@@ -264,6 +266,9 @@ $.request({
 - **hasClass**: Check if elements has a specific css class attached to it
 - **addClass**: Add a style sheet class to an element `$('h1').addClass("headline")`. Add multiple classes by separating them by spaces. Inject a CSS class into the DOM `$.addClass(".headline", {position:"absolute",top:0,left:0})`.
 - **removeClass**: Remove a style sheet class from dom elements `$('h1').removeClass("headline")`.
+- **withClass**: Removes all items from the selection if they dont contain the provided class(es)
+- **withoutClass**: Removes all items from the selection if they contain the provided class(es)
+- **filter**: Removes all items from the selection if they dont match the provided selection
 - **attr**: Add an attribute to elements `$("#headline").attr("more_data", "value")`. Get the value of an attribute `$("#headline").attr("more_data")` returns `"value"`.
 - **removeAttr**: Remove an attribute from elements `$("h3").removeAttr("more_data")`.
 - **data**: Get and set any type of data from any dom element
@@ -313,6 +318,7 @@ $.request({
 - **animate**: CSS based Animation `$("#foo").animate({left:100})`
 
 ### List of tools
+- **$.plugin(name, function)**: Add your own plugin to the JSQL framework
 - **$.copy(obj)**: Copy an object
 - **$.extend(obj1, obj2)**: Extend an object
 - **$.hexToRgb(hexString)**: Change HAX to RGB `#0000FF` -> `0,0,255`
