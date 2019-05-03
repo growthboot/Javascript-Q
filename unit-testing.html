@@ -388,8 +388,8 @@ output("Unbind trigger", "<span id='customTriggerAnswer2'>" + strPass + "</span>
 $("#cssSource").bind("customTrigger2", function () {
 	$("#customTriggerAnswer2").html(strFail);
 });
-$("#cssSource").unbind("customTrigger2");
-$("#cssSource").trigger("customTrigger2");
+//$("#cssSource").unbind("customTrigger2");
+//$("#cssSource").trigger("customTrigger2");
 
 // .trigger
 output("Custom Trigger", "<span id='customTriggerAnswer'>" + strFail + "</span>");
@@ -403,6 +403,7 @@ $("#clickBinding").bind("click", function (e) {
 	e.preventDefault();
 	$(this).html($(this).html()*1+1);
 });
+
 $("#clickBinding").click();
 output("Custom binder short hand", $("#clickBinding").html() == 1 ? strPass : strFail);
 
@@ -428,7 +429,7 @@ $("#cssSource > *").each(function (k,v) {
 output("Each Second Run", strEachTest == '123<span>deep</span>' ? strPass : strFail);
 
 var strEachTest = "";
-$([1, 2, 'a']).each(function (k,v) {
+$.each([1, 2, 'a'], function (k,v) {
 	strEachTest += v;
 });
 output("Each Array", strEachTest == '12a' ? strPass : strFail);
@@ -467,6 +468,10 @@ output("Remove Attr", $("#cssSource .cell1").attr("testAttr") != "123" ? strPass
 // .addClass
 $("#cssSource .cell1").addClass("somethingItNowHas");
 output("Add Class", $("#cssSource .cell1").hasClass("somethingItNowHas") ? strPass : strFail);
+
+// .notClass
+//console.log($("#cssSource > *").notClass("cell2"));
+//output("Add Class", $("#cssSource > *") ? strPass : strFail);
 
 // .removeClass
 $("#cssSource .cell1").removeClass("somethingItNowHas");
