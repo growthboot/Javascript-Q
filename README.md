@@ -301,10 +301,7 @@ $.request({
 - **height**: Get the height of an element `$("#my_element").height()`.
 - **innerHeight**: Get the inner height of an element
 - **functionTrim**: Remove all items from a specific point on function index. For example  `$('div').functionTrim(0)` would empty the Q selection. 
-- **mstime**: Get the current unix timestamp in milliseconds `$.mstime()`.
-- **request**: Make an AJAX GET request `$.request({url:"...",success:function() {...}})` or a POST request `$.request({url:"...",post:{some_key:"some_value"},success:function() {...}})`.
 - **serialize**: Serialize an array for a post string `$.serialize({some_key1:"some_value1",some_key2:"some_value2"})` returns `"some_key1=some_value1&some_key2=some_value2"`. Serialize all form elements from a specific point in the DOM tree `$("#some_element").serialize()`.
-- **type**: Return what type an element is `$.type(some_variable)` could possibly return an one of these values `null, window, document, event, array, boolean, date, object, regexp, error, domelement, string or Unknown`
 - **queue**: Turns on or off asynchronous animations and pauses (default off) `$("#foo").queue(true).animate(...).animate(...);
 - **queueNext**: Jump to the next item in the queue
 - **dequeue**: Turn of the animation queue
@@ -329,6 +326,8 @@ $.request({
 - **$.trim**: Remove any spaces from the start and end of a string `$.trim(" abc  ")` results in "abc".
 - **$.ltrim**: Remove any spaces from the start of a string `$.ltrim(" abc  ")` results in "abc  ".
 - **$.rtrim**: Remove any spaces from the end of a string `$.rtrim(" abc  ")` results in " abc".
+- **$.request**: Make an AJAX GET request `$.request({url:"...",success:function() {...}})` or a POST request `$.request({url:"...",post:{some_key:"some_value"},success:function() {...}})`.
+- **$.type**: Return what type an element is `$.type(some_variable)` could possibly return an one of these values `null, window, document, event, array, boolean, date, object, regexp, error, domelement, string or Unknown`
 
 ## FINAL NOTES
 This library was created [for the Exitget platform](https://exitget.com/) because of the need for an ultra light weight library to use that also has super fast animation capabilities. It was needed to help bring down the code size for the customer facing resource that's used to generate popups on their client's sites. Exitget has been using and evolving this code for over 5 years now.
