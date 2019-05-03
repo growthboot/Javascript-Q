@@ -15,6 +15,8 @@ This is a small JavaScript library intended to reduce the data transfer and memo
  - Event handling
  - Data to DOM storage
  - Object dimension and position processing
+ - Recursive if and else logic
+ - Result filtering (withoutClass, withClass, filter)
  - Added general functionality (rand, extend, mstime, etc...)
 
 ## Disadvantages
