@@ -301,8 +301,8 @@ $.request({
 - **height**: Get the height of an element `$("#my_element").height()`.
 - **innerHeight**: Get the inner height of an element
 - **trim**: Remove any spaces from the start and end of a string `$.trim(" abc  ")` results in "abc".
-- **ltrim**: Remove any spaces from the start of a string `$.trim(" abc  ")` results in "abc  ".
-- **rtrim**: Remove any spaces from the end of a string `$.trim(" abc  ")` results in " abc".
+- **ltrim**: Remove any spaces from the start of a string `$.ltrim(" abc  ")` results in "abc  ".
+- **rtrim**: Remove any spaces from the end of a string `$.rtrim(" abc  ")` results in " abc".
 - **functionTrim**: Remove all items from a specific point on function index. For example  `$('div').functionTrim(0)` would empty the Q selection. 
 - **mstime**: Get the current unix timestamp in milliseconds `$.mstime()`.
 - **request**: Make an AJAX GET request `$.request({url:"...",success:function() {...}})` or a POST request `$.request({url:"...",post:{some_key:"some_value"},success:function() {...}})`.
