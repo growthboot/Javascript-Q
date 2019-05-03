@@ -328,6 +328,7 @@ $.request({
 - **$.rand(min,max)**: Get a random number between to numbers
 - **$.request(obj)**: Perform an AJAX request
 - **$.delay(msTime, callbackFunction)**: perform a delay just like setTimeout
+- **$.each(array, function(key,value) {...})**: Iterate an array
 
 ## FINAL NOTES
 This library was created [for the Exitget platform](https://exitget.com/) because of the need for an ultra light weight library to use that also has super fast animation capabilities. It was needed to help bring down the code size for the customer facing resource that's used to generate popups on their client's sites. Exitget has been using and evolving this code for over 5 years now.
