@@ -1,12 +1,11 @@
 /**
- * q.js v2.2
+ * q.js v2.21
  * Javascript Q
  * GitHub: https://github.com/AugmentLogic/Javascript-Q
  * CDN: https://cdn.jsdelivr.net/gh/AugmentLogic/Javascript-Q@latest/q.js
  */
 
 (function(JavascriptQ) {
-
 	var 
 
 	// Initialize Q
@@ -65,7 +64,7 @@
 		var that = this,
 		boolParentProceeds = true;
 		arrArgs = Array.prototype.slice.call(arrArgs);
-		arrArgsSequence = arrArgs.slice(0);
+		var arrArgsSequence = arrArgs.slice(0);
 		arrArgsSequence.unshift(strParentName);
 		if (arrArgs.includes(BYPASS_QUEUE))
 			return true;
@@ -121,10 +120,6 @@
 		is_q : 1,
 		version : "1.1",
 		layers : 0 // how many times has the find function ran
-	},
-	conditionalFun = function () {
-		alert(123);
-		return fun;
 	},
 	hexToRgb = q.hexToRgb = function (hex) {
 	    // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
@@ -192,7 +187,7 @@
 	// For adding new functions to the q
 	fnResolve = function (mixedValue) {
 		if (typeof mixedValue == "function")
-			mixedValue = mixedValue.call(that);
+			mixedValue = mixedValue.call(this);
 		return mixedValue;
 	},
 	error = q.error = function (objError) {
@@ -205,15 +200,15 @@
 			// pre dispatch
 			if (strName != 'else' && !conditions[condition_count]) // if this level condition wasnt matched
 				return this; // pass the query on without doing anything
-			try {
-				var mixedResult = fnCallback.apply(this,arguments);
-			} catch (e) {
+			//try {
+			var mixedResult = fnCallback.apply(this,arguments);
+			/*} catch (e) {
 				return error.call(this,{
 					fn : strName,
 					JSQE : true,
 					error : e
 				});
-			}
+			}*/
 			return mixedResult;
 		};
 	},
@@ -256,7 +251,7 @@
 	// add in-framework logic
 	fn('if', function (mixedValue) {
 		var that = this;
-		mixedValue = fnResolve(mixedValue);
+		mixedValue = fnResolve.call(this,mixedValue);
 		conditions.push(!!mixedValue);
 		condition_count++;
 		return that;
@@ -269,7 +264,7 @@
 		if (typeof mixedValue == "undefined") {
 			v = !conditions[condition_count];
 		} else {
-			mixedValue = fnResolve(mixedValue);
+			mixedValue = fnResolve.call(this,mixedValue);
 			v = !!mixedValue;
 		}
 		conditions[condition_count] = v;
@@ -334,10 +329,10 @@
 	fn('put', function (mixedQuery) {
 		var 
 		that = this,
-		queryType = q.type(mixedQuery);
+		queryType = typeof mixedQuery;
 		if (queryType == 'function') {
 			return that.ready(mixedQuery); // DOM ready
-		} else if (['object','domelement'].includes(queryType)) {
+		} else if (queryType == 'object') {
 			var i=0;
 			if (isNode(mixedQuery)) {
 				that[i++] = mixedQuery;
@@ -349,14 +344,16 @@
 				that[i++] = mixedQuery;
 			}
 			that.length = i;
-		} else if (queryType == 'array') {
+		/*
+		redundant code?
+		} else if (queryType2 == 'array') {
 			var i=0,
 			l=mixedQuery.length;
 			while (i<l)
 				that[i] = mixedQuery[i++];
 			while (that[i])
 				delete that[i++]; // remove trailing items
-			that.length = l;
+			that.length = l;*/
 		} else if (queryType == 'string' && mixedQuery.charAt(0) === "<" && mixedQuery.charAt( mixedQuery.length - 1 ) === ">" && mixedQuery.length >= 3) {
 			var wrapper = document.createElement('div');
 			wrapper.innerHTML = mixedQuery;
@@ -659,11 +656,17 @@
 	fn('width', function () {
 		return getWidthHeight.call(this,"Width");
 	});
+	q.width = function () {
+		return q(window).width();
+	};
 	
 	// DOM height
 	fn('height', function () {
 		return getWidthHeight.call(this,"Height");
 	});
+	q.height = function () {
+		return q(window).height();
+	};
 
 	// DOM innerWidth (not counting scrollbars)
 	fn('innerWidth', function () {
@@ -785,12 +788,36 @@
 		return boolHas;
 	});
 	
-	fn('notClass', function (strClassList) {
+	fn('withoutClass', function (strClassList) {
 		var that = this;
 		var arrNewIndex = [];
 		iterate(that,function ()  {
 			var node = this;
 			if (!q(node).hasClass(strClassList))
+				arrNewIndex.push(node);
+		});
+		that.put(arrNewIndex);
+		return that;
+	});
+
+	fn('withClass', function (strClassList) {
+		var that = this;
+		var arrNewIndex = [];
+		iterate(that,function ()  {
+			var node = this;
+			if (q(node).hasClass(strClassList))
+				arrNewIndex.push(node);
+		});
+		that.put(arrNewIndex);
+		return that;
+	});
+
+	fn('filter', function (strSelection) {
+		var that = this;
+		var arrNewIndex = [];
+		iterate(that,function ()  {
+			var node = this;
+			if (q(node).is(strSelection))
 				arrNewIndex.push(node);
 		});
 		that.put(arrNewIndex);
@@ -1293,7 +1320,7 @@
 			
 		var that = this;
 		if (!that.is_q)
-			window.setTimeout(function () {
+			return window.setTimeout(function () {
 				fnCallback();
 			},intMS);
 		else if (!that.length)
@@ -1328,7 +1355,7 @@
 	});
 
 	// Animation Created: Apr 13, 2018
-	fn('animate', function (objCssTo) {
+	fn('animate', function (mixedCssTo) {
 		var that = this,
 		intArgs = arguments.length,
 		intDuration = 750,
@@ -1373,8 +1400,9 @@
 				objQueueChain[intElUid].skip_queue =
 				objQueueChain[intElUid].active = true;
 			}
-			if (typeof objCssTo == "function")
-				objCssTo = objCssTo.call(that);
+			mixedCssTo = fnResolve.call(this, mixedCssTo)
+			if (typeof mixedCssTo == "function")
+				mixedCssTo = mixedCssTo.call(that);
 			var 
 			objHistory = objTransformHistory[intElUid],
 			objCssFrom = {},
@@ -1386,14 +1414,14 @@
 				objTransformHistory[intElUid] = {};
 				objHistory = objTransformHistory[intElUid];
 			}
-			for (var strCssToKey in objCssTo) {
+			for (var strCssToKey in mixedCssTo) {
 				var 
-				to = objCssTo[strCssToKey],
+				to = mixedCssTo[strCssToKey],
 				toRC = camelToDash(strCssToKey);
 				// iterate the tranform in a slightly different way
 				if (toRC == "transform") {
 					if (objHistory)
-						objCssTo[strCssToKey] = to = q.extend(copy(objHistory),to);
+						mixedCssTo[strCssToKey] = to = q.extend(copy(objHistory),to);
 					boolTransformsUsed = true;
 					for (var strTransform in to) {
 						var 
@@ -1499,14 +1527,14 @@
 			var 
 			// finalize an animation once its complete
 			fnDone = objAI.done = function () {
-				return (function (strKeyFrameName, objCssTo, el, toRC, fnDone, objAI, style, intElUid, objOptions) {
+				return (function (strKeyFrameName, mixedCssTo, el, toRC, fnDone, objAI, style, intElUid, objOptions) {
 					return (function () {
 						// reprocess transforms into proper CSS
-						if (objCssTo.transform) {
-							objTransformHistory[intElUid] = objCssTo.transform;
-							objCssTo.transform = stringifyTransformData(objCssTo.transform);
+						if (mixedCssTo.transform) {
+							objTransformHistory[intElUid] = mixedCssTo.transform;
+							mixedCssTo.transform = stringifyTransformData(mixedCssTo.transform);
 						}
-						q(el).css(objCssTo, BYPASS_QUEUE);
+						q(el).css(mixedCssTo, BYPASS_QUEUE);
 						cleanUp(el,fnDone,style,intElUid);
 						fnCallback();
 						strCurrentKey = toRC;
@@ -1514,7 +1542,7 @@
 						objOptions.ended();
 						objOptions.finished();
 					})();
-				})(strKeyFrameName, objCssTo, el, toRC, fnDone, objAI, style, intElUid, objOptions);
+				})(strKeyFrameName, mixedCssTo, el, toRC, fnDone, objAI, style, intElUid, objOptions);
 			};
 			// stop an animation before complete
 			objAI.stop = function () {
@@ -1561,7 +1589,7 @@
 				el.style.setProperty("animation", "none");
 				//el.offsetHeight; // Trigger a reflow, flushing the CSS changes
 				q(style).remove();
-				delete style;
+				style = undefined;
 				delete objAnimationInstances[intElUid];
 			}
 			objAI.startTime = q.mstime();
