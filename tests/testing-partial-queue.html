@@ -1,0 +1,22 @@
+<!-- This document is badly commented... sorry. -->
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<script src="./../q.js"></script>
+</head>
+<body>
+	<div class='foo'>div</div>
+	<span class='foo'>span</span>
+	<script type="text/javascript">
+		$("div").queue().animate({
+			backgroundColor: 'rgba(255,0,0)'
+		},2000);
+		$(".foo").each(function() {
+			$(this).html('affected');
+		});
+		$("div").css({
+			backgroundColor: 'rgba(0,255,0)'
+		});
+	</script>
+</body>
+</html>

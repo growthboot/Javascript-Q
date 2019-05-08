@@ -1,5 +1,5 @@
 /**
- * q.js v2.22
+ * q.js v2.23
  * Javascript Q
  * GitHub: https://github.com/AugmentLogic/Javascript-Q
  * CDN: https://cdn.jsdelivr.net/gh/AugmentLogic/Javascript-Q@latest/q.js
@@ -61,34 +61,46 @@
 	arrReadyPromises = [],
 	// check if there's a queue open and if there is add the call the sequence, if not just call it
 	prospect_queue = function (arrArgs,strParentName) {
-		var that = this,
-		boolParentProceeds = true;
-		arrArgs = Array.prototype.slice.call(arrArgs);
-		var arrArgsSequence = arrArgs.slice(0);
+		var 
+		that = this,
+		arrArgs = Array.prototype.slice.call(arrArgs),
+		intTotal = that.length,
+		intBlocked = 0,
+		arrNewQueue = [];
+		arrArgsSequence = arrArgs.slice(0);
 		arrArgsSequence.unshift(strParentName);
 		if (arrArgs.includes(BYPASS_QUEUE))
 			return true;
+		// all elements must be queued to disable the entire process
+		// add elements to the sequence that are queued
+		// then remove those elements from the selection
+		// so that none queued items can continue with their normal process 
 		iterate(that,function (intItem, el) {
 			var intElUid = q(el).uniqueId();
 			if (objQueueChain[intElUid]) {
 				if (objQueueChain[intElUid].skip_queue) {
-					boolParentProceeds = false;
-					return false;
+					intBlocked++;
+					return;
 				}
 				if (objQueueChain[intElUid].active) {
-					boolParentProceeds = false;
+					intBlocked++;
 					objQueueChain[intElUid].sequence.push(arrArgsSequence);
-					return false;
+					return;
 				}
 				objQueueChain[intElUid].skip_queue = true;
 				objQueueChain[intElUid].active = true;
 				q(el)[strParentName].apply(that, arrArgs);
 				objQueueChain[intElUid].active = false;
 				objQueueChain[intElUid].skip_queue = false;
-				that.queueNext.call(that);
+				that.queueNext.call(that, el);
 			}
+			arrNewQueue.push(el);
 		});
-		return boolParentProceeds;
+		var boolContinue = intBlocked != intTotal;
+		if (boolContinue) {
+			that.put(arrNewQueue);
+		}
+		return boolContinue;// parent proceeds
 	},
 	animations = 0, // the current amount of animations that have been started
 	objAnimationInstances = {},
@@ -459,8 +471,6 @@
 	// Get all the HTML currently held as nodes in the current query
 	fn('html', function (strHTML, strAttrKey) {
 		var that = this;
-		if (!prospect_queue.call(that,arguments,'html'))
-			return that;
 		var htmlAttr = strAttrKey || "innerHTML";
 		if (strHTML == undefined) {
 			strHTML = "";
@@ -469,6 +479,8 @@
 			});
 			return strHTML;
 		}
+		if (!prospect_queue.call(that,arguments,'html'))
+			return that;
 		iterate(that,function (k,el) {
 			el[htmlAttr] = strHTML;
 		});
@@ -1099,6 +1111,9 @@
 	q.mstime = function () {
 		return (new Date()).getTime();
 	};
+	q.time = function () {
+		return Math.floor(q.mstime()/1000);
+	};
 
 	// Closest parent to the current selection
 	fn('closest', function (strQuery) {
@@ -1344,7 +1359,7 @@
 			});
 		return this;
 	};
-	
+
 	fn('delay', function () {
 		return q.delay.apply(this,arguments);
 	});
@@ -1451,7 +1466,7 @@
 					objQueueChain[intElUid].sequence.push(arrArgsSequence);
 					return;
 				}
-				objQueueChain[intElUid].skip_queue =
+				//objQueueChain[intElUid].skip_queue =
 				objQueueChain[intElUid].active = true;
 			}
 			var 
@@ -1640,7 +1655,7 @@
 				if (!boolStopping)
 					objAnimationInstances[intElUid].stop(strKeyFrameName);
 				el.style.setProperty("animation", objAnimationInstances[intElUid] ? objAnimationInstances[intElUid].getAnimationAttributes().join(",") : 'none');
-				//el.offsetHeight; // Trigger a reflow, flushing the CSS changes
+				//el.offsetHeight; // Trigger a reflow, flushing the CSS changes; removed because not proven to actually do anything
 				q(style).remove();
 				style = undefined;
 			}
