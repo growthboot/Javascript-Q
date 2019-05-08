@@ -9,29 +9,35 @@ $(function () {
 	.appendTo("body")
 	.css({
 		position : "absolute",
-		backgroundColor : 'rgb(255,0,0)',
+		backgroundColor : 'rgb(0,255,0)',
 		width : 100,
 		height : 100,
 		left:0,
 		top:0
-	});
-	$("#go").click(function () {
-		$div.animate({
-			top : parseFloat($div.css('top')) + 100
-		},'easeInOutSine', 1000);
-		$div.animate({
-			left : parseFloat($div.css('left')) + 100//,
-			//top : parseFloat($div.css('top')) + 200
-		},'easeInOutSine', 2000);
+	})
+	.queue()
+	.animate({
+		top : 100
+	})
+	.animate({
+		left : 100
 	});
 });
 </script>
+<style>
+body, * {
+	padding:0;
+	margin:0;
+}
+button {
+	padding:20px;
+}
+div {
+	text-align:center;
+}
+</style>
 </head>
 <body>
-	<div style="height:140px;">
-	</div>
-	<div>
-		<button id="go">GO</button>
-	</div>
+	
 </body>
 </html>

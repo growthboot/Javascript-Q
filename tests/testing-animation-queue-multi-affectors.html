@@ -22,6 +22,7 @@ $(function () {
 		},2000);
 	}
 	$("#down").on("click", function () {
+		console.log($("#box").css('top'));
 		$("#box").animate({
 			top:parseFloat($("#box").css('top'))+100
 		});

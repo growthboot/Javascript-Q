@@ -1,5 +1,5 @@
 /**
- * q.js v2.21
+ * q.js v2.22
  * Javascript Q
  * GitHub: https://github.com/AugmentLogic/Javascript-Q
  * CDN: https://cdn.jsdelivr.net/gh/AugmentLogic/Javascript-Q@latest/q.js
@@ -196,19 +196,10 @@
 	},
 	fn = q.plugin = function (strName, fnCallback) {
 		fun[strName] = function () {
-			//console.log(strName + " : " + !!conditions[condition_count]);
 			// pre dispatch
 			if (strName != 'else' && !conditions[condition_count]) // if this level condition wasnt matched
 				return this; // pass the query on without doing anything
-			//try {
 			var mixedResult = fnCallback.apply(this,arguments);
-			/*} catch (e) {
-				return error.call(this,{
-					fn : strName,
-					JSQE : true,
-					error : e
-				});
-			}*/
 			return mixedResult;
 		};
 	},
@@ -269,6 +260,10 @@
 		}
 		conditions[condition_count] = v;
 		return that;
+	});
+
+	fn('extract', function (strVar) {
+		return eval(strVar);
 	});
 	
 	// DOM Ready
@@ -572,7 +567,7 @@
 		intTop = this.scrollTop(),
 		intHeight = this.height(),
 		intAmount = Math.max(0, Math.min(intHeight, intTop + intHeight));
-		intAmount -= Math.max(0, Math.min(intHeight, intTop - $(window).height() + intHeight));
+		intAmount -= Math.max(0, Math.min(intHeight, intTop - q.height() + intHeight));
 		return intAmount;
 	});
 	
@@ -595,7 +590,7 @@
 		var strType = typeof mixedTop;
 		// set
 		if (strType != "undefined") {
-			var destinationOffset = strType == "number" ? mixedTop : $(mixedTop).position().top;
+			var destinationOffset = strType == "number" ? mixedTop : q(mixedTop).position().top;
 			if (!mixedDuration || mixedDuration == "smooth") {
 				var objParams = {
 					top: destinationOffset
@@ -606,8 +601,8 @@
 			}
 			var start = that.scrollTop();
 			var startTime = 'now' in window.performance ? performance.now() : new Date().getTime();
-			var documentHeight = $(document).height();
-			var windowHeight = $(window).height();
+			var documentHeight = q(document).height();
+			var windowHeight = q.height();
 			var destinationOffsetToScroll = Math.round(documentHeight - destinationOffset < windowHeight ? documentHeight - windowHeight : destinationOffset);
 			var fnEasing = easings[strEasing||'linear'];
 			if (typeof mixedDuration == "undefined")
@@ -729,8 +724,6 @@
 	// Request or define CSS
 	fn('css', function (mixedCss) {
 		var that = this;
-		if (!prospect_queue.call(that,arguments,'css'))
-			return that;
 		if (typeof mixedCss == "function") {
 			mixedCss = mixedCss.call(that);
 		}
@@ -744,6 +737,8 @@
 		} catch (e) {
 			return false;
 		}
+		if (!prospect_queue.call(that,arguments,'css'))
+			return that;
 		for (var strKey in mixedCss) {
 			var strValue = mixedCss[strKey];
 			if (strKey == "transform" && typeof strValue == "object") {
@@ -1254,11 +1249,7 @@
 					if (boolApplyByPass)
 						arrParams.push(undefined,undefined,undefined,undefined,undefined,BYPASS_QUEUE);
 					that[strFnName].apply(that, arrParams);
-				} else {
-					delete objAnimationInstances[intElUid];
 				}
-			} else if (objAnimationInstances) {
-				delete objAnimationInstances[intElUid];
 			}
 		}
 		return that;
@@ -1296,6 +1287,7 @@
 		});
 	});
 
+	// stop all animation sequences for the selected object
 	fn('stop', function () {
 		var that = this;
 		if (!prospect_queue.call(that,arguments,'stop'))
@@ -1306,7 +1298,6 @@
 			intElUid = q(el).uniqueId();
 			if (objAI[intElUid]) {
 				objAI[intElUid].stop();
-				delete objAI[intElUid];
 			}
 		});
 		return this.css({
@@ -1331,37 +1322,99 @@
 			 });
 		else
 			iterate(this,function (intItem, el) {
-				var intElUid = q(el).uniqueId();
-				if (objQueueChain[intElUid]) {
-					if (!boolByPassQueue && objQueueChain[intElUid].active) {
+				var 
+				intElUid = q(el).uniqueId(),
+				objQueueItem = objQueueChain[intElUid];
+				if (objQueueItem) {
+					if (!boolByPassQueue && objQueueItem.active) {
 						// Add next animation to chain
-						objQueueChain[intElUid].sequence.push(["delay", intMS, fnCallback]);
+						objQueueItem.sequence.push(["delay", intMS, fnCallback]);
 						return false;
 					}
-					objQueueChain[intElUid].active = true;
-					q.delay(intMS, function () {
-					 	if (fnCallback)
-					 		fnCallback();
-					 	objQueueChain[intElUid].active = false;
-					 	that.queueNext();
-					},BYPASS_QUEUE);
+					objQueueItem.active = true;
 				}
+				q.delay(intMS, function () {
+				 	if (fnCallback)
+				 		fnCallback.call(that);
+				 	if (objQueueItem) {
+					 	objQueueItem.active = false;
+					 	that.queueNext();
+					 }
+				},BYPASS_QUEUE);
 			});
 		return this;
 	};
-
+	
 	fn('delay', function () {
 		return q.delay.apply(this,arguments);
 	});
 
-	// Animation Created: Apr 13, 2018
+	// Synchronous run an anonymous callback function
+	fn('call', function () {
+		var that = this;
+		if (!prospect_queue.call(that,arguments,'call'))
+			return that;
+		var arrArgs = Array.prototype.slice.call(arguments),
+		fnCallback = arrArgs.shift(),
+		mixedResult = fnCallback.apply(that,arrArgs);
+		if (mixedResult == false) {
+			return copy(fun);
+		}
+		return that;
+	});
+
+	// GPU Optimized Animations Started: Apr 13, 2018
+	var addAnimationInstances = function (intElUid, strKeyFrameName, objCssTo) {
+		var arrInstanceNameList = [];
+		if (!objAnimationInstances[intElUid])
+			objAnimationInstances[intElUid] = {
+				animationAttributes : {},
+				arrInstanceNameList : arrInstanceNameList,
+				getAnimationAttributes : function () {
+					var arrAnimationAttributes = [];
+					for (var intINL in arrInstanceNameList) {
+						var strName = arrInstanceNameList[intINL],
+						objAI = objAnimationInstances[intElUid][strName];
+						if (objAI.strAnimationAtrribute)
+							arrAnimationAttributes.push(objAI.strAnimationAtrribute);
+					}
+					return arrAnimationAttributes;
+				},
+				stop : function (optionalStrKeyFrameName) {
+					if (optionalStrKeyFrameName) {
+						arrInstanceNameList.splice(arrInstanceNameList.indexOf(optionalStrKeyFrameName),1);
+						objAnimationInstances[intElUid][optionalStrKeyFrameName].stop();
+						delete objAnimationInstances[intElUid][optionalStrKeyFrameName];
+						if (!arrInstanceNameList.length && objAnimationInstances[intElUid])
+							delete objAnimationInstances[intElUid];
+					} else {
+						for (var intINL in arrInstanceNameList) {
+							var strName = arrInstanceNameList[intINL];
+							objAnimationInstances[intElUid].stop(strName);
+						}
+						delete objAnimationInstances[intElUid];
+					}
+				}
+			};
+		var arrInstanceNameList = objAnimationInstances[intElUid].arrInstanceNameList;
+		arrInstanceNameList.push(strKeyFrameName);
+		var objResult = {
+			objCssTo : objCssTo,
+			strKeyFrameName : strKeyFrameName
+		};
+		objAnimationInstances[intElUid][strKeyFrameName] = objResult;
+		return objResult;
+	};
+	fn('callback', function (fnCallback) {
+		return this.delay(0, fnCallback);
+	});
 	fn('animate', function (mixedCssTo) {
 		var that = this,
 		intArgs = arguments.length,
 		intDuration = 750,
 		fnEasing = easings.linear,
 		strEasing = "linear",
-		objOptions = {
+		objCallbacks = {
 			stopped : function () {}, // the animation was stopped without finishing
 			finished : function () {}, // redundant function works just like 
 			ended : function () {} // called when an animation is stopped or finishes on its own
@@ -1379,9 +1432,10 @@
 			} else if (strType == "function") {
 				fnCallback = mixedValue;
 			} else if (strType == "object") {
-				extend(objOptions, mixedValue);
+				extend(objCallbacks, mixedValue);
 			}
 		}
+		mixedCssTo = fnResolve.call(that, mixedCssTo);
 		arrArgs = Array.prototype.slice.call(arguments);
 		arrArgsSequence = arrArgs.slice(0);
 		arrArgsSequence.unshift("animate");
@@ -1400,10 +1454,8 @@
 				objQueueChain[intElUid].skip_queue =
 				objQueueChain[intElUid].active = true;
 			}
-			mixedCssTo = fnResolve.call(this, mixedCssTo)
-			if (typeof mixedCssTo == "function")
-				mixedCssTo = mixedCssTo.call(that);
 			var 
+			strKeyFrameName = "qStepAnim" + q.id + 'n' + (animations++), // generate an ID
 			objHistory = objTransformHistory[intElUid],
 			objCssFrom = {},
 			arrOutput = [],
@@ -1414,6 +1466,9 @@
 				objTransformHistory[intElUid] = {};
 				objHistory = objTransformHistory[intElUid];
 			}
+			// loop through parameter
+			// extend transform history to applicable params,
+			// process and store instructions in arrOutput
 			for (var strCssToKey in mixedCssTo) {
 				var 
 				to = mixedCssTo[strCssToKey],
@@ -1444,7 +1499,7 @@
 				arrToValues = [to],
 				arrFromValues = [from],
 				arrToWrappers = [];
-			    if (typeof from == "string") {
+				if (typeof from == "string") {
 					arrFromValues = from.match(regMatchNumbers);
 				}
 				if (!arrFromValues) {
@@ -1467,7 +1522,7 @@
 				}
 				for (var intItem=0;intItem!=intToValues;intItem++) {
 					var
-					// unit conversinos will not be handled (might be too much code needed)
+					// unit conversions will not be handled yet
 					mixedFromValue = ((arrFromValues[intItem] || intDefaultFrom)+'').replace(/[a-z%]+/, '')*1,
 					mixedToValue = arrToValues[intItem],
 					matchToSuffix = typeof mixedToValue == 'string' ? mixedToValue.match(/([a-z%]+)/) : "",
@@ -1493,7 +1548,7 @@
 					}
 				}
 			}
-			// reprocess transforms into proper CSS
+			// reprocess transform params into a keyframe animation
 			if (boolTransformsUsed) {
 				var regTransform = /transform\-([a-z]+):([^;]+)(;?)/i;
 				for (var intOutput in arrOutput) {
@@ -1512,22 +1567,18 @@
 				}
 			}
 			var 
-			strKeyFrameName = "qStepAnim" + q.mstime() + (animations++), // generate an ID
 			strAnimation = "@keyframes " + strKeyFrameName + " {" + arrOutput.join("}\n") + "}",
 			style = document.createElement('style');
 			style.type = 'text/css';
-			style.innerHTML = strAnimation,
-			boolNewInstance = !objAnimationInstances[intElUid];
-			if (boolNewInstance)
-				objAnimationInstances[intElUid] = {
-					animationAttributes : {}
-				};
-			var objAI = objAnimationInstances[intElUid];
+			style.innerHTML = strAnimation;
 			document.getElementsByTagName('body')[0].appendChild(style);
 			var 
+			boolNewInstance = !objAnimationInstances[intElUid],
+			objAI = addAnimationInstances(intElUid, strKeyFrameName, mixedCssTo),
+			objAIParent = objAnimationInstances[intElUid],
 			// finalize an animation once its complete
 			fnDone = objAI.done = function () {
-				return (function (strKeyFrameName, mixedCssTo, el, toRC, fnDone, objAI, style, intElUid, objOptions) {
+				return (function (strKeyFrameName, mixedCssTo, el, toRC, fnDone, objAI, style, intElUid, objCallbacks) {
 					return (function () {
 						// reprocess transforms into proper CSS
 						if (mixedCssTo.transform) {
@@ -1535,18 +1586,18 @@
 							mixedCssTo.transform = stringifyTransformData(mixedCssTo.transform);
 						}
 						q(el).css(mixedCssTo, BYPASS_QUEUE);
-						cleanUp(el,fnDone,style,intElUid);
+						cleanUp(el,fnDone,style,intElUid,strKeyFrameName);// remove the animation css
 						fnCallback();
 						strCurrentKey = toRC;
 						q.queueNext.call(that,el);
-						objOptions.ended();
-						objOptions.finished();
+						objCallbacks.ended();
+						objCallbacks.finished();
 					})();
-				})(strKeyFrameName, mixedCssTo, el, toRC, fnDone, objAI, style, intElUid, objOptions);
+				})(strKeyFrameName, mixedCssTo, el, toRC, fnDone, objAI, style, intElUid, objCallbacks);
 			};
 			// stop an animation before complete
 			objAI.stop = function () {
-				return (function (that, objAI, intDuration, arrOutput, fnDone, el, style, intElUid, objOptions) {
+				return (function (that, objAI, intDuration, arrOutput, fnDone, el, style, intElUid, objCallbacks, strKeyFrameName) {
 					return (function () {
 						window.clearTimeout(objAI.timeout);
 						var 
@@ -1576,33 +1627,34 @@
 							}
 							el.style.setProperty(strKey, strValue);
 						}
-						cleanUp(el,fnDone,style, intElUid);
-						objOptions.ended();
-						objOptions.stopped();
+						cleanUp(el,fnDone,style, intElUid,strKeyFrameName,1);
+						objCallbacks.ended();
+						objCallbacks.stopped();
 					})();
-				})(that, objAI, intDuration, arrOutput, fnDone, el, style, intElUid, objOptions);
+				})(that, objAI, intDuration, arrOutput, fnDone, el, style, intElUid, objCallbacks, strKeyFrameName);
 			};
 			var strAnimationEndEvent = 'animationend webkitAnimationEnd oanimationend MSAnimationEnd';
-			function cleanUp(el,fnDone,style, intElUid) {
+			function cleanUp(el,fnDone,style, intElUid,strKeyFrameName,boolStopping) {
 				if (objQueueChain[intElUid])
 					objQueueChain[intElUid].active = false;
-				el.style.setProperty("animation", "none");
+				if (!boolStopping)
+					objAnimationInstances[intElUid].stop(strKeyFrameName);
+				el.style.setProperty("animation", objAnimationInstances[intElUid] ? objAnimationInstances[intElUid].getAnimationAttributes().join(",") : 'none');
 				//el.offsetHeight; // Trigger a reflow, flushing the CSS changes
 				q(style).remove();
 				style = undefined;
-				delete objAnimationInstances[intElUid];
 			}
 			objAI.startTime = q.mstime();
-			var strPrefix = boolNewInstance ? "" : Object.keys(objAI.animationAttributes).join(",") + ",";
-			var strAnimationAtrribute = strKeyFrameName + " " + intDuration + "ms forwards";
-			objAI.animationAttributes[strAnimationAtrribute] = 1;
+			var strPrefix = objAIParent.getAnimationAttributes().join(",");
+			strPrefix = strPrefix.length ? strPrefix + "," : "";
+			var strAnimationAtrribute = strKeyFrameName + " " + intDuration + "ms forwards linear";
+			objAI.strAnimationAtrribute = strAnimationAtrribute;
 			el.style.setProperty("animation", strPrefix + strAnimationAtrribute);
 			q(el).play(); // make sure its unpaused
 			objAI.timeout = q.delay(intDuration, fnDone);
-			//.bind(strAnimationEndEvent, fnDone);
-
 		});
 
 		return this;
 	});
+	q.id = q.rand(0,99999999);
 })(typeof JAVASCRIPT_Q_HANDLE == "undefined" ? "$" : JAVASCRIPT_Q_HANDLE);

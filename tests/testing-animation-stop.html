@@ -15,7 +15,6 @@ $(function () {
 		left:0,
 		top:0
 	});
-
 	var $div2 = $("<div id='box2'>") // control
 	.appendTo("body")
 	.css({
@@ -28,7 +27,6 @@ $(function () {
 		top:0
 	});
 	
-	
 	$("#go").click(function () {
 		$div2.animate({
 			left : $.width()-$div.width()
@@ -37,8 +35,11 @@ $(function () {
 			left : $.width()-$div.width()
 		},1000,'linear');
 		$.delay(500, function () {
+			
 			$div.stop();
 		});
+		
+
 	});
 });
 </script>

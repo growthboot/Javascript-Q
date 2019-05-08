@@ -27,26 +27,25 @@ $(function () {
 		top:0
 	});
 	
-	
+	var intHalf = $.width()/2-$div.width()/2;
+	var intFull = $.width()-$div.width();
 	$("#go").click(function () {
 		// Control
 		$div2.animate({
 			top : 100,
-			left : $.width()/2-$div.width()/2
+			left : intHalf
 		},1000);
 		// Test
 		$div.animate({
-			top : 100,
-			left : $.width()/2-$div.width()/2
+			top : 200,
+			left : intHalf
 		},1000);
 		$.delay(500, function () {
-			$div.stop();
-			$div2.stop();
-			/*.animate({
-				top : 200,
-				left : $.width()-$div.width(),
+			$div
+			.animate({
+				left : intFull,
 				backgroundColor : 'rgb(0,0,255)',
-			});*/
+			});
 		});
 	});
 });
