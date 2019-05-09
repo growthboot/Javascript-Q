@@ -3,7 +3,7 @@
 This is a small JavaScript library intended to reduce the data transfer and memory usage on your websites or apps by reducing redundant and repetitive coding. The library takes advantage of HTML5 functionality in Javascript since it became standard to keep it's size small. The idea is websites that want to service customers using pre HTML5 browsers can do so using vanilla HTML since they make up a very small portion of the market.
 
 ## VERSION
-2.232
+2.233
 
 ## Features
  - Ultra lightweight
@@ -304,12 +304,18 @@ $.request({
 - **serialize**: Serialize an array for a post string `$.serialize({some_key1:"some_value1",some_key2:"some_value2"})` returns `"some_key1=some_value1&some_key2=some_value2"`. Serialize all form elements from a specific point in the DOM tree `$("#some_element").serialize()`.
 - **queue**: Turns on or off asynchronous animations and pauses (default off) `$("#foo").queue(true).animate(...).animate(...);
 - **queueNext**: Jump to the next item in the queue
-- **dequeue**: Turn of the animation queue
+- **dequeue**: Turns of the queue
+- **withoutQueue**: Turns off the queue only within the current handle
+- **without queue**: Turns of the queue for the current handle
 - **pause**: Pause the animation
 - **play**: Resume the animation
 - **stop**: Stop and reset the animation
 - **delay**: Create a delay before the next animation sequence
 - **animate**: CSS based Animation `$("#foo").animate({left:100})`
+- **loop**: Loop all queries after this method is called
+- **extract**: Eval some JS within the JSQL framework function and return the result
+- **sync**: Synchronous run an anonymous callback function (waits for it to be finished if queue is on)
+- **async**: Asynchronous run an anonymous callback function (doesn't wait)
 
 ### List of tools
 - **$.plugin(name, function)**: Add your own plugin to the JSQL framework
@@ -329,5 +335,11 @@ $.request({
 - **$.request**: Make an AJAX GET request `$.request({url:"...",success:function() {...}})` or a POST request `$.request({url:"...",post:{some_key:"some_value"},success:function() {...}})`.
 - **$.type**: Return what type an element is `$.type(some_variable)` could possibly return an one of these values `null, window, document, event, array, boolean, date, object, regexp, error, domelement, string or Unknown`
 
+### List of variables
+- **$.id**: A randomly generated id that represents the currently running JSQL library
+- **$.is_q or $(...).is_q**: A variable that is true if the object is a handle of JSQL
+- **$(...).length**: The current number of results that are in the current selection
+
 ## FINAL NOTES
 This library was created [for the Exitget platform](https://exitget.com/) because of the need for an ultra light weight library to use that also has super fast animation capabilities. It was needed to help bring down the code size for the customer facing resource that's used to generate popups on their client's sites. Exitget has been using and evolving this code for over 5 years now.
+Recently it has been readapted as general use Javascript library for app and web development.

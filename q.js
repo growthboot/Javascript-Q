@@ -1,5 +1,4 @@
 /**
- * q.js v2.232
  * Javascript Q
  * GitHub: https://github.com/AugmentLogic/Javascript-Q
  * CDN: https://cdn.jsdelivr.net/gh/AugmentLogic/Javascript-Q@latest/q.js
@@ -7,6 +6,7 @@
 
 (function(JavascriptQ) {
 	var 
+	version = 2.233,
 
 	// Initialize Q
 	q = window[JavascriptQ] = function (mixedQuery) {
@@ -148,7 +148,7 @@
 	fun = {
 		length : 0,
 		is_q : 1,
-		version : "1.1",
+		version : version,
 		layers : 0, // how many times has the find function ran
 		loopOn : false,
 		loopCount : 0,
@@ -405,9 +405,6 @@
 			: o && typeof o === "object" && typeof o.nodeType === "number" && typeof o.nodeName==="string"
 		);
 	};
-	fn('isNode', function () {
-		return isNode.apply(this,arguments);
-	});
 
 	// Find elements in dom that matches a CSS selection
 	// Adds them as a list to a copy of the q object
@@ -1436,9 +1433,9 @@
 	});
 
 	// Synchronous run an anonymous callback function
-	fn('call', function () {
+	fn('sync', function () {
 		var that = this;
-		if (!prospectQueue.call(that,arguments,'call'))
+		if (!prospectQueue.call(that,arguments,'sync'))
 			return that;
 		var arrArgs = Array.prototype.slice.call(arguments),
 		fnCallback = arrArgs.shift(),
@@ -1448,7 +1445,12 @@
 		}
 		return that;
 	});
-
+	fn('async', function (fnCallback) {
+		var that = this;
+		if (!prospectQueue.call(that,arguments,'sync'))
+			return that;
+		return that.delay(0, fnCallback);
+	});
 	// GPU Optimized Animations Started: Apr 13, 2018
 	var addAnimationInstances = function (intElUid, strKeyFrameName, objCssTo) {
 		var arrInstanceNameList = [];
@@ -1491,9 +1493,6 @@
 		objAnimationInstances[intElUid][strKeyFrameName] = objResult;
 		return objResult;
 	};
-	fn('callback', function (fnCallback) {
-		return this.delay(0, fnCallback);
-	});
 	fn('animate', function (mixedCssTo) {
 		var that = this,
 		intArgs = arguments.length,
