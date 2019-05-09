@@ -1,5 +1,5 @@
 /**
- * q.js v2.231
+ * q.js v2.232
  * Javascript Q
  * GitHub: https://github.com/AugmentLogic/Javascript-Q
  * CDN: https://cdn.jsdelivr.net/gh/AugmentLogic/Javascript-Q@latest/q.js
@@ -59,8 +59,9 @@
 	// Handle DOM ready
 	boolReadyEventsOn = false,
 	arrReadyPromises = [],
-	// check if there's a queue open and if there is add the call the sequence, if not just call it
-	prospect_queue = function (arrArgs,strParentName) {
+	// check if there's a queue open and if there is add the call the sequence, 
+	// if not just call it. used for handling animations, delays, ifs, etc...
+	prospectQueue = function (arrArgs,strParentName) {
 		var 
 		that = this,
 		arrArgs = Array.prototype.slice.call(arrArgs),
@@ -68,39 +69,56 @@
 		intBlocked = 0,
 		arrNewQueue = [];
 		arrArgsSequence = arrArgs.slice(0);
-		arrArgsSequence.unshift(strParentName);
-		if (arrArgs.includes(BYPASS_QUEUE))
+		arrArgsSequence.unshift(strParentName),
+		boolLoopAdded=!that.loopOn;
+		if (
+			arrArgs.includes(BYPASS_QUEUE)
+			|| that.loopOn === 0
+			|| that.withoutQueueOn
+		)
 			return true;
 		// all elements must be queued to disable the entire process
 		// add elements to the sequence that are queued
 		// then remove those elements from the selection
 		// so that none queued items can continue with their normal process 
+
 		iterate(that,function (intItem, el) {
 			var intElUid = q(el).uniqueId();
 			if (objQueueChain[intElUid]) {
-				if (objQueueChain[intElUid].skip_queue) {
+				var objLink = objQueueChain[intElUid];
+				if (objLink.skip_queue) {
 					intBlocked++;
 					return;
 				}
-				if (objQueueChain[intElUid].active) {
+				if (!boolLoopAdded) {
+					addLoopParam.call(that,arrArgsSequence);
+					boolLoopAdded = true;
+				}
+				if (objLink.active) {
 					intBlocked++;
-					objQueueChain[intElUid].sequence.push(arrArgsSequence);
+					objLink.sequence.push(arrArgsSequence);
 					return;
 				}
-				objQueueChain[intElUid].skip_queue = true;
-				objQueueChain[intElUid].active = true;
+				objLink.skip_queue = true;
+				objLink.active = true;
 				q(el)[strParentName].apply(that, arrArgs);
-				objQueueChain[intElUid].active = false;
-				objQueueChain[intElUid].skip_queue = false;
-				that.queueNext.call(that, el);
+				objLink.active = false;
+				objLink.skip_queue = false;
+				if (!that.loopOn)
+					q.queueNext.call(that, el, true);
 			}
 			arrNewQueue.push(el);
 		});
 		var boolContinue = intBlocked != intTotal;
-		if (boolContinue) {
+		if (boolContinue && intBlocked != 0) {
 			that.put(arrNewQueue);
 		}
 		return boolContinue;// parent proceeds
+	},
+	addLoopParam = function (arrArgsSequence) {
+		var that = this;
+		//console.log(arrArgsSequence);
+		that.loopBuffer[Object.keys(that.loopBuffer).length] = Object.values(copy(arrArgsSequence));
 	},
 	animations = 0, // the current amount of animations that have been started
 	objAnimationInstances = {},
@@ -131,7 +149,10 @@
 		length : 0,
 		is_q : 1,
 		version : "1.1",
-		layers : 0 // how many times has the find function ran
+		layers : 0, // how many times has the find function ran
+		loopOn : false,
+		loopCount : 0,
+		loopBuffer : []
 	},
 	hexToRgb = q.hexToRgb = function (hex) {
 	    // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
@@ -479,7 +500,7 @@
 			});
 			return strHTML;
 		}
-		if (!prospect_queue.call(that,arguments,'html'))
+		if (!prospectQueue.call(that,arguments,'html'))
 			return that;
 		iterate(that,function (k,el) {
 			el[htmlAttr] = strHTML;
@@ -507,7 +528,7 @@
 	// Add CSS for disabled selection (Investigate depreciation because this should likely always be handeled with pure CSS)
 	fn('disableSelect', function () {
 		var that = this;
-		if (!prospect_queue.call(that,arguments,'disableSelect'))
+		if (!prospectQueue.call(that,arguments,'disableSelect'))
 			return that;
 		var none = "none";
 		iterate(that,function (k,el) {
@@ -519,7 +540,7 @@
 			        '-ms-user-select': none, /* Internet Explorer/Edge */
 			            'user-select': none /* Non-prefixed version, currently
 			                                  supported by Chrome and Opera */
-			})
+			},BYPASS_QUEUE)
 		});
 		return that;
 	});
@@ -537,7 +558,7 @@
 	// set the value of an input
 	fn('val', function (strVal) {
 		var that = this;
-		if (!prospect_queue.call(that,arguments,'val'))
+		if (!prospectQueue.call(that,arguments,'val'))
 			return that;
 		if (!that[0])
 			return;
@@ -597,7 +618,7 @@
 	// Get or set the scroll top location
 	fn('scrollTop', function (mixedTop, mixedDuration, strEasing, fnCallback) {
 		var that = this;
-		if (!prospect_queue.call(that,arguments,'scrollTop'))
+		if (!prospectQueue.call(that,arguments,'scrollTop'))
 			return that;
 		var strType = typeof mixedTop;
 		// set
@@ -749,7 +770,7 @@
 		} catch (e) {
 			return false;
 		}
-		if (!prospect_queue.call(that,arguments,'css'))
+		if (!prospectQueue.call(that,arguments,'css'))
 			return that;
 		for (var strKey in mixedCss) {
 			var strValue = mixedCss[strKey];
@@ -834,7 +855,7 @@
 	// Add a class to the selection
 	fn('addClass', function (strClassName, boolRemove) {
 		var that = this;
-		if (!prospect_queue.call(that,arguments,'addClass'))
+		if (!prospectQueue.call(that,arguments,'addClass'))
 			return that;
 		var strEvent = boolRemove ? "remove" : "add";
 		iterate(that,function ()  {
@@ -846,7 +867,7 @@
 	// Remove a class
 	fn('removeClass', function (strClassName) {
 		var that = this;
-		if (!prospect_queue.call(that,arguments,'removeClass'))
+		if (!prospectQueue.call(that,arguments,'removeClass'))
 			return that;
 		return that.addClass(strClassName, 1);
 	});
@@ -854,7 +875,7 @@
 	// Set an attribute
 	fn('attr', function (strKey, strVal, boolRemove) {
 		var that = this;
-		if (!prospect_queue.call(that,arguments,'attr'))
+		if (!prospectQueue.call(that,arguments,'attr'))
 			return that;
 		if (!strVal)
 			return that[0].getAttribute(strKey);
@@ -867,7 +888,7 @@
 	// Remove an attribute
 	fn('removeAttr', function (strKey) {
 		var that = this;
-		if (!prospect_queue.call(that,arguments,'removeAttr'))
+		if (!prospectQueue.call(that,arguments,'removeAttr'))
 			return that;
 		iterate(that,function () {
 			this.removeAttribute(strKey);
@@ -895,7 +916,7 @@
 	// Loop though a query
 	fn('each', function (fnCallback) {
 		var that = this;
-		if (!prospect_queue.call(that,arguments,'each'))
+		if (!prospectQueue.call(that,arguments,'each'))
 			return that;
 		iterate(that, function (k,v) {
 			return fnCallback.call(this,k,v);
@@ -910,7 +931,7 @@
 	// Bind events
 	fn('on', function (strEvents, fnCallback) {
 		var that = this;
-		if (!prospect_queue.call(that,arguments,'on'))
+		if (!prospectQueue.call(that,arguments,'on'))
 			return that;
 		var arrEvents = strEvents.split(/ /);
 		iterate(that,function (k,node) {
@@ -958,7 +979,7 @@
 	// unbinds an event
 	fn('unbind', function (strEvents) {
 		var that = this;
-		if (!prospect_queue.call(that,arguments,'unbind'))
+		if (!prospectQueue.call(that,arguments,'unbind'))
 			return that;
 		var arrEvents = strEvents.split(/ /);
 		iterate(that,function (k,node) {
@@ -999,7 +1020,7 @@
 	// triggers an event
 	fn('trigger', function (strEvent) {
 		var that = this;
-		if (!prospect_queue.call(that,arguments,'trigger'))
+		if (!prospectQueue.call(that,arguments,'trigger'))
 			return that;
 		var event = document.createEvent('HTMLEvents');
 		event.initEvent(strEvent, true, false);
@@ -1026,7 +1047,7 @@
 	// append something to the selection
 	fn('append', function (mixedVar, strAlternateMethod) {
 		var that = this;
-		if (!prospect_queue.call(that,arguments,'append'))
+		if (!prospectQueue.call(that,arguments,'append'))
 			return that;
 		var 
 		item = typeof mixedVar == 'string' ? q(mixedVar) : mixedVar,
@@ -1042,30 +1063,36 @@
 
 	// Prepend something to the selection
 	fn('prepend', function (mixedVar) {
-		return this.append(mixedVar, "insertBefore");
+		var that = this;
+		if (!prospectQueue.call(that,arguments,'prepend'))
+			return that;
+		return that.append(mixedVar, "insertBefore",BYPASS_QUEUE);
 	});
 
 	// Append self to a node
 	fn('appendTo', function (mixedVar) {
+		var that = this;
+		if (!prospectQueue.call(that,arguments,'appendTo'))
+			return that;
 		if (!mixedVar.is_q)
 			mixedVar = q(mixedVar);
-		mixedVar.append(this);
-		return this;
+		mixedVar.append(that,null,BYPASS_QUEUE);
+		return that;
 	});
 
 	// Append self after node
 	fn('appendAfter', function (mixedVar, boolBefore) {
-		var 
-		that = this,
+		var that = this;
+		if (!prospectQueue.call(that,arguments,'appendAfter'))
+			return that;
+		var
 		qNode = q(mixedVar),
 		objNext = boolBefore ? qNode[0] : qNode['next']()[0],
 		qParent = qNode.parent();
 		if (objNext) {
-			if (!prospect_queue.call(that,arguments,'appendAfter'))
-				return that;
 			qParent[0].insertBefore(that[0], objNext);
 		} else {
-			qParent[boolBefore ? 'prepend' : 'append'](that);
+			qParent[boolBefore ? 'prepend' : 'append'](that, null, BYPASS_QUEUE);
 		}
 		return that;
 	});
@@ -1078,7 +1105,7 @@
 	// Remove node
 	fn('remove', function () {
 		var that = this;
-		if (!prospect_queue.call(that,arguments,'remove'))
+		if (!prospectQueue.call(that,arguments,'remove'))
 			return that;
 		iterate(that,function () {
 			if (this.parentNode) // make sure its attached to something
@@ -1227,6 +1254,12 @@
 		};
 		return copy(fun); // empty
 	});
+
+	fn('withoutQueue', function () {
+		var that = this;
+		that.withoutQueueOn = true;
+		return that;
+	});
     
 	// turns on or off asynchronous animations and pauses
 	fn('queue', function (boolOff) {
@@ -1251,6 +1284,8 @@
 	// jump to the next item in the queue
 	q.queueNext = function (el,boolApplyByPass) {
 		var that = this;
+		if (that.is_q && that.withoutQueueOn)
+			return that;
 		if (el)
 			runNext(el);
 		else 
@@ -1260,17 +1295,40 @@
 		function runNext(el) {
 			var intElUid = q(el).uniqueId();
 			if (objQueueChain[intElUid]) {
-				if (objQueueChain[intElUid].sequence.length) {
-					var arrParams = objQueueChain[intElUid].sequence.shift();
+				var objLink = objQueueChain[intElUid];
+				if (objLink.sequence.length) {
+					var arrParams = objLink.sequence.shift();
+					arrParams = Object.values(copy(arrParams));
 					var strFnName = arrParams.shift();
 					if (boolApplyByPass)
 						arrParams.push(undefined,undefined,undefined,undefined,undefined,BYPASS_QUEUE);
 					that[strFnName].apply(that, arrParams);
+					if (["animate","delay"].indexOf(strFnName)<0) {
+						q.queueNext.call(that,el,true);
+					}
+				} else if (that.loopOn) {
+					if (
+						Object.keys(that.loopBuffer).length
+						&& that.loopOn > that.loopCount+1
+					) {
+						that.loopCount++;
+						objLink.sequence = Object.values(that.loopBuffer);
+						q.queueNext.call(that,el,true);
+					} else {
+						that.loopOn = that.loopCount = 0;
+						that.loopBuffer = {};
+					}
 				}
 			}
 		}
 		return that;
 	};
+	fn('loop', function (intAmount) {
+		var that = this;
+		that.queue();
+		that.loopOn = typeof intAmount == "undefined" ? Infinity : intAmount;
+		return that;
+	});
 	fn('queueNext', function () {
 		return q.queueNext.apply(this, arguments)
 	});
@@ -1288,26 +1346,26 @@
 
 	fn('pause', function () {
 		var that = this;
-		if (!prospect_queue.call(that,arguments,'pause'))
+		if (!prospectQueue.call(that,arguments,'pause'))
 			return that;
 		return that.css({
 			"animation-play-state" : "paused"
-		});
+		},BYPASS_QUEUE);
 	});
 
 	fn('play', function () {
 		var that = this;
-		if (!prospect_queue.call(that,arguments,'play'))
+		if (!prospectQueue.call(that,arguments,'play'))
 			return that;
 		return that.css({
 			"animation-play-state" : "running"
-		});
+		},BYPASS_QUEUE);
 	});
 
 	// stop all animation sequences for the selected object
 	fn('stop', function () {
 		var that = this;
-		if (!prospect_queue.call(that,arguments,'stop'))
+		if (!prospectQueue.call(that,arguments,'stop'))
 			return that;
 		iterate(this, function (k,el) {
 			var 
@@ -1319,13 +1377,10 @@
 		});
 		return this.css({
 			"animation-play-state" : "paused"
-		}).dequeue();
+		},BYPASS_QUEUE).dequeue();
 	});
 
 	q.delay = function (intMS, fnCallback) {
-		var arrArgs = Array.prototype.slice.call(arguments);
-		var boolByPassQueue = arrArgs.includes(BYPASS_QUEUE);
-			
 		var that = this;
 		if (!that.is_q)
 			return window.setTimeout(function () {
@@ -1337,39 +1392,53 @@
 			 		fnCallback();
 			 	that.queueNext();
 			 });
-		else
+		else {
+			var 
+			arrArgs = Array.prototype.slice.call(arguments),
+			arrArgsSequence = arrArgs.slice(0),
+			boolByPassQueue = arrArgs.includes(BYPASS_QUEUE),
+			boolLoopAdded = !that.loopOn;
+			arrArgsSequence.unshift("delay");
 			iterate(this,function (intItem, el) {
 				var 
 				intElUid = q(el).uniqueId(),
 				objQueueItem = objQueueChain[intElUid];
-				if (objQueueItem) {
-					if (!boolByPassQueue && objQueueItem.active) {
-						// Add next animation to chain
-						objQueueItem.sequence.push(["delay", intMS, fnCallback]);
-						return false;
+				if (objQueueItem && !that.withoutQueueOn) {
+					if (!boolByPassQueue) {
+						if (!boolLoopAdded) {
+							addLoopParam.call(that,arrArgsSequence);
+							boolLoopAdded = true;
+						}
+						if (objQueueItem.active) {
+							// Add next animation to chain
+							objQueueItem.sequence.push(["delay", intMS, fnCallback]);
+							return false;
+						}
 					}
 					objQueueItem.active = true;
 				}
 				q.delay(intMS, function () {
 				 	if (fnCallback)
 				 		fnCallback.call(that);
-				 	if (objQueueItem) {
+				 	if (objQueueItem && !that.withoutQueueOn) {
 					 	objQueueItem.active = false;
-					 	that.queueNext();
+					 	q.queueNext.call(that,el,true);
 					 }
-				},BYPASS_QUEUE);
+				});
 			});
+		}
 		return this;
 	};
 
 	fn('delay', function () {
+		this.queue();
 		return q.delay.apply(this,arguments);
 	});
 
 	// Synchronous run an anonymous callback function
 	fn('call', function () {
 		var that = this;
-		if (!prospect_queue.call(that,arguments,'call'))
+		if (!prospectQueue.call(that,arguments,'call'))
 			return that;
 		var arrArgs = Array.prototype.slice.call(arguments),
 		fnCallback = arrArgs.shift(),
@@ -1431,12 +1500,15 @@
 		intDuration = 750,
 		fnEasing = easings.linear,
 		strEasing = "linear",
+		boolLoopAdded = !that.loopOn,
 		objCallbacks = {
 			stopped : function () {}, // the animation was stopped without finishing
 			finished : function () {}, // redundant function works just like 
 			ended : function () {} // called when an animation is stopped or finishes on its own
 		},
 		fnCallback = function () {};
+		if (that.loopOn === 0)
+			return that;
 		for (var intArg=1;intArg<intArgs;intArg++) {
 			var 
 			mixedValue = arguments[intArg],
@@ -1463,12 +1535,17 @@
 		regSplitNumbers = /\-?[0-9]+(?:\.[0-9]+)?(?:[a-z]{2}?|%)?/gi;
 		iterate(that,function (intItem, el) {
 			var intElUid = q(el).uniqueId();
-			if (objQueueChain[intElUid]) {
-				if (!boolBypassQueue && objQueueChain[intElUid].active) {
-					objQueueChain[intElUid].sequence.push(arrArgsSequence);
-					return;
+			if (objQueueChain[intElUid] && !that.withoutQueueOn) {
+				if (!boolBypassQueue) {
+					if (!boolLoopAdded) {
+						addLoopParam.call(that,arrArgsSequence);
+						boolLoopAdded = true;
+					}
+					if (objQueueChain[intElUid].active) {
+						objQueueChain[intElUid].sequence.push(arrArgsSequence);
+						return;
+					}
 				}
-				//objQueueChain[intElUid].skip_queue =
 				objQueueChain[intElUid].active = true;
 			}
 			var 
@@ -1606,7 +1683,7 @@
 						cleanUp(el,fnDone,style,intElUid,strKeyFrameName);// remove the animation css
 						fnCallback();
 						strCurrentKey = toRC;
-						q.queueNext.call(that,el);
+						q.queueNext.call(that,el,true);
 						objCallbacks.ended();
 						objCallbacks.finished();
 					})();
@@ -1658,7 +1735,7 @@
 					objAnimationInstances[intElUid].stop(strKeyFrameName);
 				el.style.setProperty("animation", objAnimationInstances[intElUid] ? objAnimationInstances[intElUid].getAnimationAttributes().join(",") : 'none');
 				//el.offsetHeight; // Trigger a reflow, flushing the CSS changes; removed because not proven to actually do anything
-				q(style).remove();
+				q(style).remove(BYPASS_QUEUE);
 				style = undefined;
 			}
 			objAI.startTime = q.mstime();
@@ -1667,7 +1744,7 @@
 			var strAnimationAtrribute = strKeyFrameName + " " + intDuration + "ms forwards linear";
 			objAI.strAnimationAtrribute = strAnimationAtrribute;
 			el.style.setProperty("animation", strPrefix + strAnimationAtrribute);
-			q(el).play(); // make sure its unpaused
+			q(el).play(BYPASS_QUEUE); // make sure its unpaused
 			objAI.timeout = q.delay(intDuration, fnDone);
 		});
 
