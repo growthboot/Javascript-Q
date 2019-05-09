@@ -343,3 +343,6 @@ $.request({
 ## FINAL NOTES
 This library was created [for the Exitget platform](https://exitget.com/) because of the need for an ultra light weight library to use that also has super fast animation capabilities. It was needed to help bring down the code size for the customer facing resource that's used to generate popups on their client's sites. Exitget has been using and evolving this code for over 5 years now.
 Recently it has been readapted as general use Javascript library for app and web development.
+
+## CREDIT
+Andrew Dear - Founder & Developer
