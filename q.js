@@ -1,5 +1,5 @@
 /**
- * q.js v2.23
+ * q.js v2.231
  * Javascript Q
  * GitHub: https://github.com/AugmentLogic/Javascript-Q
  * CDN: https://cdn.jsdelivr.net/gh/AugmentLogic/Javascript-Q@latest/q.js
@@ -1047,7 +1047,9 @@
 
 	// Append self to a node
 	fn('appendTo', function (mixedVar) {
-		q(mixedVar).append(this);
+		if (!mixedVar.is_q)
+			mixedVar = q(mixedVar);
+		mixedVar.append(this);
 		return this;
 	});
 
