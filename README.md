@@ -1,5 +1,4 @@
 # JavaScript Q Library (JSQL)
-------------------------
 A modern and light-weight JavaScript framework
 
 ## About
