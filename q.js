@@ -6,7 +6,7 @@
 
 (function(JavascriptQ) {
 	var 
-	version = 2.233,
+	version = 2.234,
 
 	// Initialize Q
 	q = window[JavascriptQ] = function (mixedQuery) {
@@ -21,6 +21,15 @@
 		return extend({}, obj);
 	},
 	
+	// Find out if an object is a DOM node
+	isNode = function (o){
+		return (
+			typeof Node === "object" 
+			? o instanceof Node 
+			: o && typeof o === "object" && typeof o.nodeType === "number" && typeof o.nodeName==="string"
+		);
+	},
+
 	// Extends the properties of an object
 	extend = q.extend = function (obj1, obj2) {
 		var keys = Object.keys(obj2);
@@ -31,7 +40,7 @@
 		return obj1;
 	},
 
-	iterate = function (that, fnCallback) {
+	iterate = q.iterate = function (that, fnCallback) {
 		var 
 		i=0,
 		l;
@@ -81,7 +90,6 @@
 		// add elements to the sequence that are queued
 		// then remove those elements from the selection
 		// so that none queued items can continue with their normal process 
-
 		iterate(that,function (intItem, el) {
 			var intElUid = q(el).uniqueId();
 			if (objQueueChain[intElUid]) {
@@ -113,12 +121,28 @@
 		if (boolContinue && intBlocked != 0) {
 			that.put(arrNewQueue);
 		}
+		if (intBlocked+intTotal==0) {
+			boolContinue = true;
+		}
 		return boolContinue;// parent proceeds
 	},
 	addLoopParam = function (arrArgsSequence) {
 		var that = this;
-		//console.log(arrArgsSequence);
 		that.loopBuffer[Object.keys(that.loopBuffer).length] = Object.values(copy(arrArgsSequence));
+	},
+	// For adding new functions to the q
+	fnResolve = function (mixedValue) {
+		if (typeof mixedValue == "function")
+			mixedValue = mixedValue.call(this);
+		return mixedValue;
+	},
+	// Free up memory by removing the selections that are not part of the selection anymore
+	fnTrimQueue = function (intStart) {
+		var that = this;
+		that.length = intStart;
+		while (that[intStart]) {
+			delete that[intStart++];
+		}
 	},
 	animations = 0, // the current amount of animations that have been started
 	objAnimationInstances = {},
@@ -217,24 +241,26 @@
 	// ifs
 	condition_count = 0, // ifs count
 	conditions = [1],
-	// For adding new functions to the q
-	fnResolve = function (mixedValue) {
-		if (typeof mixedValue == "function")
-			mixedValue = mixedValue.call(this);
-		return mixedValue;
-	},
+	// Report an error
 	error = q.error = function (objError) {
 		console.log(objError);
 		return this;
 	},
-	fn = q.plugin = function (strName, fnCallback) {
-		fun[strName] = function () {
-			// pre dispatch
-			if (strName != 'else' && !conditions[condition_count]) // if this level condition wasnt matched
-				return this; // pass the query on without doing anything
-			var mixedResult = fnCallback.apply(this,arguments);
-			return mixedResult;
-		};
+	// Added functions to the q lib
+	fn = q.plugin = function (mixedName, fnCallback) {
+		if (typeof mixedName == "string")
+			mixedName = [mixedName];
+		iterate(mixedName,function (k,strName) {
+			fun[strName] = function () {
+				var that = this;
+				that.caller = strName;
+				// pre dispatch
+				if (strName != 'else' && !conditions[condition_count]) // if this level condition wasnt matched
+					return that; // pass the query on without doing anything
+				var mixedResult = fnCallback.apply(that,arguments);
+				return mixedResult;
+			};
+		});
 	},
 	// Animation easings
 	easings = q.easings = {};
@@ -271,6 +297,14 @@
 	easings.easeInOutBounce = function(t, b, c, d) {if (t < d / 2) return easings.easeInBounce(t * 2, 0, c, d) * .5 + b;return easings.easeOutBounce(t * 2 - d, 0, c, d) * .5 + c * .5 + b;};
 	// define prototype object
 	q.prototype = fun;
+
+	fn('rtrim', function (intFromRight) {
+		var that = this;
+		if (!prospectQueue.call(that,arguments,'rtrim'))
+			return that;
+		fnTrimQueue.call(that);
+		return that;
+	});
 
 	// add in-framework logic
 	fn('if', function (mixedValue) {
@@ -354,71 +388,67 @@
 	});
 	
 	// gives a q something to do. used when q is called as a function
-	fn('put', function (mixedQuery) {
+	fn('put', function (mixedQuery,strType) {
 		var 
 		that = this,
-		queryType = typeof mixedQuery;
-		if (queryType == 'function') {
+		queryType = strType || typeof mixedQuery;
+		if (queryType == 'undefined') {
+			return that;
+		} else if (queryType == 'function') {
 			return that.ready(mixedQuery); // DOM ready
 		} else if (queryType == 'object') {
 			var i=0;
 			if (isNode(mixedQuery)) {
 				that[i++] = mixedQuery;
-			} else if (Array.isArray(mixedQuery)) {
+			} else if (mixedQuery.is_q || Array.isArray(mixedQuery)) {
 				iterate(mixedQuery,function () {
 					that[i++] = this;
 				});
 			} else {
 				that[i++] = mixedQuery;
 			}
-			that.length = i;
-		/*
-		redundant code?
-		} else if (queryType2 == 'array') {
-			var i=0,
-			l=mixedQuery.length;
-			while (i<l)
-				that[i] = mixedQuery[i++];
-			while (that[i])
-				delete that[i++]; // remove trailing items
-			that.length = l;*/
+			fnTrimQueue.call(that,i);
 		} else if (queryType == 'string' && mixedQuery.charAt(0) === "<" && mixedQuery.charAt( mixedQuery.length - 1 ) === ">" && mixedQuery.length >= 3) {
-			var wrapper = document.createElement('div');
-			wrapper.innerHTML = mixedQuery;
-			var
-			children = wrapper.children,
-			l = children.length,
-			i=0;
-			while (i<l)
-				that[i] = children[i++];
-			that.length = i;
+			return that.make(mixedQuery,BYPASS_QUEUE);
 		} else
 			return fun.find(mixedQuery);
 		return that;
 	});
 
-	// Find out if an object is a DOM node
-	var isNode = function (o){
-		return (
-			typeof Node === "object" 
-			? o instanceof Node 
-			: o && typeof o === "object" && typeof o.nodeType === "number" && typeof o.nodeName==="string"
-		);
-	};
+	// Create HTML within the selection
+	fn('make', function (strHTML) {
+		var 
+		that = this;
+		if (!prospectQueue.call(that,arguments,'make'))
+			return that;
+		var wrapper = document.createElement('div')
+		wrapper.innerHTML = strHTML;
+		var
+		children = wrapper.children,
+		len = Math.max(children.length, that.length),
+		i=0;
+		while (i<len)
+			that[i] = children[i++];
+		that.length = i;
+		fnTrimQueue.call(that,i);
+		return that;
+	});
 
 	// Find elements in dom that matches a CSS selection
 	// Adds them as a list to a copy of the q object
 	fn('find', function (strQuery) {
+		var that = this,
+		l=that.length;
+		if (that.layers!=0 && !l)
+			return that;
 		var qcopy = copy(fun), // start with a fresh q handle
 		arrResult = [],
-		l=this.length,
 		i=0;
-		if (this.layers!=0 && !l)
-			return qcopy;
-		qcopy.layers=this.layers+1;
+
+		qcopy.layers=that.layers+1;
 		var arrMatched = strQuery.match(/^ *> *(.+)/);
 		if (arrMatched) {
-			iterate(this.children(), function (k,el) {
+			iterate(that.children(), function (k,el) {
 				if (arrMatched[1] == "*" || q(el).is(arrMatched[1]))
 					qcopy[i++] = el;
 			});
@@ -426,7 +456,7 @@
 			if (!l)
 				arrResult = [].slice.call(document.querySelectorAll(strQuery));
 			else while (i<l) {
-				var arrSubResult = [].slice.call(this[i++].querySelectorAll(strQuery));
+				var arrSubResult = [].slice.call(that[i++].querySelectorAll(strQuery));
 				arrResult = arrResult.concat(arrSubResult);
 			}
 			l = arrResult.length;
@@ -452,15 +482,17 @@
 
 	// Clone a dom node
 	fn('clone', function (boolDeep) {
+		var that = this;
+		if (!prospectQueue.call(that,arguments,'clone'))
+			return that;
+		qcopy = copy(that);
 		boolDeep = boolDeep !== false;
-		var 
-		qcopy = copy(fun),
-		intItr=0;
-		iterate(this,function () {
-			qcopy[intItr] = this.cloneNode(boolDeep)
-			intItr++;
+		var len = 0;
+		iterate(that,function (k,v) {
+			qcopy[k] = v.cloneNode(boolDeep);
+			len++;
 		});
-		qcopy.length = intItr;
+		fnTrimQueue.call(qcopy,len);
 		return qcopy;
 	});
 
@@ -499,6 +531,7 @@
 		}
 		if (!prospectQueue.call(that,arguments,'html'))
 			return that;
+		strHTML = fnResolve.call(that,strHTML);
 		iterate(that,function (k,el) {
 			el[htmlAttr] = strHTML;
 		});
@@ -1285,10 +1318,11 @@
 			return that;
 		if (el)
 			runNext(el);
-		else 
+		else if (that.length) {
 			iterate(that, function (k,el) {
 				runNext(el);
 			});
+		}
 		function runNext(el) {
 			var intElUid = q(el).uniqueId();
 			if (objQueueChain[intElUid]) {
@@ -1326,8 +1360,8 @@
 		that.loopOn = typeof intAmount == "undefined" ? Infinity : intAmount;
 		return that;
 	});
-	fn('queueNext', function () {
-		return q.queueNext.apply(this, arguments)
+	fn(['queueNext','endLoop'], function () {
+		return q.queueNext(this, arguments)
 	});
 
 	// turn of the animation queue

@@ -3,7 +3,7 @@
 This is a small JavaScript library intended to reduce the data transfer and memory usage on your websites or apps by reducing redundant and repetitive coding. The library takes advantage of HTML5 functionality in Javascript since it became standard to keep it's size small. The idea is websites that want to service customers using pre HTML5 browsers can do so using vanilla HTML since they make up a very small portion of the market.
 
 ## VERSION
-2.233
+2.234
 
 ## Features
  - Ultra lightweight
@@ -329,11 +329,12 @@ $.request({
 - **$.request(obj)**: Perform an AJAX request
 - **$.delay(msTime, callbackFunction)**: perform a delay just like setTimeout
 - **$.each(array, function(key,value) {...})**: Iterate an array
-- **$.trim**: Remove any spaces from the start and end of a string `$.trim(" abc  ")` results in "abc".
-- **$.ltrim**: Remove any spaces from the start of a string `$.ltrim(" abc  ")` results in "abc  ".
-- **$.rtrim**: Remove any spaces from the end of a string `$.rtrim(" abc  ")` results in " abc".
-- **$.request**: Make an AJAX GET request `$.request({url:"...",success:function() {...}})` or a POST request `$.request({url:"...",post:{some_key:"some_value"},success:function() {...}})`.
-- **$.type**: Return what type an element is `$.type(some_variable)` could possibly return an one of these values `null, window, document, event, array, boolean, date, object, regexp, error, domelement, string or Unknown`
+- **$.trim(str)**: Remove any spaces from the start and end of a string `$.trim(" abc  ")` results in "abc".
+- **$.ltrim(str)**: Remove any spaces from the start of a string `$.ltrim(" abc  ")` results in "abc  ".
+- **$.rtrim(str)**: Remove any spaces from the end of a string `$.rtrim(" abc  ")` results in " abc".
+- **$.request(obj)**: Make an AJAX GET request `$.request({url:"...",success:function() {...}})` or a POST request `$.request({url:"...",post:{some_key:"some_value"},success:function() {...}})`.
+- **$.type(mixed)**: Return what type an element is `$.type(some_variable)` could possibly return an one of these values `null, window, document, event, array, boolean, date, object, regexp, error, domelement, string or Unknown`
+- **$.iterate(mixed, callback)**: Loop though stuff like arrays, objects, and q handles like this `$.iterate([1,2], function (k,v) {});`
 
 ### List of variables
 - **$.id**: A randomly generated id that represents the currently running JSQL library
@@ -341,8 +342,7 @@ $.request({
 - **$(...).length**: The current number of results that are in the current selection
 
 ## FINAL NOTES
-This library was created [for the Exitget platform](https://exitget.com/) because of the need for an ultra light weight library to use that also has super fast animation capabilities. It was needed to help bring down the code size for the customer facing resource that's used to generate popups on their client's sites. Exitget has been using and evolving this code for over 5 years now.
-Recently it has been readapted as general use Javascript library for app and web development.
+This library was created [for the Exitget platform](https://exitget.com/) because of the need for an ultra light weight library to use that also has super fast animation capabilities. It was needed to help bring down the code size for the customer facing resource that's used to generate popups on their client's sites. Recently it has been readapted as general use Javascript library for app and web development.
 
-## CREDIT
-Andrew Dear - Founder & Developer
+## CREDITS
+Andrew Dear - Founder & Developer - [Contact](https://www.linkedin.com/in/adear/)

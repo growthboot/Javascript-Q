@@ -26,8 +26,9 @@ $(function () {
 		left:0,
 		top:0
 	});
-	
+	console.log($("#go"));
 	$("#go").click(function () {
+		console.log($div);
 		$div2.animate({
 			left : $.width()-$div.width()
 		},1000,'linear');

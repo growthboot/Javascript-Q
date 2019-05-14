@@ -515,6 +515,17 @@ output("Clone not deep thing", $("#cloneSource .cell3").clone(false).outer().mat
 output("Multiple things cloned", $("#cloneSource .cell").clone().outer().match(/<span class="cell1 cell">1<\/span><span class="cell2 cell">2<\/span><span[^>]+>3<span>deep<\/span><\/span>/) ? strPass : strFail);
 output("Single thing cloned", $("#cloneSource .cell3").clone().outer().match(/<span[^>]+>3<span>deep<\/span><\/span>/) ? strPass : strFail);
 
+output("Virtual clone", (function () {
+	var $test = $("<div>");
+	var $source1 = $("<div>");
+	var $source2 = $source1.clone();
+	$source1.html('source1');
+	$source2.html('source2');
+	$test.append($source1);
+	$test.append($source2);
+	return $test.html() == "<div>source1</div><div>source2</div>";
+})() ? strPass : strFail);
+
 // .outer
 output("Test multiple NODE to OUTER", $("#cloneSource .cell").outer().match(/<span class="cell1 cell">1<\/span><span class="cell2 cell">2<\/span><span/) ? strPass : strFail);
 output("Single NODE to OUTER", $("#cloneSource .cell3").outer().match(/>3<span>deep<\/span><\/span>$/) ? strPass : strFail);
