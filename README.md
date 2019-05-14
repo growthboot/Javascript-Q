@@ -11,6 +11,7 @@ This is a small JavaScript library intended to reduce the data transfer and memo
  - Ultra lightweight
  - Cross browser compliant
  - GPU optimized animations
+ - Animation control (pause,play,stop,easings)
  - Delay and animation synchronization queue
  - AJAX support
  - Traverse and manipulate the DOM
@@ -19,7 +20,8 @@ This is a small JavaScript library intended to reduce the data transfer and memo
  - Object dimension and position processing
  - Recursive if and else logic
  - Result filtering (withoutClass, withClass, filter)
- - Added general functionality (rand, extend, mstime, etc...)
+ - Added general functionality (rand, iterate, mstime, etc...)
+ - Loop handling
 
 ## Disadvantages
  - Only supported by HTML5 compliant browsers
@@ -307,8 +309,8 @@ $.request({
 - **queue**: Turns on or off asynchronous animations and pauses (default off) `$("#foo").queue(true).animate(...).animate(...);
 - **queueNext**: Jump to the next item in the queue
 - **dequeue**: Turns of the queue
+- **withQueue**: Turns on the queue for the current handle
 - **withoutQueue**: Turns off the queue only within the current handle
-- **without queue**: Turns of the queue for the current handle
 - **pause**: Pause the animation
 - **play**: Resume the animation
 - **stop**: Stop and reset the animation
