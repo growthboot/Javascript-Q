@@ -11,7 +11,7 @@ This is a small JavaScript library intended to reduce the data transfer and memo
  - Ultra lightweight
  - Cross browser compliant
  - GPU optimized animations
- - Animation control (pause,play,stop,easings)
+ - Animation control (pause,play,stop,...)
  - Delay and animation synchronization queue
  - AJAX support
  - Traverse and manipulate the DOM
@@ -20,8 +20,8 @@ This is a small JavaScript library intended to reduce the data transfer and memo
  - Object dimension and position processing
  - Recursive if and else logic
  - Result filtering (withoutClass, withClass, filter)
- - Added general functionality (rand, iterate, mstime, etc...)
- - Loop handling
+ - Added general functionality (rand, iterate, mstime, etc,...)
+ - And much more (event binding, triggering, loop logic)
 
 ## Disadvantages
  - Only supported by HTML5 compliant browsers
