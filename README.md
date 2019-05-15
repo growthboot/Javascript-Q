@@ -15,13 +15,13 @@ This is a small JavaScript library intended to reduce the data transfer and memo
  - Delay and animation synchronization queue
  - AJAX support
  - Traverse and manipulate the DOM
- - Event handling
+ - Event handling (event binding, triggering)
  - Data to DOM storage
  - Object dimension and position processing
  - Recursive if and else logic
  - Result filtering (withoutClass, withClass, filter)
  - Added general functionality (rand, iterate, mstime, etc,...)
- - And much more (event binding, triggering, loop logic)
+ - And much more (css injection, loop logic, animated scrolling,...)
 
 ## Disadvantages
  - Only supported by HTML5 compliant browsers
