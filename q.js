@@ -6,7 +6,7 @@
 
 (function(JavascriptQ) {
 	var 
-	version = 2.234,
+	version = 2.235,
 
 	// Initialize Q
 	q = window[JavascriptQ] = function (mixedQuery) {
@@ -400,7 +400,9 @@
 			var i=0;
 			if (isNode(mixedQuery)) {
 				that[i++] = mixedQuery;
-			} else if (mixedQuery.is_q || Array.isArray(mixedQuery)) {
+			} else if (mixedQuery.is_q) {
+				return mixedQuery;
+			} else if (Array.isArray(mixedQuery)) {
 				iterate(mixedQuery,function () {
 					that[i++] = this;
 				});
@@ -787,14 +789,15 @@
 	// Request or define CSS
 	fn('css', function (mixedCss) {
 		var that = this;
-		if (typeof mixedCss == "function") {
-			mixedCss = mixedCss.call(that);
-		}
+		if (!that.length)
+			return that;
+		var cssType = typeof mixedCss;  
 		try {
-			if (typeof mixedCss == 'undefined') {
+			if (cssType == 'undefined') {
 				return getComputedStyle(that[0]);
-			} else if (typeof mixedCss == 'string') {
+			} else if (cssType == 'string') {
 				var objStyle = getComputedStyle(that[0]);
+				mixedCss = fnResolve.call(that,mixedCss);
 				return objStyle ? objStyle[camelToDash(mixedCss)] : 0;
 			}
 		} catch (e) {
@@ -802,6 +805,7 @@
 		}
 		if (!prospectQueue.call(that,arguments,'css'))
 			return that;
+		mixedCss = fnResolve.call(that,mixedCss);
 		for (var strKey in mixedCss) {
 			var strValue = mixedCss[strKey];
 			if (strKey == "transform" && typeof strValue == "object") {
@@ -1104,8 +1108,7 @@
 		var that = this;
 		if (!prospectQueue.call(that,arguments,'appendTo'))
 			return that;
-		if (!mixedVar.is_q)
-			mixedVar = q(mixedVar);
+		mixedVar = q(mixedVar);
 		mixedVar.append(that,null,BYPASS_QUEUE);
 		return that;
 	});

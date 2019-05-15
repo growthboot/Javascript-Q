@@ -16,6 +16,8 @@ objHTML.css({
 document.write("<div><input type='button' id='fakePop1' value='Pop'></div>");
 document.write("<div><input type='button' onclick='$(\"body\").scrollTop(1000,\"smooth\");' value='Scroll'></div>");
 $(function () {
+
+
 	$("#fakePop1").click(function () {
 		$("<div></div>")
 		.css({
@@ -311,6 +313,11 @@ document.write("</div>");
 // offsetParent
 output("Offset Parent", ($("#animationBox3").offsetParent().html() == '<div id="animationBox3" style="height:20px;width:20px;background-color:rgb(0,0,0);position:absolute;"></div>' ? strPass : strFail));
 
+output("Create a redundant handle", (function () {
+	var $bar = $("<div>");
+	return $($bar).outer() == "<div></div>";
+})() ? strPass : strFail);
+
 // .append
 $("#domManSource .cell1").append("<span>abc</span>");
 output("Append html", $("#domManSource .cell1").html() == "1<span>abc</span>" ? strPass : strFail);
@@ -329,6 +336,13 @@ output("Prepend from query", objHTML.outer() == '<div id="prependToBodyTest" sty
 // .appendTo
 $("#domManSource .cell1").appendTo("#domManSource");
 output("Append to", $("#domManSource").html() == '<span class="cell2 cell">2</span><span style="background:#000;color:#fff;padding:0 10px;" class="cell3 cell">3<span>deep</span></span><span class="cell1 cell">1<span>abc</span></span>' ? strPass : strFail);
+
+output("Append to with handler", (function () {
+	var $bar = $("<div>");
+	var $foo = $("<div>").html(123);
+	$foo.appendTo($bar);
+	return $bar.html() == "<div>123</div>";
+})() ? strPass : strFail);
 
 // .appendAfter
 $("#domManSource .cell1").appendAfter("#domManSource .cell2");
