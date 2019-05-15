@@ -6,10 +6,17 @@
 <script type="text/javascript">
 $(function () {
 	var i = 0;
+	var $body = $('span');
 	$("<div>")
 	.delay(1000)
-	.html(123)
-	.appendTo('body');
+	.appendTo($body);
+
+	$("<div>")
+	.delay(2000)
+	.appendTo($body);
+	$("<div>")
+	.delay(3000)
+	.appendTo($body);
 
 });
 </script>
@@ -17,10 +24,13 @@ $(function () {
 div {
 	background-color:green;
 	display: inline-block;
+	width:100px;
+	height:100px;
+	color:#fff;
 }
 </style>
 </head>
 <body>
-	
+	<span></span>
 </body>
 </html>

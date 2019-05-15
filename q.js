@@ -6,7 +6,7 @@
 
 (function(JavascriptQ) {
 	var 
-	version = 2.235,
+	version = 2.236,
 
 	// Initialize Q
 	q = window[JavascriptQ] = function (mixedQuery) {
@@ -35,7 +35,7 @@
 		var keys = Object.keys(obj2);
 		for (var i = 0; i < keys.length; i += 1) {
 			var val = obj2[keys[i]];
-			obj1[keys[i]] = ['object', 'array'].indexOf(typeof val) != -1 ? extend(obj1[keys[i]] || {}, val) : val;
+			obj1[keys[i]] = ['object', 'array'].indexOf(typeof val) != -1 && !isNode(val) ? extend(obj1[keys[i]] || {}, val) : val;
 		}
 		return obj1;
 	},

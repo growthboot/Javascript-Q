@@ -540,6 +540,38 @@ output("Virtual clone", (function () {
 	return $test.html() == "<div>source1</div><div>source2</div>";
 })() ? strPass : strFail);
 
+// .copy
+output("Copy arugments", (function () {
+	var foo = {
+		test : 123
+	};
+	var bar = $.copy(foo);
+	return bar.test == 123;
+})() ? strPass : strFail);
+
+output("Copy deep arugments", (function () {
+	var foo = {
+		test : 123,
+		test2 : {
+			test3 : 123
+		}
+	};
+	var bar = $.copy(foo);
+	return bar.test2.test3 == 123;
+})() ? strPass : strFail);
+
+output("Copy DOM nodes", (function () {
+	var domDiv = $("<div>")[0];
+	var foo = {
+		test : 123,
+		test2 : {
+			test3 : domDiv
+		}
+	};
+	var bar = $.copy(foo);
+	return bar.test2.test3 == domDiv;
+})() ? strPass : strFail);
+
 // .outer
 output("Test multiple NODE to OUTER", $("#cloneSource .cell").outer().match(/<span class="cell1 cell">1<\/span><span class="cell2 cell">2<\/span><span/) ? strPass : strFail);
 output("Single NODE to OUTER", $("#cloneSource .cell3").outer().match(/>3<span>deep<\/span><\/span>$/) ? strPass : strFail);
