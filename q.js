@@ -6,7 +6,7 @@
 
 (function(JavascriptQ) {
 	var 
-	version = 2.238,
+	version = 2.239,
 
 	// Initialize Q
 	q = window[JavascriptQ] = function (mixedQuery) {
@@ -1084,7 +1084,7 @@
 		if (!prospectQueue.call(that,arguments,'append'))
 			return that;
 		var 
-		item = typeof mixedVar == 'string' ? q(mixedVar) : mixedVar,
+		item = typeof mixedVar == 'string' ? (mixedVar[0] == "<" ? q(mixedVar) : [document.createTextNode(mixedVar)]) : mixedVar,
 		strMethod = strAlternateMethod || "appendChild";
 		iterate(that,function () {
 			var node = this;

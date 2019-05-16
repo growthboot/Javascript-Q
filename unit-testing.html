@@ -349,6 +349,14 @@ output("Append after", $("#domManSource").html() == '<span class="cell2 cell">2<
 $("#domManSource .cell1").appendBefore("#domManSource .cell2");
 output("Append before", $("#domManSource").html() == '<span class="cell1 cell">1<span>abc</span></span><span class="cell2 cell">2</span><span style="background:#000;color:#fff;padding:0 10px;" class="cell3 cell">3<span>deep</span></span>' ? strPass : strFail);
 
+// Append text
+output("Append Text", (function () {
+	var $bar = $("<div>")
+	.html("<div>outer</div>")
+	.append("text");
+	return $bar.html() == "<div>outer</div>text";
+})() ? strPass : strFail);
+
 // .parent
 output("Get parent", $("#domManSource .cell3 span").html() == "deep" ? strPass : strFail);
 
