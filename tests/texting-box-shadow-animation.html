@@ -1,0 +1,33 @@
+<!-- This document is badly commented... sorry. -->
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<script src="./../q.js"></script>
+<style type="text/css">
+	body {
+		padding:100px;
+	}
+	div {
+		width:100px;
+		height:100px;
+		background-color: #000;
+	}
+</style>
+</head>
+<body>
+	<div></div>
+	<button>toggle shadow</button>
+	<script type="text/javascript">
+		$("button").click(function () {
+			$("div")
+			.css({
+				boxShadow : "0 0 10px 0 rgba(222,33,24,0.5)"
+			})
+			.animate({
+				boxShadow : "0 0 40px 0 rgba(2,3,4,1)"
+			})
+			;
+		});
+	</script>
+</body>
+</html>

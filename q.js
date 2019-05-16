@@ -6,7 +6,7 @@
 
 (function(JavascriptQ) {
 	var 
-	version = 2.237,
+	version = 2.238,
 
 	// Initialize Q
 	q = window[JavascriptQ] = function (mixedQuery) {
@@ -1630,13 +1630,16 @@
 				strOutput = '',
 				arrToValues = [to],
 				arrFromValues = [from],
-				arrToWrappers = [];
+				arrToWrappers = [],
+				arrFromWrappers = [];
 				if (typeof from == "string") {
+					arrFromWrappers = from.split(regMatchNumbers);
 					arrFromValues = from.match(regMatchNumbers);
 				}
 				if (!arrFromValues) {
 					arrFromValues = [intDefaultFrom];
 				}
+				// Convert hax to rgb
 				if (to[0] == "#") {
 					to = hexToRgb(to);
 				} else if (typeof to == "string") {
@@ -1644,7 +1647,7 @@
 					arrToValues = to.match(regMatchNumbers);
 					intToValues = arrToValues.length;
 				}
-				// itarete to values
+				// convert rgb to rbba for simplicity
 				if (intToValues == 3 && toRC == "background-color") {
 					intToValues++;
 					arrToValues[3] = 1;
@@ -1652,16 +1655,46 @@
 					arrToWrappers[4] = ")";
 					arrToWrappers[0] = "rgba(";
 				}
+				if (toRC == "box-shadow") {
+					// from: 0 0 10px 0 rgba(222,33,24,0.5)
+					// to: rgba(2, 3, 4, 1) 0px 0px 40px 0px
+					var newCss = 
+					arrFromWrappers[4].replace(/^ /, '')
+					+ arrFromValues[4] // red
+					+ arrFromWrappers[5]
+					+ arrFromValues[5] // green
+					+ arrFromWrappers[6]
+					+ arrFromValues[6] // blue
+					+ arrFromWrappers[7]
+					+ arrFromValues[7] // alpha
+					+ arrFromWrappers[8]
+					+ " "
+					+ arrFromValues[0] // left
+					+ arrFromWrappers[1]
+					+ arrFromValues[1] // right
+					+ arrFromWrappers[2]
+					+ arrFromValues[1] // blur
+					+ arrFromWrappers[2]
+					+ arrFromValues[2] // spread
+					+ arrFromWrappers[3].replace(/ $/, '');
+					arrFromWrappers = newCss.split(regSplitNumbers);
+					arrFromValues = newCss.match(regMatchNumbers);
+				}
+				// itarete to values
 				for (var intItem=0;intItem!=intToValues;intItem++) {
 					var
 					// unit conversions will not be handled yet
-					mixedFromValue = ((arrFromValues[intItem] || intDefaultFrom)+'').replace(/[a-z%]+/, '')*1,
+					mixedFromValue = ((arrFromValues[intItem] || intDefaultFrom)+'').replace(/[a-z%]+/, ''),
 					mixedToValue = arrToValues[intItem],
 					matchToSuffix = typeof mixedToValue == 'string' ? mixedToValue.match(/([a-z%]+)/) : "",
 					strToSuffix = matchToSuffix ? matchToSuffix[1] : (typeof mixedToValue == 'string' || arrExcludePx[toRC] ? '' : 'px');
-					if (typeof mixedToValue == 'string')
-						mixedToValue = mixedToValue.replace(/[a-z%]+/, '')*1;
-					var mixedChange = mixedToValue - mixedFromValue;
+					var mixedChange=0;
+					if (mixedFromValue*1==mixedFromValue) {
+						mixedFromValue*=1;
+						if (typeof mixedToValue == 'string')
+							mixedToValue = mixedToValue.replace(/[a-z%]+/, '')*1;
+						mixedChange = mixedToValue - mixedFromValue;
+					}
 					// loop through time
 					for (var intItr=0;intItr!=intIterations;intItr++) {
 						if (intItem == 0) {
