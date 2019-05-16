@@ -18,15 +18,94 @@
 	<div></div>
 	<button>toggle shadow</button>
 	<script type="text/javascript">
+		var 
+		intBaseSpeed = 200,
+		strBaseEase = "linear";
+
 		$("button").click(function () {
+			$(this).remove();
 			$("div")
+			.loop()
 			.css({
 				boxShadow : "0 0 10px 0 rgba(222,33,24,0.5)"
 			})
 			.animate({
 				boxShadow : "0 0 40px 0 rgba(2,3,4,1)"
+			},intBaseSpeed,strBaseEase)
+			.animate({
+				boxShadow : "30px 0 40px 10px rgba(2,3,4,1)"
+			},intBaseSpeed,strBaseEase)
+			.animate({
+				boxShadow : "-30px 0 40px 0 rgba(2,3,4,1)"
+			},intBaseSpeed,strBaseEase)
+			.animate({
+				boxShadow : "0 0 20px 20px rgba(255,0,0,1)"
+			},intBaseSpeed,strBaseEase)
+			.animate({
+				boxShadow : "0 0 0 0 rgba(2,255,4,1)"
+			},intBaseSpeed,strBaseEase)
+			.animate({
+				boxShadow : "0 0 200px 20px rgba(2,3,0,1)"
+			},intBaseSpeed,strBaseEase)
+			.animate({
+				boxShadow : "0 0 20px 200px rgba(2,3,0,1)"
+			},intBaseSpeed,strBaseEase)
+			.animate({
+				boxShadow : "0 0 200px 200px rgba(255,255,0,1)"
+			},intBaseSpeed,strBaseEase)
+			.animate({
+				boxShadow : "0 0 0 0 rgba(255,255,0,1)"
+			},intBaseSpeed,strBaseEase)
+			.animate({
+				boxShadow : "100px 0 0 0 rgba(255,255,0,1)"
+			},intBaseSpeed,strBaseEase)
+			.animate({
+				boxShadow : "-100px 0 0 0 rgba(255,255,0,1)"
+			},intBaseSpeed,strBaseEase)
+			.animate({
+				boxShadow : "0 100px 0 0 rgba(255,255,0,1)"
+			},intBaseSpeed,strBaseEase)
+			.animate({
+				boxShadow : "0 -100px 0 0 rgba(255,255,0,1)"
+			},intBaseSpeed,strBaseEase)
+			.async(function () {
+				$("div")
+				.withoutQueue()
+				.animate({
+					backgroundColor : 'rgba(0,0,0,0)'
+				})
 			})
-			;
+			.animate({
+				boxShadow : "100px 20px 0 0 rgba(255,255,0,1)"
+			},intBaseSpeed,strBaseEase)
+			.animate({
+				boxShadow : "-100px 40px 0 0 rgba(255,255,0,1)"
+			},intBaseSpeed,strBaseEase)
+			.animate({
+				boxShadow : "0 100px 20px 20px rgba(255,255,0,1)"
+			},intBaseSpeed,strBaseEase)
+			.animate({
+				boxShadow : "0 -100px 0 40px rgba(255,255,0,1)"
+			},intBaseSpeed,strBaseEase)
+			.animate({
+				boxShadow : "100px 100px 40px 40px rgba(255,255,0,1)"
+			},intBaseSpeed,strBaseEase)
+			.animate({
+				boxShadow : "-100px -100px 80px 20px rgba(255,255,0,1)"
+			},intBaseSpeed,strBaseEase)
+			.animate({
+				boxShadow : "100px 100px 40px 10px rgba(0,255,255,0.5)"
+			},intBaseSpeed,strBaseEase)
+			.animate({
+				boxShadow : "-100px -100px 80px 0px rgba(0,255,255,0.5)"
+			},intBaseSpeed,strBaseEase)
+			.async(function () {
+				$("div")
+				.withoutQueue()
+				.animate({
+					backgroundColor : 'rgba(0,0,0,1)'
+				})
+			});
 		});
 	</script>
 </body>
