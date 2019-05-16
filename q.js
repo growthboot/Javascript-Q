@@ -6,7 +6,7 @@
 
 (function(JavascriptQ) {
 	var 
-	version = 2.236,
+	version = 2.237,
 
 	// Initialize Q
 	q = window[JavascriptQ] = function (mixedQuery) {
@@ -1542,12 +1542,16 @@
 			finished : function () {}, // redundant function works just like 
 			ended : function () {} // called when an animation is stopped or finishes on its own
 		},
-		fnCallback = function () {};
+		fnCallback = function () {},
+		arrArgs = Array.prototype.slice.call(arguments),
+		boolBypassQueue = arrArgs.includes(BYPASS_QUEUE);
+		if (boolBypassQueue)
+			delete arrArgs[arrArgs.indexOf(BYPASS_QUEUE)];
 		if (that.loopOn === 0)
 			return that;
 		for (var intArg=1;intArg<intArgs;intArg++) {
 			var 
-			mixedValue = arguments[intArg],
+			mixedValue = arrArgs[intArg],
 			strType = typeof mixedValue;
 			if (strType == "number" || strType == "float") {
 				intDuration = mixedValue;
@@ -1561,11 +1565,9 @@
 			}
 		}
 		mixedCssTo = fnResolve.call(that, mixedCssTo);
-		arrArgs = Array.prototype.slice.call(arguments);
 		arrArgsSequence = arrArgs.slice(0);
 		arrArgsSequence.unshift("animate");
 		var 
-		boolBypassQueue = arrArgs.includes(BYPASS_QUEUE),
 		intIterations = Math.ceil(intDuration/10),
 		regMatchNumbers = /(\-?[0-9]+(?:\.[0-9]+)?(?:[a-z]{2}?|%)?)/gi,
 		regSplitNumbers = /\-?[0-9]+(?:\.[0-9]+)?(?:[a-z]{2}?|%)?/gi;

@@ -268,27 +268,24 @@ document.write("Animation test 2:<button style='background-color:#ccc' id='anima
 
 $(function () {
 	$("#animationStart").click(function () {
-		$("#animationBox").animate({
+		$("#animationBox")
+		.queue()
+		.animate({
 			left : 175-22,
 			backgroundColor : "rgba(255,121,12,0.5)"
-		}, 750, "easeOutQuart", function () {
-			$("#animationBox").animate({
-				top : 175-22,
-				backgroundColor : "rgba(23,242,12,0.8)"
-			}, 750, "easeOutQuart", function () {
-				$("#animationBox").animate({
-					left : 0,
-					backgroundColor : "rgba(23,120,232,0.8)"
-				}, 1000, "easeOutElastic", function () {
-					$("#animationBox").animate({
-						top : 0,
-						backgroundColor : "rgba(23,242,211,0.8)"
-					}, 750, "easeOutBack", function () {
-						
-					});
-				});
-			});
-		});
+		}, 750, "easeOutQuart")
+		.animate({
+			top : 175-22,
+			backgroundColor : "rgba(23,242,12,0.8)"
+		}, 750, "easeOutQuart")
+		.animate({
+			left : 0,
+			backgroundColor : "rgba(23,120,232,0.8)"
+		}, 1000, "easeOutElastic")
+		.animate({
+			top : 0,
+			backgroundColor : "rgba(23,242,211,0.8)"
+		}, 750, "easeOutBack")
 	});
 });
 document.write("Animation test:<button style='background-color:#ccc' id='animationStart'>Start</button><div id='animationContainer' style=';position:relative;height:175px;width:175px;border:1px solid #000;box-sizing:border-box;'><div id='animationBox' style='height:20px;width:20px;background-color:rgb(0,0,0);position:absolute;'></div></div>");
