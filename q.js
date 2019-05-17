@@ -6,7 +6,7 @@
 
 (function(JavascriptQ) {
 	var 
-	version = 2.241,
+	version = 2.2411,
 
 	// Initialize Q
 	q = window[JavascriptQ] = function (mixedQuery) {
@@ -572,7 +572,7 @@
 			        '-ms-user-select': none, /* Internet Explorer/Edge */
 			            'user-select': none /* Non-prefixed version, currently
 			                                  supported by Chrome and Opera */
-			},BYPASS_QUEUE)
+			},undefined,undefined,undefined,BYPASS_QUEUE)
 		});
 		return that;
 	});
@@ -1398,7 +1398,7 @@
 			return that;
 		return that.css({
 			"animation-play-state" : "paused"
-		},BYPASS_QUEUE);
+		},undefined,undefined,undefined,BYPASS_QUEUE);
 	});
 
 	fn('play', function () {
@@ -1407,7 +1407,7 @@
 			return that;
 		return that.css({
 			"animation-play-state" : "running"
-		},BYPASS_QUEUE);
+		},undefined,undefined,undefined,BYPASS_QUEUE);
 	});
 
 	// stop all animation sequences for the selected object
@@ -1425,7 +1425,7 @@
 		});
 		return this.css({
 			"animation-play-state" : "paused"
-		},BYPASS_QUEUE).dequeue();
+		},undefined,undefined,undefined,BYPASS_QUEUE).dequeue();
 	});
 
 	q.delay = function (intMS, fnCallback) {
@@ -1764,7 +1764,7 @@
 							objTransformHistory[intElUid] = mixedCssTo.transform;
 							mixedCssTo.transform = stringifyTransformData(mixedCssTo.transform);
 						}
-						q(el).css(mixedCssTo, BYPASS_QUEUE);
+						q(el).css(mixedCssTo, undefined,undefined,undefined, BYPASS_QUEUE);
 						cleanUp(el,fnDone,style,intElUid,strKeyFrameName);// remove the animation css
 						fnCallback();
 						strCurrentKey = toRC;
