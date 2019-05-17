@@ -6,7 +6,7 @@
 
 (function(JavascriptQ) {
 	var 
-	version = 2.24,
+	version = 2.241,
 
 	// Initialize Q
 	q = window[JavascriptQ] = function (mixedQuery) {
@@ -713,16 +713,22 @@
 	}
 
 	// DOM width
-	fn('width', function () {
-		return getWidthHeight.call(this,"Width");
+	fn('width', function (mixedValue) {
+		if (typeof mixedValue != 'undefined')
+			return this.css('width',mixedValue);
+		else
+			return getWidthHeight.call(this,"Width");
 	});
 	q.width = function () {
 		return q(window).width();
 	};
 	
 	// DOM height
-	fn('height', function () {
-		return getWidthHeight.call(this,"Height");
+	fn('height', function (mixedValue) {
+		if (typeof mixedValue != 'undefined')
+			return this.css('height',mixedValue);
+		else
+			return getWidthHeight.call(this,"Height");
 	});
 	q.height = function () {
 		return q(window).height();
@@ -787,7 +793,7 @@
 	}
 	
 	// Request or define CSS
-	fn('css', function (mixedCss) {
+	fn('css', function (mixedCss,mixedValue) {
 		var that = this;
 		if (!that.length)
 			return that;
@@ -795,7 +801,7 @@
 		try {
 			if (cssType == 'undefined') {
 				return getComputedStyle(that[0]);
-			} else if (cssType == 'string') {
+			} else if (cssType == 'string' && typeof mixedValue == 'undefined') {
 				var objStyle = getComputedStyle(that[0]);
 				mixedCss = fnResolve.call(that,mixedCss);
 				return objStyle ? objStyle[camelToDash(mixedCss)] : 0;
@@ -806,6 +812,9 @@
 		if (!prospectQueue.call(that,arguments,'css'))
 			return that;
 		mixedCss = fnResolve.call(that,mixedCss);
+		if (typeof mixedValue != 'undefined') {
+			return that.css({[mixedCss]:mixedValue});
+		}
 		for (var strKey in mixedCss) {
 			var strValue = mixedCss[strKey];
 			if (strKey == "transform" && typeof strValue == "object") {

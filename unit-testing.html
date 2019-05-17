@@ -460,6 +460,15 @@ $({
 }).each(function (k,v) {
 	strEachTest += v.a;
 });
+output("Each from array of DOM", (function () {
+	var $foo = $("<div>").html("foo");
+	var $bar = $("<div>").html("bar");
+	var $sample = $("<div>");
+	$([$foo[0], $bar[0]]).each(function () {
+		$sample.append(this);
+	});
+	return $sample.html() == "<div>foo</div><div>bar</div>";
+})() ? strPass : strFail);
 output("Each Object", strEachTest == 3 ? strPass : strFail);
 var strEachTest = 0;
 $([{
@@ -516,6 +525,17 @@ $.addCSS("#cssSource .cell1", {
 // .width
 output("addCSS and width", $("#cssSource .cell1").width() != intStartWidth ? strPass : strFail);
 output("innerWidth and width", $("body").width() != $("body").innerWidth() ? strPass : strFail);
+
+// set with width
+
+output("set with .width and .height", (function () {
+	var $source1 = $("<div>").appendTo('body');
+	$source1.width(21);
+	$source1.height(19);
+	var booResult = $source1.width() == 21 && $source1.height() == 19;
+	$source1.remove();
+	return booResult;
+})() ? strPass : strFail);
 
 
 // .position
