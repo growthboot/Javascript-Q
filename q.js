@@ -6,7 +6,7 @@
 
 (function(JavascriptQ) {
 	var 
-	version = 2.239,
+	version = 2.24,
 
 	// Initialize Q
 	q = window[JavascriptQ] = function (mixedQuery) {
@@ -1291,6 +1291,11 @@
 	fn('withoutQueue', function () {
 		var that = this;
 		that.withoutQueueOn = true;
+		return that;
+	});
+	fn('withQueue', function () {
+		var that = this;
+		that.withoutQueueOn = false;
 		return that;
 	});
     
