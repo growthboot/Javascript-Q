@@ -78,7 +78,6 @@ $("h3").each(function () {
 ### Delay stuff from happening
 ```javascript
 $("<div>")
-.queue() // Tell queue that were going to have stuff wait for delays and animations to finish before moving on
 .delay(1000) // Delay 1 second
 .appendTo("body") // this will only happen after the delay
 .css({
@@ -96,6 +95,55 @@ $("<div>")
 .delay(1000, function () { // run a callback function after a delay
 	alert('hi');
 });
+```
+
+### Queue stuff so that it plays synchronously
+```javascript
+$("<div>")
+.queue()
+.appendTo("body")
+.animate({
+	left : 100
+})
+.animate({
+	left : 0,
+	top : 100
+});
+```
+
+### Without queue
+```javascript
+$("#foo")
+.queue()
+.animate({
+	left : 100
+},1000);
+$.delay(500, function () {
+	$("#foo")
+	.withoutQueue()
+	.animate({
+		top : 100
+	})
+})
+```
+
+### Loop stuff
+```javascript
+$("<div>")
+.css({
+	height : 100,
+	width : 100,
+	backgroundColor : 'green'
+})
+.appendTo('body')
+.loop(10) // loop the following stuff 10 times (empty = infinite)
+.animate({
+	left : 100
+})
+.animate({
+	left : 0
+})
+.delay(500)
 ```
 
 ### Get the dimensions of an object
@@ -247,6 +295,26 @@ $.request({
 	  
 	}
 });
+```
+
+### Synchronize Javascript with queued stuff
+```javascript
+$("<div>")
+.queue()
+.animate({...})
+.sync(function ()_ {
+	console.log(this.height());
+});
+```
+
+### Without logic
+```html
+<div class='notthisone'>1</div><div>2</div><div>3</div>
+```
+```javascript
+$("div")
+.withoutClass('notthisone')
+.addClass('thisone')
 ```
 
 ### List of methods
