@@ -307,6 +307,34 @@ output("*Source of things to replace", "<span id='replaceSource'><span class='ce
 output("*Source of things to clone", "<span id='cloneSource'><span class='cell1 cell'>1</span><span class='cell2 cell'>2</span><span style='background:#000;color:#fff;padding:0 10px;' class='cell3 cell'>3<span>deep</span></span></span>");
 document.write("</div>");
 
+output("if", (function () {
+	var $div = $("<div>").appendTo("body");
+	$($div[0]).if(1).css({'width':100});
+	$($div[0]).if(0).height(100);
+	var boolResult = $div.width() == 100 && $div.height() != 100;
+	$div.remove();
+	return boolResult;
+})() ? strPass : strFail);
+
+output("queued if", (function () {
+	var $div = $("<div>")
+	.queue()
+	.if(1)
+	.html('foo');
+	var boolResult = $div.html() == 'foo';
+	return boolResult;
+})() ? strPass : strFail);
+
+output("else", (function () {
+	var $div = $("<div>")
+	.if(0)
+	.html('foo')
+	.else()
+	.html('bar')
+	var boolResult = $div.html() == 'bar';
+	return boolResult;
+})() ? strPass : strFail);
+
 // offsetParent
 output("Offset Parent", ($("#animationBox3").offsetParent().html() == '<div id="animationBox3" style="height:20px;width:20px;background-color:rgb(0,0,0);position:absolute;"></div>' ? strPass : strFail));
 
@@ -527,7 +555,6 @@ output("addCSS and width", $("#cssSource .cell1").width() != intStartWidth ? str
 output("innerWidth and width", $("body").width() != $("body").innerWidth() ? strPass : strFail);
 
 // set with width
-
 output("set with .width and .height", (function () {
 	var $source1 = $("<div>").appendTo('body');
 	$source1.width(21);
@@ -536,7 +563,6 @@ output("set with .width and .height", (function () {
 	$source1.remove();
 	return booResult;
 })() ? strPass : strFail);
-
 
 // .position
 var objPos = $("#cloneSource").position();

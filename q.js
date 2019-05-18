@@ -6,7 +6,7 @@
 
 (function(JavascriptQ) {
 	var 
-	version = 2.2411,
+	version = 2.242,
 
 	// Initialize Q
 	q = window[JavascriptQ] = function (mixedQuery) {
@@ -176,7 +176,10 @@
 		layers : 0, // how many times has the find function ran
 		loopOn : false,
 		loopCount : 0,
-		loopBuffer : []
+		loopBuffer : [],
+		// ifs
+		condition_count : 0, // ifs count
+		conditions : [1]
 	},
 	hexToRgb = q.hexToRgb = function (hex) {
 	    // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
@@ -238,9 +241,6 @@
 		}
 		return 'Unknown';
 	},
-	// ifs
-	condition_count = 0, // ifs count
-	conditions = [1],
 	// Report an error
 	error = q.error = function (objError) {
 		console.log(objError);
@@ -248,15 +248,18 @@
 	},
 	// Added functions to the q lib
 	fn = q.plugin = function (mixedName, fnCallback) {
-		if (typeof mixedName == "string")
-			mixedName = [mixedName];
-		iterate(mixedName,function (k,strName) {
+		iterate(typeof mixedName == "string" ? [mixedName] : mixedName, function (k,strName) {
 			fun[strName] = function () {
 				var that = this;
 				that.caller = strName;
+				if (strName == 'if' || strName == 'else') {
+					if (!prospectQueue.call(that,arguments,strName))
+						return that;
+				}
 				// pre dispatch
-				if (strName != 'else' && !conditions[condition_count]) // if this level condition wasnt matched
+				if (strName != 'else' && !that.conditions[that.condition_count]){ // if this level condition wasnt matched
 					return that; // pass the query on without doing anything
+				}
 				var mixedResult = fnCallback.apply(that,arguments);
 				return mixedResult;
 			};
@@ -310,8 +313,8 @@
 	fn('if', function (mixedValue) {
 		var that = this;
 		mixedValue = fnResolve.call(this,mixedValue);
-		conditions.push(!!mixedValue);
-		condition_count++;
+		that.conditions[that.condition_count+1] = !!mixedValue;
+		that.condition_count++;
 		return that;
 	});
 
@@ -320,12 +323,12 @@
 		var that = this,
 		v;
 		if (typeof mixedValue == "undefined") {
-			v = !conditions[condition_count];
+			v = !that.conditions[that.condition_count];
 		} else {
 			mixedValue = fnResolve.call(this,mixedValue);
 			v = !!mixedValue;
 		}
-		conditions[condition_count] = v;
+		that.conditions[that.condition_count] = v;
 		return that;
 	});
 
