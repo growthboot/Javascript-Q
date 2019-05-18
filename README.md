@@ -75,7 +75,9 @@ $("h3").each(function () {
   });
 });
 ```
+
 ### Delay stuff from happening
+A simple inline delay
 ```javascript
 $("<div>")
 .delay(1000) // Delay 1 second
@@ -98,6 +100,7 @@ $("<div>")
 ```
 
 ### Queue stuff so that it plays synchronously
+Have the next animations or delays wait for eachother to finish in sequence
 ```javascript
 $("<div>")
 .queue()
@@ -112,6 +115,7 @@ $("<div>")
 ```
 
 ### Without queue
+Have something animate right away instead of waiting for the queue
 ```javascript
 $("#foo")
 .queue()
@@ -128,6 +132,7 @@ $.delay(500, function () {
 ```
 
 ### Loop stuff
+Loop whatever is after the `.loop()` function is called
 ```javascript
 $("<div>")
 .css({
