@@ -13,6 +13,7 @@ objHTML.css({
 	zIndex : 123,
 	//'z-index' : 123
 });
+document.write("<div><input type='checkbox' id='checkbox1' checked></div>");
 document.write("<div><input type='button' id='fakePop1' value='Pop'></div>");
 document.write("<div><input type='button' onclick='$(\"body\").scrollTop(1000,\"smooth\");' value='Scroll'></div>");
 $(function () {
@@ -306,6 +307,17 @@ output("*Source for CSS change", "<span id='cssSource'><span class='cell1 cell'>
 output("*Source of things to replace", "<span id='replaceSource'><span class='cell1 cell'>1</span><span class='cell2 cell'>2</span><span style='background:#000;color:#fff;padding:0 10px;' class='cell3 cell'>3<span>deep</span></span></span>");
 output("*Source of things to clone", "<span id='cloneSource'><span class='cell1 cell'>1</span><span class='cell2 cell'>2</span><span style='background:#000;color:#fff;padding:0 10px;' class='cell3 cell'>3<span>deep</span></span></span>");
 document.write("</div>");
+
+output("Checked", (function () {
+	$("#checkbox1").checked(true);
+	if ($("#checkbox1").checked() == true) {
+		$("#checkbox1").checked(false);
+		if ($("#checkbox1").checked() == false) {
+			return true;
+		}
+	}
+	return false;
+})() ? strPass : strFail);
 
 output("if", (function () {
 	var $div = $("<div>").appendTo("body");

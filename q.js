@@ -6,7 +6,7 @@
 
 (function(JavascriptQ) {
 	var 
-	version = 2.243,
+	version = 2.244,
 
 	// Initialize Q
 	q = window[JavascriptQ] = function (mixedQuery) {
@@ -521,6 +521,22 @@
 			return arrDataResult;
 		else
 			return this;
+	});
+
+	fn('checked', function (boolValue) {
+		var that = this;
+		if (typeof boolValue == "undefined") {
+			var boolResult = true;
+			iterate(that,function (j,el) {
+				if (!el.checked)
+					boolResult = false;
+			});
+			return boolResult;
+		} else {
+			iterate(that,function (j,el) {
+				el.checked = boolValue;
+			});
+		}
 	});
 
 	// Get all the HTML currently held as nodes in the current query
