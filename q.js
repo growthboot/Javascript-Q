@@ -6,7 +6,7 @@
 
 (function(JavascriptQ) {
 	var 
-	version = 2.242,
+	version = 2.243,
 
 	// Initialize Q
 	q = window[JavascriptQ] = function (mixedQuery) {
@@ -1283,6 +1283,7 @@
 			}
 		};
 		r.send(arrParams.post ? encodeURI(q(arrParams.post).serialize()) : null);
+		return r;
 	};
 
 	fn('offsetParent', function () {
