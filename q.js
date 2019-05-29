@@ -6,7 +6,7 @@
 
 (function(JavascriptQ) {
 	var 
-	version = 2.244,
+	version = 2.245,
 
 	// Initialize Q
 	q = window[JavascriptQ] = function (mixedQuery) {
@@ -526,6 +526,8 @@
 	fn('checked', function (boolValue) {
 		var that = this;
 		if (typeof boolValue == "undefined") {
+			if (!that.length)
+				return null;
 			var boolResult = true;
 			iterate(that,function (j,el) {
 				if (!el.checked)
