@@ -6,7 +6,7 @@
 
 (function(JavascriptQ) {
 	var 
-	version = 2.246,
+	version = 2.247,
 
 	// Initialize Q
 	q = window[JavascriptQ] = function (mixedQuery) {
@@ -43,18 +43,30 @@
 	// callback(key, value, posFlag)
 	// posFlag 0=start; 2=end; 1=other
 	iterate = q.iterate = function (that, fnCallback) {
-		var 
-		i=0,
-		l;
+		var i=0,l;
 		if (isNode(that)) {
-			l=1;
-			if (fnCallback.call(that, i++, that, 2) === false)
-				return;
+			fnCallback.call(that, 0, that, 2);
 		} else {
 			l=that.length;
 			while (i<l) {
-				if (fnCallback.call(that[i], i, that[i++], i==l ? 2 : (!i ? 0 : 1)) === false)
-					return;
+				if (fnCallback.call(that[i], i, that[i], i==l ? 2 : (!i ? 0 : 1)) === false)
+					break;
+				i++;
+			}
+		}
+		return !!l;
+	},
+	riterate = q.riterate = function (that, fnCallback) {
+		var 
+		l=that.length,
+		i=l-1;
+		if (isNode(that)) {
+			fnCallback.call(that, 0, that, 2);
+		} else {
+			while (i>=0) {
+				if (fnCallback.call(that[i], i, that[i], i==l ? 2 : (!i ? 0 : 1)) === false)
+					break;
+				i--;
 			}
 		}
 		return !!l;
@@ -1133,6 +1145,16 @@
 		if (!prospectQueue.call(that,arguments,'prepend'))
 			return that;
 		return that.append(mixedVar, "insertBefore",BYPASS_QUEUE);
+	});
+
+	// Append self to a node
+	fn('prependTo', function (mixedVar) {
+		var that = this;
+		if (!prospectQueue.call(that,arguments,'prependTo'))
+			return that;
+		mixedVar = q(mixedVar);
+		mixedVar.prepend(that,null,BYPASS_QUEUE);
+		return that;
 	});
 
 	// Append self to a node
