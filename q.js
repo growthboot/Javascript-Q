@@ -955,7 +955,7 @@
 		var that = this;
 		if (!prospectQueue.call(that,arguments,'attr'))
 			return that;
-		if (typeof strVal!='undefined')
+		if (typeof strVal=='undefined')
 			return that[0].getAttribute(strKey);
 		iterate(that,function () {
 			this.setAttribute(strKey, strVal);
