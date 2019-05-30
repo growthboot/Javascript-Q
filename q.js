@@ -6,7 +6,7 @@
 
 (function(JavascriptQ) {
 	var 
-	version = 2.247,
+	version = 2.248,
 
 	// Initialize Q
 	q = window[JavascriptQ] = function (mixedQuery) {
@@ -955,7 +955,7 @@
 		var that = this;
 		if (!prospectQueue.call(that,arguments,'attr'))
 			return that;
-		if (!strVal)
+		if (typeof strVal!='undefined')
 			return that[0].getAttribute(strKey);
 		iterate(that,function () {
 			this.setAttribute(strKey, strVal);
