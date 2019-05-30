@@ -5,7 +5,7 @@ A modern and light-weight JavaScript framework
 This is a small JavaScript library intended to reduce the data transfer and memory usage on your websites or apps by reducing redundant and repetitive coding. The library takes advantage of HTML5 functionality in Javascript since it became standard to keep it's size small. The idea is websites that want to service customers using pre HTML5 browsers can do so using vanilla HTML since they make up a very small portion of the market.
 
 ## VERSION
-2.245
+2.246
 
 ## Features
  - Ultra lightweight
@@ -348,6 +348,7 @@ $("div")
 - **withoutClass**: Removes all items from the selection if they contain the provided class(es)
 - **filter**: Removes all items from the selection if they dont match the provided selection
 - **attr**: Add an attribute to elements `$("#headline").attr("more_data", "value")`. Get the value of an attribute `$("#headline").attr("more_data")` returns `"value"`.
+- **checked**: Find out if a checkbox is checked, or set its value by proving value
 - **removeAttr**: Remove an attribute from elements `$("h3").removeAttr("more_data")`.
 - **data**: Get and set any type of data from any dom element
 - **bind**: Bind events to elements `$("body").bind("mouseover mouseout", function () {...})`.

@@ -6,7 +6,7 @@
 
 (function(JavascriptQ) {
 	var 
-	version = 2.245,
+	version = 2.246,
 
 	// Initialize Q
 	q = window[JavascriptQ] = function (mixedQuery) {
@@ -40,18 +40,20 @@
 		return obj1;
 	},
 
+	// callback(key, value, posFlag)
+	// posFlag 0=start; 2=end; 1=other
 	iterate = q.iterate = function (that, fnCallback) {
 		var 
 		i=0,
 		l;
 		if (isNode(that)) {
 			l=1;
-			if (fnCallback.call(that, i++, that) === false)
+			if (fnCallback.call(that, i++, that, 2) === false)
 				return;
 		} else {
 			l=that.length;
 			while (i<l) {
-				if (fnCallback.call(that[i], i, that[i++]) === false)
+				if (fnCallback.call(that[i], i, that[i++], i==l ? 2 : (!i ? 0 : 1)) === false)
 					return;
 			}
 		}
