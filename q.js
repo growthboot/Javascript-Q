@@ -6,7 +6,7 @@
 
 (function(JavascriptQ) {
 	var 
-	version = 2.248,
+	version = 2.249,
 
 	// Initialize Q
 	q = window[JavascriptQ] = function (mixedQuery) {
@@ -996,13 +996,21 @@
 		var that = this;
 		if (!prospectQueue.call(that,arguments,'each'))
 			return that;
-		iterate(that, function (k,v) {
-			return fnCallback.call(this,k,v);
+		iterate(that, function (k,v,p) {
+			return fnCallback.call(this,k,v,p);
+		});
+	});
+	fn('reach', function (fnCallback) {
+		var that = this;
+		if (!prospectQueue.call(that,arguments,'reach'))
+			return that;
+		riterate(that, function (k,v,p) {
+			return fnCallback.call(this,k,v,p);
 		});
 	});
 	q.each = function (obj, fnCallback) {
-		iterate(obj, function (k,v) {
-			return fnCallback.call(this,k,v);
+		iterate(obj, function (k,v,p) {
+			return fnCallback.call(this,k,v,p);
 		});
 	};
 
