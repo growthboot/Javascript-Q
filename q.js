@@ -6,7 +6,7 @@
 
 (function(JavascriptQ) {
 	var 
-	version = 2.249,
+	version = 2.25,
 
 	// Initialize Q
 	q = window[JavascriptQ] = function (mixedQuery) {
@@ -42,34 +42,31 @@
 
 	// callback(key, value, posFlag)
 	// posFlag 0=start; 2=end; 1=other
-	iterate = q.iterate = function (that, fnCallback) {
-		var i=0,l;
+	iterate = q.iterate = function (that, fnCallback, boolBackwords) {
+		var 
+		l=that.length,
+		i=boolBackwords?l-1:0;
 		if (isNode(that)) {
 			fnCallback.call(that, 0, that, 2);
 		} else {
-			l=that.length;
-			while (i<l) {
-				if (fnCallback.call(that[i], i, that[i], i==l ? 2 : (!i ? 0 : 1)) === false)
-					break;
-				i++;
+			if (boolBackwords) {
+				while (i>=0) {
+					if (fnCallback.call(that[i], i, that[i], i==l-1 ? 2 : (!i ? 0 : 1)) === false)
+						break;
+					i--;
+				}
+			} else {
+				while (i<l) {
+					if (fnCallback.call(that[i], i, that[i], i==l-1 ? 2 : (!i ? 0 : 1)) === false)
+						break;
+					i++;
+				}
 			}
 		}
 		return !!l;
 	},
 	riterate = q.riterate = function (that, fnCallback) {
-		var 
-		l=that.length,
-		i=l-1;
-		if (isNode(that)) {
-			fnCallback.call(that, 0, that, 2);
-		} else {
-			while (i>=0) {
-				if (fnCallback.call(that[i], i, that[i], i==l ? 2 : (!i ? 0 : 1)) === false)
-					break;
-				i--;
-			}
-		}
-		return !!l;
+		return iterate(that,fnCallback,1);
 	},
 	
 	// change camel case for dashes

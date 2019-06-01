@@ -1,3 +1,4 @@
+<!-- v2.25 -->
 <!-- This document is badly commented... sorry. -->
 <html>
 <head>
@@ -317,6 +318,28 @@ output("Checked", (function () {
 		}
 	}
 	return false;
+})() ? strPass : strFail);
+
+output("Iterate array", (function () {
+	var foo = [1,2,3,4];
+	var strBuffer = "";
+	$.iterate(foo, function (k,v,p) {
+		strBuffer+=k;
+		strBuffer+=v;
+		strBuffer+=p + ';';
+	});
+	return strBuffer == "010;121;231;342;";
+})() ? strPass : strFail);
+
+output("Reverse iterate array", (function () {
+	var foo = [1,2,3,4];
+	var strBuffer = "";
+	$.riterate(foo, function (k,v,p) {
+		strBuffer+=k;
+		strBuffer+=v;
+		strBuffer+=p + ';';
+	});
+	return strBuffer == "342;231;121;010;";
 })() ? strPass : strFail);
 
 output("if", (function () {
