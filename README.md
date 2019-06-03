@@ -1,4 +1,6 @@
 # JavaScript Q Library (JSQL)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fgrowthboot%2FJavascript-Q.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fgrowthboot%2FJavascript-Q?ref=badge_shield)
+
 A modern and light-weight JavaScript framework
 
 ## About
@@ -426,3 +428,7 @@ This library was created [for the Exitget platform](https://exitget.com/) becaus
 
 ## CREDITS
 Andrew Dear - Founder & Developer - [Contact](https://www.linkedin.com/in/adear/)
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fgrowthboot%2FJavascript-Q.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fgrowthboot%2FJavascript-Q?ref=badge_large)
