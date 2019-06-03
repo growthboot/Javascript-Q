@@ -1,6 +1,8 @@
 # JavaScript Q Library (JSQL)
 A modern and light-weight JavaScript framework
 
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fgrowthboot%2FJavascript-Q.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fgrowthboot%2FJavascript-Q?ref=badge_shield)
+
 ## About
 This is a small JavaScript library intended to reduce the data transfer and memory usage on your websites or apps by reducing redundant and repetitive coding. The library takes advantage of HTML5 functionality in Javascript since it became standard to keep it's size small. The idea is websites that want to service customers using pre HTML5 browsers can do so using vanilla HTML since they make up a very small portion of the market.
 
