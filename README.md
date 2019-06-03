@@ -5,7 +5,7 @@ A modern and light-weight JavaScript framework
 This is a small JavaScript library intended to reduce the data transfer and memory usage on your websites or apps by reducing redundant and repetitive coding. The library takes advantage of HTML5 functionality in Javascript since it became standard to keep it's size small. The idea is websites that want to service customers using pre HTML5 browsers can do so using vanilla HTML since they make up a very small portion of the market.
 
 ## VERSION
-2.25
+2.251
 
 ## Features
  - Ultra lightweight
@@ -327,6 +327,7 @@ $("div")
 - **find**: Search from any point in the DOM tree for a selection `some_element.find(".some_class")`.
 - **if**: Result passed to function will change if the following queries run or not
 - **else**: Used after `if`, will run the queries that are after the else only if the previous `if` was false
+- **or**: If the current selection has returned with nothing `.or` will do two things. It will call the callback provided, and it prevent any future query from being called.
 - **get**: Get a specific item from the selection using its index `$(".sometags").get(2)`. Get the last time of the index `.get(-1)`.
 - **become**: Simular functionality to get except it returns a new q selection rather than just the value. `$(".sometags").become(-1).remove()`
 - **parent**: Get the parent of an element `$("...").parent()`.

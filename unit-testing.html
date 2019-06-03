@@ -370,6 +370,34 @@ output("else", (function () {
 	return boolResult;
 })() ? strPass : strFail);
 
+output("or", (function () {
+	var boolWorked = false;
+	$("<div>")
+	.find(".doesntExist")
+	.or(function () {
+		boolWorked = true;
+	})
+	.sync(function () {
+		boolWorked = false;	
+	});
+	if (boolWorked) {
+		boolWorked = true;
+		var boolSyncHappened = false;
+		$("<div><div class='doesExist'></div></div>")
+		.find(".doesExist")
+		.or(function () {
+			boolWorked = false;
+		})
+		.sync(function () {
+			boolSyncHappened = true;
+		});
+		if (!boolSyncHappened) {
+			boolWorked = false;
+		}
+	}
+	return boolWorked;
+})() ? strPass : strFail);
+
 // offsetParent
 output("Offset Parent", ($("#animationBox3").offsetParent().html() == '<div id="animationBox3" style="height:20px;width:20px;background-color:rgb(0,0,0);position:absolute;"></div>' ? strPass : strFail));
 

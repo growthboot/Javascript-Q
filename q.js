@@ -6,7 +6,7 @@
 
 (function(JavascriptQ) {
 	var 
-	version = 2.25,
+	version = 2.251,
 
 	// Initialize Q
 	q = window[JavascriptQ] = function (mixedQuery) {
@@ -190,7 +190,8 @@
 		loopBuffer : [],
 		// ifs
 		condition_count : 0, // ifs count
-		conditions : [1]
+		conditions : [1],
+		orFired : false
 	},
 	hexToRgb = q.hexToRgb = function (hex) {
 	    // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
@@ -262,6 +263,8 @@
 		iterate(typeof mixedName == "string" ? [mixedName] : mixedName, function (k,strName) {
 			fun[strName] = function () {
 				var that = this;
+				if (that.orFired)
+					return that;
 				that.caller = strName;
 				if (strName == 'if' || strName == 'else') {
 					if (!prospectQueue.call(that,arguments,strName))
@@ -336,11 +339,25 @@
 		if (typeof mixedValue == "undefined") {
 			v = !that.conditions[that.condition_count];
 		} else {
-			mixedValue = fnResolve.call(this,mixedValue);
+			mixedValue = fnResolve.call(that,mixedValue);
 			v = !!mixedValue;
 		}
 		that.conditions[that.condition_count] = v;
 		return that;
+	});
+
+	fn('or', function (mixedAction) {
+		var that = this;
+		if (!prospectQueue.call(that,arguments,'or') || that.length)
+			return that;
+		that.orFired = true;
+		if (typeof mixedAction == "function")
+			mixedAction.call(that);
+		if (typeof mixedAction == "string" && typeof die == "function")
+			die(mixedAction);
+		else
+			console.log(mixedAction);
+		return this;
 	});
 
 	fn('extract', function (strVar) {
