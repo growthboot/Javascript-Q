@@ -1,4 +1,4 @@
-<!-- v2.25 -->
+<!-- v2.252 -->
 <!-- This document is badly commented... sorry. -->
 <html>
 <head>
@@ -395,6 +395,18 @@ output("or", (function () {
 			boolWorked = false;
 		}
 	}
+	return boolWorked;
+})() ? strPass : strFail);
+
+output("focus", (function () {
+	var boolWorked = false;
+	var $input = $("<input>")
+	.appendTo("body")
+	.focus(function () {
+		boolWorked = true;
+	})
+	.focus()
+	.remove();
 	return boolWorked;
 })() ? strPass : strFail);
 

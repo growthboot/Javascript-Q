@@ -6,7 +6,7 @@
 
 (function(JavascriptQ) {
 	var 
-	version = 2.251,
+	version = 2.252,
 
 	// Initialize Q
 	q = window[JavascriptQ] = function (mixedQuery) {
@@ -1071,6 +1071,10 @@
 		var strName = arrAutoBind[intAutoBind];
 		fn(strName, (function (strName) {
 			return function (fnCallback) {
+				if (!fnCallback && (strName == 'focus' || strName == 'select')) {
+					this[0][strName]();
+					return this;
+				}
 				return this[!fnCallback ? "trigger" : "bind"](strName, fnCallback);
 			};
 		})(strName));
