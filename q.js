@@ -6,7 +6,7 @@
 
 (function(JavascriptQ) {
 	var 
-	version = 2.252,
+	version = 2.253,
 
 	// Initialize Q
 	q = window[JavascriptQ] = function (mixedQuery) {
@@ -353,10 +353,6 @@
 		that.orFired = true;
 		if (typeof mixedAction == "function")
 			mixedAction.call(that);
-		if (typeof mixedAction == "string" && typeof die == "function")
-			die(mixedAction);
-		else
-			console.log(mixedAction);
 		return this;
 	});
 
@@ -1230,10 +1226,11 @@
 	// Next sibling node
 	fn('next', function (strType) {
 		var qcopy = copy(fun),
-		i=0;
+		i=0,
+		strParam = strType ? strType : "nextElementSibling";
 		iterate(this,function () {
-			qcopy[i] = this[strType ? strType : "nextElementSibling"] || false;
-			i++;
+			if (this[strParam])
+				qcopy[i++] = this[strParam];
 		});
 		qcopy.length = i;
 		return qcopy;

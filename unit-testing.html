@@ -1,4 +1,4 @@
-<!-- v2.252 -->
+<!-- v2.253 -->
 <!-- This document is badly commented... sorry. -->
 <html>
 <head>
@@ -466,6 +466,13 @@ output("Get parent", $("#domManSource .cell3 span").html() == "deep" ? strPass :
 // .next
 output("Get next", $("#domManSource .cell1").next().html() == "2" ? strPass : strFail);
 
+// make sure the next returns nothing when there's nothing to find
+output("Next to nothing", (function () {
+	var $foo = $("<div><span>1</span><span id='end'>2</span></div>");
+	var $nothing = $foo.find("#end").next();
+	return $nothing.length == 0;
+})() ? strPass : strFail);
+
 // .prev
 output("Get prev", $("#domManSource .cell2").prev().html() == "1<span>abc</span>" ? strPass : strFail);
 
@@ -496,7 +503,6 @@ $.request({
 	},
 	response : "JSON",
 	success : function (objResponse) {
-		console.log(objResponse);
 		if (objResponse.POST.foo && objResponse.GET.bar && objResponse.POST.foo == 1 && objResponse.GET.bar == 2)
 			$("#customRequestAnswer").html(strPass);
 	}
