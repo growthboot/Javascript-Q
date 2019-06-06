@@ -324,6 +324,20 @@ $("div")
 .addClass('thisone')
 ```
 
+### Simple loop logic
+```javascript
+function someFunction() {
+	$("<div>")
+	.text('foo')
+	.appendTo('body');
+}
+$(function () {
+	$.loop(5)
+	.delay(500)
+	.sync(someFunction);
+});
+```
+
 ### List of methods
 - **uniqueId**: Get a unique ID that represents a specific DOM element
 - **find**: Search from any point in the DOM tree for a selection `some_element.find(".some_class")`.
