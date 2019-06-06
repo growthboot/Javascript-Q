@@ -1,0 +1,28 @@
+<!-- This document is badly commented... sorry. -->
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<script src="./../q.js"></script>
+<script type="text/javascript">
+function someFunction() {
+	$("<div>").appendTo('body');
+}
+$(function () {
+	$.loop(5)
+	.delay(500)
+	.sync(someFunction);
+});
+</script>
+<style>
+div {
+	width:100px;
+	height:100px;
+	display:inline-block;
+	background-color: red;
+}
+</style>
+</head>
+<body>
+	
+</body>
+</html>

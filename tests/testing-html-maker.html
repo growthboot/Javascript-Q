@@ -1,0 +1,17 @@
+<!-- 
+	Added a test that demonstrates libraries inablity to create td tags without being wrapped in a table.
+-->
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<script src="./../q.js"></script>
+<script type="text/javascript">
+$(function () {
+	console.log($("<td></td>").text(123).outer());
+	console.log($("<table><tr><td></td></tr></table>").find('td').text(123).outer());
+});
+</script>
+</head>
+<body>
+</body>
+</html>

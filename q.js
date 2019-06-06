@@ -6,7 +6,7 @@
 
 (function(JavascriptQ) {
 	var 
-	version = 2.253,
+	version = 2.254,
 
 	// Initialize Q
 	q = window[JavascriptQ] = function (mixedQuery) {
@@ -1273,6 +1273,8 @@
 	q.uniqueId = fun.uniqueId = function (strIdToLoad) {
 		if (strIdToLoad == undefined) {
 			// generate an new ID
+			if (!this[0])
+				return console.error('Error: The Q selection is empty when it was expected not to be.');
 			var 
 			node = this[0];
 			if (node.__q_uid) {
@@ -1440,12 +1442,16 @@
 		}
 		return that;
 	};
-	fn('loop', function (intAmount) {
-		var that = this;
+	fn('loop', function () {
+		this.queue();
+		return q.loop.apply(this,arguments);
+	});
+	q.loop = function (intAmount) {
+		var that = this.is_q ? this : $("<div>"); // give the q something if there's nothing 
 		that.queue();
 		that.loopOn = typeof intAmount == "undefined" ? Infinity : intAmount;
 		return that;
-	});
+	};
 	fn(['queueNext','endLoop'], function () {
 		return q.queueNext(this, arguments)
 	});
