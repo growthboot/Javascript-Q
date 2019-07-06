@@ -274,6 +274,10 @@ Make the scrolling animate using a custom easing function and call a function wh
 ```javascript
 $("body").scrollTop("#idoftag", 2000, 'easeOutExpo', fnDone);
 ```
+### Scroll to the location of an object on the page
+```javascript
+$("#idoftag").scrollTo('smooth');
+```
 ### Create a post using form fields from a specific part of the DOM tree
 ```html
 <form>
@@ -387,6 +391,7 @@ $(function () {
 - **offset**: Return an object with the top and left position of an element `$("#my_element").offset()` relative to the nearest `relative`, `absolute`, or `fixed` position.
 - **offsetParent**: Find the nearest object with a `relative`, `absolute`, or `fixed` position.
 - **scrollTop**: Get and set the scrolltop location
+- **scrollTo**: Scroll to the location of an object on the page
 - **inViewY**: Get the amount of pixels of the object that are currently in view on the Y axis
 - **left**: Returns the left position of an object and stores the top position in memory encase you need it `$("#my_element").left()`.
 - **top**: Returns the top position of an object and stores the left position in memory encase you need it `$("#my_element").top()`.
