@@ -6,7 +6,7 @@
 
 (function(JavascriptQ) {
 	var 
-	version = 2.254,
+	version = 2.255,
 
 	// Initialize Q
 	q = window[JavascriptQ] = function (mixedQuery) {
@@ -692,6 +692,15 @@
 		};
 	});
 
+	// Scroll to a specfic object on the page
+	fn('scrollTo', function (mixedDuration, strEasing, fnCallback) {
+		var that = this;
+		if (!prospectQueue.call(that,arguments,'scrollTo'))
+			return that;
+		$('body').scrollTop(that.top(), mixedDuration, strEasing, fnCallback);
+		return that;
+	});
+
 	// Get or set the scroll top location
 	fn('scrollTop', function (mixedTop, mixedDuration, strEasing, fnCallback) {
 		var that = this;
@@ -733,7 +742,7 @@
 				requestAnimationFrame(scroll);
 			}
 			scroll();
-			return;
+			return that;
 		}
 		// get
 		var el = that[0];
