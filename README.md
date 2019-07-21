@@ -7,7 +7,7 @@ A modern and light-weight JavaScript framework
 This is a small JavaScript library intended to reduce the data transfer and memory usage on your websites or apps by reducing redundant and repetitive coding. The library takes advantage of HTML5 functionality in Javascript since it became standard to keep it's size small. The idea is websites that want to service customers using pre HTML5 browsers can do so using vanilla HTML since they make up a very small portion of the market.
 
 ## VERSION
-2.255
+2.256
 
 ## Features
  - Ultra lightweight

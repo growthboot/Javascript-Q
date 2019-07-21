@@ -6,7 +6,7 @@
 
 (function(JavascriptQ) {
 	var 
-	version = 2.255,
+	version = 2.256,
 
 	// Initialize Q
 	q = window[JavascriptQ] = function (mixedQuery) {
@@ -750,6 +750,57 @@
 			return window.pageYOffset || document.documentElement.scrollTop;
 		} else {
 			return that.position().top-q(window).scrollTop();
+		}
+	});
+	// Get or set the scroll left location
+	fn('scrollLeft', function (mixedLeft, mixedDuration, strEasing, fnCallback) {
+		var that = this;
+		if (!prospectQueue.call(that,arguments,'scrollLeft'))
+			return that;
+		var strType = typeof mixedLeft;
+		// set
+		if (strType != "undefined") {
+			var destinationOffset = strType == "number" ? mixedLeft : q(mixedLeft).position().left;
+			if (!mixedDuration || mixedDuration == "smooth") {
+				var objParams = {
+					left: destinationOffset
+				};
+				if (mixedDuration == "smooth")
+					objParams.behavior = "smooth";
+				return window.scroll(objParams);
+			}
+			var start = that.scrollLeft();
+			var startTime = 'now' in window.performance ? performance.now() : new Date().getTime();
+			var documentHeight = q(document).height();
+			var windowHeight = q.height();
+			var destinationOffsetToScroll = Math.round(documentHeight - destinationOffset < windowHeight ? documentHeight - windowHeight : destinationOffset);
+			var fnEasing = easings[strEasing||'linear'];
+			if (typeof mixedDuration == "undefined")
+				mixedDuration = 0;
+			function scroll() {
+				var now = 'now' in window.performance ? performance.now() : new Date().getTime();
+				var time = Math.min(1, ((now - startTime) / mixedDuration));
+				var timeFunction = fnEasing(time, 0, 1, 1);
+				var x = Math.ceil((timeFunction * (destinationOffsetToScroll - start)) + start);
+				window.scroll(0, x);
+
+				if (that.scrollLeft() === destinationOffsetToScroll) {
+					if (fnCallback) {
+						fnCallback();
+					}
+					return;
+				}
+				requestAnimationFrame(scroll);
+			}
+			scroll();
+			return that;
+		}
+		// get
+		var el = that[0];
+		if (el == window) {
+			return window.pageYOffset || document.documentElement.scrollLeft;
+		} else {
+			return that.position().left-q(window).scrollLeft();
 		}
 	});
 

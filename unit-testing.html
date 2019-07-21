@@ -657,6 +657,13 @@ output("Save Data to multi DOM", $("#cloneSource .cell").data('testData2') == "t
 $("#cloneSource .cell1").data('testData', "testValue");
 output("Save Data to single DOM", $("#cloneSource .cell1").data('testData') == "testValue" ? strPass : strFail);
 
+output("Save Data to virtual DOM", (function () {
+	var $test = $("<div>")
+	.data('test1', 'test2');
+	
+	return $test.data('test1') == "test2";
+})() ? strPass : strFail);
+
 // .clone
 output("Clone not deep thing", $("#cloneSource .cell3").clone(false).outer().match(/<span[^>]+><\/span>/) ? strPass : strFail);
 output("Multiple things cloned", $("#cloneSource .cell").clone().outer().match(/<span class="cell1 cell">1<\/span><span class="cell2 cell">2<\/span><span[^>]+>3<span>deep<\/span><\/span>/) ? strPass : strFail);
