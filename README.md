@@ -7,7 +7,7 @@ A modern and light-weight JavaScript framework
 This is a small JavaScript library intended to reduce the data transfer and memory usage on your websites or apps by reducing redundant and repetitive coding. The library takes advantage of HTML5 functionality in Javascript since it became standard to keep it's size small. The idea is websites that want to service customers using pre HTML5 browsers can do so using vanilla HTML since they make up a very small portion of the market.
 
 ## VERSION
-2.256
+2.257
 
 ## Features
  - Ultra lightweight
@@ -354,6 +354,7 @@ $(function () {
 - **children**: Get the children of the objects in the selection
 - **next**: Get the next sibling of an element on the DOM tree `$("...").next()`.
 - **prev**: Get the previous sibling of an element on the DOM tree `$("...").prev()`.
+- **index**: Check what position an object is in out of a list of objects
 - **is**: Check if elements match a selection `some_elements.is(".some_class")` returns true if it matches the selection.
 - **css**: Add styles on any selection `$("p").css("padding":"5px")` or `$("p").css({"paddding","5px","color","#333"})`. Get a specific style from an element `$('#my_element').css("width")`.
 - **disableSelect**: Sets the CSS to disable text selection of the selected elements
@@ -390,7 +391,8 @@ $(function () {
 - **position**: Return an object with the top and left position of an element `$("#my_element").pos()` example returns `{top:15px,left:15px}`.
 - **offset**: Return an object with the top and left position of an element `$("#my_element").offset()` relative to the nearest `relative`, `absolute`, or `fixed` position.
 - **offsetParent**: Find the nearest object with a `relative`, `absolute`, or `fixed` position.
-- **scrollTop**: Get and set the scrolltop location
+- **scrollTop**: Get and set the scrollTop location
+- **scrollLeft**: Get and set the scrollLeft location
 - **scrollTo**: Scroll to the location of an object on the page
 - **inViewY**: Get the amount of pixels of the object that are currently in view on the Y axis
 - **left**: Returns the left position of an object and stores the top position in memory encase you need it `$("#my_element").left()`.
