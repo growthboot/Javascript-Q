@@ -6,7 +6,7 @@
 
 (function(JavascriptQ) {
 	var 
-	version = 2.257,
+	version = 2.258,
 
 	// Initialize Q
 	q = window[JavascriptQ] = function (mixedQuery) {
@@ -1138,7 +1138,8 @@
 		fn(strName, (function (strName) {
 			return function (fnCallback) {
 				if (!fnCallback && (strName == 'focus' || strName == 'select')) {
-					this[0][strName]();
+					if (this[0])
+						this[0][strName]();
 					return this;
 				}
 				return this[!fnCallback ? "trigger" : "bind"](strName, fnCallback);
