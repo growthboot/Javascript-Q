@@ -6,7 +6,7 @@
 
 (function(JavascriptQ) {
 	var 
-	version = 2.259,
+	version = 2.26,
 
 	// Initialize Q
 	q = window[JavascriptQ] = function (mixedQuery) {
@@ -356,14 +356,11 @@
 		return this;
 	});
 
-	fn('index', function (item) {
+	fn('index', function () {
 		var that = this;
 		if (!that.length)
 			return that;
-		if (typeof item == "string") {
-			item = q(item)[0];
-		}
-		return [].slice.call(that).indexOf(item);
+		return [].slice.call(that.parent().children()).indexOf(that[0]);
 	});
 
 	fn('extract', function (strVar) {
