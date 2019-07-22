@@ -6,7 +6,7 @@
 
 (function(JavascriptQ) {
 	var 
-	version = 2.258,
+	version = 2.259,
 
 	// Initialize Q
 	q = window[JavascriptQ] = function (mixedQuery) {
@@ -781,9 +781,9 @@
 			}
 			var start = that.scrollLeft();
 			var startTime = 'now' in window.performance ? performance.now() : new Date().getTime();
-			var documentHeight = q(document).height();
-			var windowHeight = q.height();
-			var destinationOffsetToScroll = Math.round(documentHeight - destinationOffset < windowHeight ? documentHeight - windowHeight : destinationOffset);
+			var documentWidth = q(document).width();
+			var windowWidth = q.width();
+			var destinationOffsetToScroll = Math.round(documentWidth - destinationOffset < windowWidth ? documentWidth - windowWidth : destinationOffset);
 			var fnEasing = easings[strEasing||'linear'];
 			if (typeof mixedDuration == "undefined")
 				mixedDuration = 0;
@@ -792,7 +792,7 @@
 				var time = Math.min(1, ((now - startTime) / mixedDuration));
 				var timeFunction = fnEasing(time, 0, 1, 1);
 				var x = Math.ceil((timeFunction * (destinationOffsetToScroll - start)) + start);
-				window.scroll(0, x);
+				window.scroll(x, 0);
 
 				if (that.scrollLeft() === destinationOffsetToScroll) {
 					if (fnCallback) {
@@ -1137,7 +1137,7 @@
 		var strName = arrAutoBind[intAutoBind];
 		fn(strName, (function (strName) {
 			return function (fnCallback) {
-				if (!fnCallback && (strName == 'focus' || strName == 'select')) {
+				if (!fnCallback && (strName == 'focus' || strName == 'blur' || strName == 'select')) {
 					if (this[0])
 						this[0][strName]();
 					return this;
