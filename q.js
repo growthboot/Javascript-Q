@@ -6,7 +6,7 @@
 
 (function(JavascriptQ) {
 	var 
-	version = 2.26,
+	version = 2.261,
 
 	// Initialize Q
 	q = window[JavascriptQ] = function (mixedQuery) {
@@ -173,7 +173,7 @@
 	arrExcludePx = {'transform-scaleX':1,'transform-scaleY':1,'transform-scale':1,'column-count': 1,'fill-opacity': 1,'font-weight': 1,opacity: 1,orphans: 1,widows: 1,'z-index': 1,zoom: 1,'background-color': 1},
 
 	// create new methods in the q variable that call bind ex: q(mixed).click(function);
-	arrAutoBind = ["click","mousedown","mouseup","mouseover","mousemove","mouseleave","mouseenter","change","load","dblclick","focus","focusin","focusout","input","keydown","keypress","keyup","resize","reset","scroll","select","touchcancel","touchend","touchmove","touchstart","transitionend","unload","wheel","contextmenu"],
+	arrAutoBind = ["submit","click","mousedown","mouseup","mouseover","mousemove","mouseleave","mouseenter","change","load","dblclick","focus","focusin","focusout","input","keydown","keypress","keyup","resize","reset","scroll","select","touchcancel","touchend","touchmove","touchstart","transitionend","unload","wheel","contextmenu"],
 
 	// Support for .data
 	arrDataMemory = {},
@@ -1134,7 +1134,7 @@
 		var strName = arrAutoBind[intAutoBind];
 		fn(strName, (function (strName) {
 			return function (fnCallback) {
-				if (!fnCallback && (strName == 'focus' || strName == 'blur' || strName == 'select')) {
+				if (!fnCallback && (strName == 'focus' || strName == 'blur' || strName == 'select' || strName == 'submit')) {
 					if (this[0])
 						this[0][strName]();
 					return this;
