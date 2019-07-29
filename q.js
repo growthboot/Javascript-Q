@@ -6,7 +6,7 @@
 
 (function(JavascriptQ) {
 	var 
-	version = 2.262,
+	version = 2.263,
 
 	// Initialize Q
 	q = window[JavascriptQ] = function (mixedQuery) {
@@ -1199,7 +1199,7 @@
 	});
 	
 	// convert an object into a uri string ex: {k:"v"} to /k/v
-	fn('serialize', function(delimiter1, delimiter2) {
+	fn('serialize', function(delimiter1, delimiter2, boolEncode) {
 		if (!delimiter1)
 			delimiter1 = "=";
 		if (!delimiter2)
@@ -1207,7 +1207,7 @@
 		var str = [];
 		for(var p in this[0])
 			if (this[0].hasOwnProperty(p)) {
-				str.push(encodeURIComponent(p) + delimiter1 + encodeURIComponent(this[0][p]));
+				str.push((boolEncode ? encodeURIComponent(p) : p) + delimiter1 + (boolEncode ? encodeURIComponent(this[0][p]) : this[0][p]));
 			}
 		return str.join(delimiter2);
 	});

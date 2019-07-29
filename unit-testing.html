@@ -668,7 +668,6 @@ output("Save q object to virtual DOM", (function () {
 	var $cloneSource = $("#cloneSource");
 	var $test = $("<div>")
 	.data('test1', $cloneSource);
-	console.log($test.data('test1'));
 	return $test.data('test1') == $cloneSource;
 })() ? strPass : strFail);
 
