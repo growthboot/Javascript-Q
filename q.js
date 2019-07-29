@@ -6,7 +6,7 @@
 
 (function(JavascriptQ) {
 	var 
-	version = 2.261,
+	version = 2.262,
 
 	// Initialize Q
 	q = window[JavascriptQ] = function (mixedQuery) {
@@ -549,7 +549,7 @@
 			}
 		});
 		if (boolGet)
-			return arrDataResult;
+			return arrDataResult.length == 1 ? arrDataResult[0] : arrDataResult;
 		else
 			return this;
 	});

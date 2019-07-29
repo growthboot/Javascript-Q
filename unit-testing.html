@@ -1,4 +1,4 @@
-<!-- v2.255 -->
+<!-- 2.262 -->
 <!-- This document is badly commented... sorry. -->
 <html>
 <head>
@@ -662,6 +662,14 @@ output("Save Data to virtual DOM", (function () {
 	.data('test1', 'test2');
 	
 	return $test.data('test1') == "test2";
+})() ? strPass : strFail);
+
+output("Save q object to virtual DOM", (function () {
+	var $cloneSource = $("#cloneSource");
+	var $test = $("<div>")
+	.data('test1', $cloneSource);
+	console.log($test.data('test1'));
+	return $test.data('test1') == $cloneSource;
 })() ? strPass : strFail);
 
 // .clone
