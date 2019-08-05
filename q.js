@@ -22,7 +22,7 @@
 	},
 	
 	// Find out if an object is a DOM node
-	isNode = function (o){
+	isNode = q.isNode = function (o){
 		return (
 			typeof Node === "object" 
 			? o instanceof Node 
@@ -35,7 +35,7 @@
 		var keys = Object.keys(obj2);
 		for (var i = 0; i < keys.length; i += 1) {
 			var val = obj2[keys[i]];
-			obj1[keys[i]] = ['object', 'array'].indexOf(typeof val) != -1 && !isNode(val) ? extend(obj1[keys[i]] || {}, val) : val;
+			obj1[keys[i]] = ['object', 'array'].indexOf(typeof val) != -1 && !isNode(val) ? extend(obj1[keys[i]] || {}, val || {}) : val;
 		}
 		return obj1;
 	},
