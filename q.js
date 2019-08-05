@@ -6,7 +6,7 @@
 
 (function(JavascriptQ) {
 	var 
-	version = 2.264,
+	version = 2.265,
 
 	// Initialize Q
 	q = window[JavascriptQ] = function (mixedQuery) {
@@ -1398,7 +1398,8 @@
 		r.open(arrParams.post ? "POST" : "GET", arrParams.url);
 		if (arrParams.cross)
 			r.withCredentials = true;
-		r.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+		r.setRequestHeader("Content-type", "application/x-www-form-urlencoded; charset=" + (arrParams.charset || 'UTF-8'));
+		r.setRequestHeader("Accept", arrParams.accept || "text/html");
 		r.onreadystatechange = function () {
 			if (r.readyState == 4 ) {
 				if (r.status == 200) {
@@ -1410,14 +1411,12 @@
 					}
 				} else if (!arrParams.failure) {
 					// no failure handle; do nothing
-				} else if (r.status == 400) {
-					arrParams.failure(r.responseText);
 				} else {
 					arrParams.failure(r.responseText);
 				}
 			}
 		};
-		r.send(arrParams.post ? encodeURI(q(arrParams.post).serialize()) : null);
+		r.send(arrParams.post ? q(arrParams.post).serialize('=', '&', true).replace(/%20/g, '+') : null);
 		return r;
 	};
 
