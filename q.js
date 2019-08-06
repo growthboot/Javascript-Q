@@ -6,7 +6,7 @@
 
 (function(JavascriptQ) {
 	var 
-	version = 2.266,
+	version = 2.267,
 
 	// Initialize Q
 	q = window[JavascriptQ] = function (mixedQuery) {
@@ -89,7 +89,7 @@
 		arrNewQueue = [],
 		boolLoopAdded=!that.loopOn;
 		arrArgs = Array.prototype.slice.call(arrArgs);
-		arrArgsSequence = arrArgs.slice(0);
+		var arrArgsSequence = arrArgs.slice(0);
 		arrArgsSequence.unshift(strParentName);
 		if (
 			arrArgs.includes(BYPASS_QUEUE)
@@ -453,7 +453,7 @@
 		that = this;
 		if (!prospectQueue.call(that,arguments,'make'))
 			return that;
-		var wrapper = document.createElement('div')
+		var wrapper = document.createElement('div');
 		wrapper.innerHTML = strHTML;
 		var
 		children = wrapper.children,
@@ -517,9 +517,9 @@
 		var that = this;
 		if (!prospectQueue.call(that,arguments,'clone'))
 			return that;
-		qcopy = copy(that);
+		var qcopy = copy(that),
+		len = 0;
 		boolDeep = boolDeep !== false;
-		var len = 0;
 		iterate(that,function (k,v) {
 			qcopy[k] = v.cloneNode(boolDeep);
 			len++;
@@ -534,8 +534,7 @@
 		boolGet = typeof strVal == "undefined",
 		arrDataResult = [];
 		iterate(this,function (j,el) {
-			var that = this,
-			intUId = q(el).uniqueId();
+			var intUId = q(el).uniqueId();
 			if (boolGet)
 				arrDataResult.push(arrDataMemory[intUId] && typeof arrDataMemory[intUId][strKey] != 'undefined' ? arrDataMemory[intUId][strKey] : null);
 			else {
@@ -620,7 +619,7 @@
 			        '-ms-user-select': none, /* Internet Explorer/Edge */
 			            'user-select': none /* Non-prefixed version, currently
 			                                  supported by Chrome and Opera */
-			},undefined,undefined,undefined,BYPASS_QUEUE)
+			},undefined,undefined,undefined,BYPASS_QUEUE);
 		});
 		return that;
 	});
@@ -700,7 +699,7 @@
 		var that = this;
 		if (!prospectQueue.call(that,arguments,'scrollTo'))
 			return that;
-		$('body').scrollTop(that.top(), mixedDuration, strEasing, fnCallback);
+		q('body').scrollTop(that.top(), mixedDuration, strEasing, fnCallback);
 		return that;
 	});
 
@@ -940,9 +939,7 @@
 			if (typeof strValue == 'string')
 				strValue = strValue.replace(/ *!important *$/, '');
 			if (
-				(typeof strValue == "number"
-				|| typeof strValue == "float"
-				|| (strValue+"").match(/^[0-9\.]+$/)) 
+				(typeof strValue == "number" || (strValue+"").match(/^[0-9\.]+$/))
 				&& !arrExcludePx[strParam]
 			)
 				strValue += 'px';
@@ -1168,12 +1165,12 @@
 					
 					if (!arrCallbacks)
 						return;
-					for (var strEventCategory in arrCallbacks) {
-						var fnCallback = arrCallbacks[strEventCategory];
+					for (var strEventCategory2 in arrCallbacks) {
+						var fnCallback = arrCallbacks[strEventCategory2];
 						window.addEventListener
 						? node.removeEventListener(strEventName, fnCallback, true)
 						: node.detachEvent(arrAutoBind[strEventName] ? 'on' + strEventName : strEventName, fnCallback);
-						delete objEventMomory[qNodeUid][strEventName][strEventCategory];
+						delete objEventMomory[qNodeUid][strEventName][strEventCategory2];
 					}
 				}
 			});
@@ -1260,7 +1257,7 @@
 			return that;
 		var
 		qNode = q(mixedVar),
-		objNext = boolBefore ? qNode[0] : qNode['next']()[0],
+		objNext = boolBefore ? qNode[0] : qNode.next()[0],
 		qParent = qNode.parent();
 		if (objNext) {
 			qParent[0].insertBefore(that[0], objNext);
@@ -1375,7 +1372,7 @@
 		min = 0;
 		max -= dif-1;
 		return ((Math.floor(Math.random()*max)+dif)/divider);
-	}
+	};
 
 	// Ajax reqiest
 	q.request = function (arrParams) {
@@ -1427,7 +1424,7 @@
 				return;
 			if (node[0].tagName == "BODY")
 				return node;
-		};
+		}
 		return copy(fun); // empty
 	});
 
@@ -1510,13 +1507,13 @@
 		return q.loop.apply(this,arguments);
 	});
 	q.loop = function (intAmount) {
-		var that = this.is_q ? this : $("<div>"); // give the q something if there's nothing 
+		var that = this.is_q ? this : q("<div>"); // give the q something if there's nothing 
 		that.queue();
 		that.loopOn = typeof intAmount == "undefined" ? Infinity : intAmount;
 		return that;
 	};
 	fn(['queueNext','endLoop'], function () {
-		return q.queueNext(this, arguments)
+		return q.queueNext(this, arguments);
 	});
 
 	// turn of the animation queue
@@ -1673,7 +1670,7 @@
 					}
 				}
 			};
-		var arrInstanceNameList = objAnimationInstances[intElUid].arrInstanceNameList;
+		arrInstanceNameList = objAnimationInstances[intElUid].arrInstanceNameList;
 		arrInstanceNameList.push(strKeyFrameName);
 		var objResult = {
 			objCssTo : objCssTo,
@@ -1717,12 +1714,11 @@
 			}
 		}
 		mixedCssTo = fnResolve.call(that, mixedCssTo);
-		arrArgsSequence = arrArgs.slice(0);
-		arrArgsSequence.unshift("animate");
-		var 
+		var arrArgsSequence = arrArgs.slice(0),
 		intIterations = Math.ceil(intDuration/10),
 		regMatchNumbers = /(\-?[0-9]+(?:\.[0-9]+)?(?:[a-z]{2}?|%)?)/gi,
 		regSplitNumbers = /\-?[0-9]+(?:\.[0-9]+)?(?:[a-z]{2}?|%)?/gi;
+		arrArgsSequence.unshift("animate")
 		iterate(that,function (intItem, el) {
 			var intElUid = q(el).uniqueId();
 			if (objQueueChain[intElUid] && !that.withoutQueueOn) {
@@ -1741,7 +1737,6 @@
 			var 
 			strKeyFrameName = "qStepAnim" + q.id + 'n' + (animations++), // generate an ID
 			objHistory = objTransformHistory[intElUid],
-			objCssFrom = {},
 			arrOutput = [],
 			strCurrentKey,
 			objStartStyles = getComputedStyle(el),
@@ -1769,9 +1764,7 @@
 						tweenString(toRC+"-"+strTransform, toRC+"-"+strTransform, parseFloat(strTransformFrom), parseFloat(strTransformTo));
 					}
 				} else {
-					var
-					change = to - from,
-					from = objStartStyles[camelToDash(strCssToKey)] || 0;
+					var from = objStartStyles[camelToDash(strCssToKey)] || 0;
 					tweenString(strCssToKey, toRC, from, to);
 				}
 			}
@@ -1779,7 +1772,6 @@
 				var 
 				intToValues = 1,
 				intDefaultFrom = toRC == "rgba" || toRC == "opacity" || toRC == "background-color" ? 1 : 0,
-				strOutput = '',
 				arrToValues = [to],
 				arrFromValues = [from],
 				arrToWrappers = [],
@@ -1890,7 +1882,6 @@
 			style.innerHTML = strAnimation;
 			document.getElementsByTagName('body')[0].appendChild(style);
 			var 
-			boolNewInstance = !objAnimationInstances[intElUid],
 			objAI = addAnimationInstances(intElUid, strKeyFrameName, mixedCssTo),
 			objAIParent = objAnimationInstances[intElUid],
 			// finalize an animation once its complete
@@ -1950,14 +1941,12 @@
 					})();
 				})(that, objAI, intDuration, arrOutput, fnDone, el, style, intElUid, objCallbacks, strKeyFrameName);
 			};
-			var strAnimationEndEvent = 'animationend webkitAnimationEnd oanimationend MSAnimationEnd';
 			function cleanUp(el,fnDone,style, intElUid,strKeyFrameName,boolStopping) {
 				if (objQueueChain[intElUid])
 					objQueueChain[intElUid].active = false;
 				if (!boolStopping)
 					objAnimationInstances[intElUid].stop(strKeyFrameName);
 				el.style.setProperty("animation", objAnimationInstances[intElUid] ? objAnimationInstances[intElUid].getAnimationAttributes().join(",") : 'none');
-				//el.offsetHeight; // Trigger a reflow, flushing the CSS changes; removed because not proven to actually do anything
 				q(style).remove(BYPASS_QUEUE);
 				style = undefined;
 			}
