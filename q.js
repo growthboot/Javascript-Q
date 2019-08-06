@@ -6,7 +6,7 @@
 
 (function(JavascriptQ) {
 	var 
-	version = 2.265,
+	version = 2.266,
 
 	// Initialize Q
 	q = window[JavascriptQ] = function (mixedQuery) {
@@ -84,13 +84,13 @@
 	prospectQueue = function (arrArgs,strParentName) {
 		var 
 		that = this,
-		arrArgs = Array.prototype.slice.call(arrArgs),
 		intTotal = that.length,
 		intBlocked = 0,
-		arrNewQueue = [];
-		arrArgsSequence = arrArgs.slice(0);
-		arrArgsSequence.unshift(strParentName),
+		arrNewQueue = [],
 		boolLoopAdded=!that.loopOn;
+		arrArgs = Array.prototype.slice.call(arrArgs);
+		arrArgsSequence = arrArgs.slice(0);
+		arrArgsSequence.unshift(strParentName);
 		if (
 			arrArgs.includes(BYPASS_QUEUE)
 			|| that.loopOn === 0
@@ -361,10 +361,6 @@
 		if (!that.length)
 			return that;
 		return [].slice.call(that.parent().children()).indexOf(that[0]);
-	});
-
-	fn('extract', function (strVar) {
-		return eval(strVar);
 	});
 	
 	// DOM Ready

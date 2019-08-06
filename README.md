@@ -7,7 +7,7 @@ A modern and light-weight JavaScript framework
 This is a small JavaScript library intended to reduce the data transfer and memory usage on your websites or apps by reducing redundant and repetitive coding. The library takes advantage of HTML5 functionality in Javascript since it became standard to keep it's size small. The idea is websites that want to service customers using pre HTML5 browsers can do so using vanilla HTML since they make up a very small portion of the market.
 
 ## VERSION
-2.265
+2.266
 
 ## Features
  - Ultra lightweight
@@ -416,7 +416,6 @@ $(function () {
 - **delay**: Create a delay before the next animation sequence
 - **animate**: CSS based Animation `$("#foo").animate({left:100})`
 - **loop**: Loop all queries after this method is called
-- **extract**: Eval some JS within the JSQL framework function and return the result
 - **sync**: Synchronous run an anonymous callback function (waits for it to be finished if queue is on)
 - **async**: Asynchronous run an anonymous callback function (doesn't wait)
 
