@@ -27,7 +27,7 @@ This is a small JavaScript library intended to reduce the data transfer and memo
  - And much more (css injection, loop logic, animated scrolling,...)
 
 ## Compatibility
-Required compatibility: ECMAScript 2009 (ES5)
+Required compatibility between: ECMAScript 2009 (ES5) to Current
 
 | Chrome 23 | IE10 / Edge | Firefox 21 | Safari 6 | Opera 15 |
 | --------- | ----------- | ---------- |--------- | -------- |
