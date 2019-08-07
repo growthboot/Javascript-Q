@@ -359,6 +359,8 @@ $(function () {
 - **prop**: Query the selection with direct calls for the properties of the contents
 - **next**: Get the next sibling of an element on the DOM tree `$("...").next()`.
 - **prev**: Get the previous sibling of an element on the DOM tree `$("...").prev()`.
+- **searchUp**: Go up the dom tree looking for your selection
+- **searchDown**: Go down the dom tree looking for your selection
 - **index**: Check what position an object is in out of a list of objects
 - **is**: Check if elements match a selection `some_elements.is(".some_class")` returns true if it matches the selection.
 - **css**: Add styles on any selection `$("p").css("padding":"5px")` or `$("p").css({"paddding","5px","color","#333"})`. Get a specific style from an element `$('#my_element').css("width")`.

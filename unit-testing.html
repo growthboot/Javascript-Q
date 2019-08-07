@@ -1,4 +1,4 @@
-<!-- 2.268 -->
+<!-- 2.269 -->
 <!-- This document is badly commented... sorry. -->
 <html>
 <head>
@@ -490,6 +490,24 @@ output("Prev until", (function () {
 
 // .prev
 output("Get prev", $("#domManSource .cell2").prev().html() == "1<span>abc</span>" ? strPass : strFail);
+
+output("Search up and down", (function () {
+	var $foo = $("<div><span>1</span><span>2</span><span>3</span></div>");
+	var $foo2 = $("<div><span>1</span><span>2</span><span class='5'>3</span></div>").appendTo($foo.children()[1]);
+	var $foo2_2 = $("<div><span>1</span><span>2</span><span>3</span></div>").appendTo($foo2.children()[0]);
+	var $foo2_3 = $("<div><span>1</span><span class='up'>2</span><span>3</span></div>").appendTo($foo2_2.children()[2]);
+	
+	var $foo3 = $("<div class='4'><span>1</span><span class='3'>2</span><span>3</span></div>").appendTo($foo2.children()[2]);
+	var $foo3_1 = $("<div class='4'><span>1</span><span class='3'>2</span><span class='down'>3</span></div>").appendTo($foo3.children()[2])
+	var $foo4 = $("<div class='2'><span class='1'>1</span><span class='start'>2</span><span>3</span></div>").appendTo($foo3.children()[1]);
+	var $start = $foo4.find('.start');
+	
+	return $start.searchUp('.up').length == 1 
+		&& $start.searchUp('.down').length == 0
+		&& $start.searchDown('.down').length == 1
+		&& $start.searchDown('.up').length == 0;
+})() ? strPass : strFail);
+
 
 // .remove
 $("#domManSource .cell3").remove();

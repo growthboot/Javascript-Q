@@ -6,7 +6,7 @@
 
 (function(JavascriptQ) {
 	var 
-	version = 2.268,
+	version = 2.269,
 
 	// Initialize Q
 	q = window[JavascriptQ] = function (mixedQuery) {
@@ -920,7 +920,9 @@
 			return that;
 		mixedCss = fnResolve.call(that,mixedCss);
 		if (typeof mixedValue != 'undefined') {
-			return that.css({[mixedCss]:mixedValue});
+			var params = {};
+			params[mixedCss] = mixedValue;
+			return that.css(params);
 		}
 		for (var strKey in mixedCss) {
 			var strValue = mixedCss[strKey];
@@ -1317,6 +1319,49 @@
 			return that;
 		} else return this.prop("previousElementSibling");
 	});
+	fn('searchUp', function (selection) {
+		var that = this;
+		do {
+			var before = that;
+			that = that.prev();
+			var skipNextCheck = false;
+			if (!that.length) {
+				that = before.parent();
+				if (!that[0] || that[0].tagName == 'body' && !that.is(selection))
+					return copy(fun); // end reached
+			} else if (!that.is(selection)) {
+				var found = that.find(selection);
+				if (found.length)
+					return found.become(-1);
+				skipNextCheck = true;
+			}
+		} while (skipNextCheck || !that.is(selection));
+		return that;
+	});
+
+	fn('searchDown', function (selection) {
+		var that = this;
+		var found = that.find(selection);
+		if (found.length)
+			return found.become(0);
+		do {
+			var before = that;
+			that = that.next();
+			var skipNextCheck = false;
+			if (!that.length) {
+				that = before.parent();
+				if (!that[0] || that[0].tagName == 'body' && !that.is(selection))
+					return copy(fun); // end reached
+			} else if (!that.is(selection)) {
+				var found = that.find(selection);
+				if (found.length)
+					return found.become(0);
+				skipNextCheck = true;
+			}
+		} while (skipNextCheck || !that.is(selection));
+		return that;
+	});
+
 
 	// Parent node
 	fn('parent', function () {
