@@ -10,7 +10,7 @@ This is a small JavaScript library intended to reduce the data transfer and memo
 2.27
 
 ## Features
- - Ultra lightweight
+ - Lightweight: 33 KB on disk (10k after compression)
  - Cross browser compliant
  - GPU optimized animations
  - Animation control (pause,play,stop,...)
