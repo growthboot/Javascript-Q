@@ -26,7 +26,7 @@ This is a small JavaScript library intended to reduce the data transfer and memo
  - Added general functionality (rand, iterate, mstime, etc,...)
  - And much more (css injection, loop logic, animated scrolling,...)
 
-## Compliancy
+## Compatibility
 Required compatibility: ECMAScript 2009 (ES5)
 
 | Chrome 23 | IE10 / Edge | Firefox 21 | Safari 6 | Opera 15 |
