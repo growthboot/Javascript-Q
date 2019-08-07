@@ -1,5 +1,5 @@
 # JavaScript Q Library (JSQL)
-A modern and light-weight JavaScript framework
+A modern and light-weight JavaScript framework based on ES5 Javascript
 
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fgrowthboot%2FJavascript-Q.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fgrowthboot%2FJavascript-Q?ref=badge_shield)
 
