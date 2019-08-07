@@ -1,8 +1,8 @@
-<!-- 2.269 -->
+<!-- 2.27 -->
 <!-- This document is badly commented... sorry. -->
 <html>
 <head>
-<script src="./q.js"></script>
+<script src="./q.min.js"></script>
 <script src="./q.debug.js"></script>
 </head>
 <body>
@@ -543,6 +543,11 @@ $.request({
 
 // $.serialize
 output("Serialzie object", ($({abc : 123, efg : 321}).serialize("/", "/") == "abc/123/efg/321" ? strPass : strFail));
+
+output("Serialize a form object", (function () {
+	var $foo = $("<form><input type='text' name='foo1' value='bar1'><input type='text' name='foo2' value='bar2'></form>");
+	return $foo.serialize() == "foo1=bar1&foo2=bar2";
+})() ? strPass : strFail);
 
 // .unbind
 output("Unbind trigger", "<span id='customTriggerAnswer2'>" + strPass + "</span>");

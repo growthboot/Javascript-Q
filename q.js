@@ -6,7 +6,7 @@
 
 (function(JavascriptQ) {
 	var 
-	version = 2.269,
+	version = 2.27,
 
 	// Initialize Q
 	q = window[JavascriptQ] = function (mixedQuery) {
@@ -1197,16 +1197,79 @@
 	
 	// convert an object into a uri string ex: {k:"v"} to /k/v
 	fn('serialize', function(delimiter1, delimiter2, boolEncode) {
+		var arrOutout = [];
 		if (!delimiter1)
 			delimiter1 = "=";
 		if (!delimiter2)
 			delimiter2 = "&";
-		var str = [];
-		for(var p in this[0])
-			if (this[0].hasOwnProperty(p)) {
-				str.push((boolEncode ? encodeURIComponent(p) : p) + delimiter1 + (boolEncode ? encodeURIComponent(this[0][p]) : this[0][p]));
+		if (this[0].tagName == 'FORM') {
+			// grabbed from here: https://code.google.com/archive/p/form-serialize/
+			// needs improvement
+			var 
+			form = this[0], 
+			i=0, 
+			j;
+			for (;i < form.elements.length; i++) {
+				if (form.elements[i].name === "") {
+					continue;
+				}
+				switch (form.elements[i].nodeName) {
+					case 'INPUT':
+						switch (form.elements[i].type) {
+							case 'text':
+							case 'hidden':
+							case 'password':
+							case 'button':
+							case 'reset':
+							case 'submit':
+								arrOutout.push(form.elements[i].name + delimiter1 + encodeURIComponent(form.elements[i].value));
+								break;
+							case 'checkbox':
+							case 'radio':
+								if (form.elements[i].checked) {
+									arrOutout.push(form.elements[i].name + delimiter1 + encodeURIComponent(form.elements[i].value));
+								}						
+								break;
+							case 'file':
+								break;
+						}
+						break;			 
+					case 'TEXTAREA':
+						arrOutout.push(form.elements[i].name + delimiter1 + encodeURIComponent(form.elements[i].value));
+						break;
+					case 'SELECT':
+						switch (form.elements[i].type) {
+							case 'select-one':
+								arrOutout.push(form.elements[i].name + delimiter1 + encodeURIComponent(form.elements[i].value));
+								break;
+							case 'select-multiple':
+								for (j = form.elements[i].options.length - 1; j >= 0; j = j - 1) {
+									if (form.elements[i].options[j].selected) {
+										arrOutout.push(form.elements[i].name + delimiter1 + encodeURIComponent(form.elements[i].options[j].value));
+									}
+								}
+								break;
+						}
+						break;
+					case 'BUTTON':
+						switch (form.elements[i].type) {
+							case 'reset':
+							case 'submit':
+							case 'button':
+								arrOutout.push(form.elements[i].name + delimiter1 + encodeURIComponent(form.elements[i].value));
+								break;
+						}
+						break;
+				}
 			}
-		return str.join(delimiter2);
+		} else {
+			for(var p in this[0]) {
+				if (this[0].hasOwnProperty(p)) {
+					arrOutout.push((boolEncode ? encodeURIComponent(p) : p) + delimiter1 + (boolEncode ? encodeURIComponent(this[0][p]) : this[0][p]));
+				}
+			}
+		}
+		return arrOutout.join(delimiter2);
 	});
 
 	// append something to the selection
