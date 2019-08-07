@@ -28,6 +28,7 @@ This is a small JavaScript library intended to reduce the data transfer and memo
 
 ## Compliancy
 Required compatibility: ECMAScript 2009 (ES5)
+
 | Chrome 23 | IE10 / Edge | Firefox 21 | Safari 6 | Opera 15 |
 | --------- | ----------- | ---------- |--------- | -------- |
 | Sep 2012  | Sep 2012    | Apr 2013   | Jul 2012 | Jul 2013 |
