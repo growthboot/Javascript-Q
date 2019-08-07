@@ -1,4 +1,4 @@
-<!-- 2.262 -->
+<!-- 2.268 -->
 <!-- This document is badly commented... sorry. -->
 <html>
 <head>
@@ -474,6 +474,20 @@ output("Next to nothing", (function () {
 	return $nothing.length == 0;
 })() ? strPass : strFail);
 
+// make sure the next returns nothing when there's nothing to find
+output("Next until", (function () {
+	var $foo = $("<div><span class='start'>1</span><span class='middle'>2</span><span class='end'>3</span></div>");
+	var boolTest1 = $foo.find('.start').next('.end').hasClass('end');
+	var boolTest2 = $foo.find('.start').next('.doesntExist').length == 0;
+	return boolTest1 && boolTest2;
+})() ? strPass : strFail);
+output("Prev until", (function () {
+	var $foo = $("<div><span class='start'>1</span><span class='middle'>2</span><span class='end'>3</span></div>");
+	var boolTest1 = $foo.find('.end').prev('.start').hasClass('start');
+	var boolTest2 = $foo.find('.start').prev('.doesntExist').length == 0;
+	return boolTest1 && boolTest2;
+})() ? strPass : strFail);
+
 // .prev
 output("Get prev", $("#domManSource .cell2").prev().html() == "1<span>abc</span>" ? strPass : strFail);
 
@@ -617,6 +631,11 @@ output("Remove Class", !$("#cssSource .cell1").hasClass("somethingItNowHas") ? s
 
 // .hasClass
 output("Has and hasn't classs", $("#cssSource .cell1").hasClass("cell") && !$("#cssSource .cell1").hasClass("somethingItDoesntHave") ? strPass : strFail);
+
+// should not return true
+output("null object has class", (function () {
+	return $('#thisWasNeverCreated').hasClass('norThis') == false;
+})() ? strPass : strFail);
 
 // .css
 $("#cssSource .cell2").css({

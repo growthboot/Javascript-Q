@@ -6,7 +6,7 @@
 
 (function(JavascriptQ) {
 	var 
-	version = 2.267,
+	version = 2.268,
 
 	// Initialize Q
 	q = window[JavascriptQ] = function (mixedQuery) {
@@ -955,6 +955,8 @@
 		var arrClasses = strClassName.split(/ /),
 		boolHas = true,
 		l=arrClasses.length;
+		if (!this.length)
+			return false;
 		iterate(this,function ()  {
 			for (var i=0;i!=l;i++) {
 				if (!this.classList.contains(strClassName))
@@ -1283,28 +1285,42 @@
 		});
 		return that;
 	});
-
-	// Next sibling node
-	fn('next', function (strType) {
+	// collect properties of an elements
+	fn('prop', function (strType) {
 		var qcopy = copy(fun),
-		i=0,
-		strParam = strType ? strType : "nextElementSibling";
+		i=0;
 		iterate(this,function () {
-			if (this[strParam])
-				qcopy[i++] = this[strParam];
+			if (this[strType])
+				qcopy[i++] = this[strType];
 		});
 		qcopy.length = i;
 		return qcopy;
 	});
+	// Next sibling node
+	fn('next', function (selection) {
+		var that = this;
+		if (typeof selection !== 'undefined') {
+			do {
+				that = that.next();
+			} while (that.length && !that.is(selection));
+			return that;
+		} else return that.prop("nextElementSibling");
+	});
 
 	// Previous sibling node
-	fn('prev', function () {
-		return this.next("previousElementSibling");
+	fn('prev', function (selection) {
+		var that = this;
+		if (typeof selection !== 'undefined') {
+			do {
+				that = that.prev();
+			} while (that.length && !that.is(selection));
+			return that;
+		} else return this.prop("previousElementSibling");
 	});
 
 	// Parent node
 	fn('parent', function () {
-		return this.next("parentNode");
+		return this.prop("parentNode");
 	});
 
 	// Unix epoch in MS

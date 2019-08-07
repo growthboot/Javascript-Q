@@ -7,7 +7,7 @@ A modern and light-weight JavaScript framework
 This is a small JavaScript library intended to reduce the data transfer and memory usage on your websites or apps by reducing redundant and repetitive coding. The library takes advantage of HTML5 functionality in Javascript since it became standard to keep it's size small. The idea is websites that want to service customers using pre HTML5 browsers can do so using vanilla HTML since they make up a very small portion of the market.
 
 ## VERSION
-2.267
+2.268
 
 ## Features
  - Ultra lightweight
@@ -352,6 +352,7 @@ $(function () {
 - **become**: Simular functionality to get except it returns a new q selection rather than just the value. `$(".sometags").become(-1).remove()`
 - **parent**: Get the parent of an element `$("...").parent()`.
 - **children**: Get the children of the objects in the selection
+- **prop**: Query the selection with direct calls for the properties of the contents
 - **next**: Get the next sibling of an element on the DOM tree `$("...").next()`.
 - **prev**: Get the previous sibling of an element on the DOM tree `$("...").prev()`.
 - **index**: Check what position an object is in out of a list of objects
