@@ -12,6 +12,20 @@ $(function () {
 	$found.searchUp('.captureFocus').css({
 		backgroundColor : 'green'
 	});
+	$("#start2")
+	.css({
+		backgroundColor : 'red'
+	})
+	.searchDown('button').css({
+		backgroundColor : 'green'
+	});
+	$("#start3")
+	.css({
+		backgroundColor : 'red'
+	})
+	.searchUp('button').css({
+		backgroundColor : 'green'
+	});
 });
 </script>
 </head>
@@ -35,6 +49,7 @@ $(function () {
       </div>
    </div>
 </div>
-
+<div><button id="start2">start</button><button>end</button></div>
+<div><button>end</button><button id="start3">start</button></div>
 </body>
 </html>
