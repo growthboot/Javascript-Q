@@ -1,0 +1,40 @@
+<!-- This document is badly commented... sorry. -->
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<script src="./../q.js"></script>
+<script type="text/javascript">
+$(function () {
+	var $found = $("#start").searchDown('.captureFocus');
+	$found.css({
+		backgroundColor : 'red'
+	});
+	$found.searchUp('.captureFocus').css({
+		backgroundColor : 'green'
+	});
+});
+</script>
+</head>
+<body>
+<div class="menuList bookmark fadeOn" id="parent_id_281" parent_id="281">
+   <div class="linkDetails fadeOn">
+      <div class="linkDetailsRow">
+         <div class="linkDeailsKeywords userInput captureHolder">
+            <div class="label" value="Tags">Tags</div>
+            <input type="text" class="value captureFocus" id="start">
+         </div>
+      </div>
+      <div class="linkDetailsRow">
+         <div class="linkDeailsNotes userInput captureHolder">
+            <div class="label" value="Notes">Notes</div>
+            <textarea rows="4" type="text" class="value captureFocus"></textarea>
+         </div>
+      </div>
+      <div class="linkDetailsRow">
+         <div class="linkDetailsBar"><input type="button" class="button red right captureFocus" value="Delete"></div>
+      </div>
+   </div>
+</div>
+
+</body>
+</html>

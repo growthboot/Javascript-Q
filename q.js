@@ -6,7 +6,7 @@
 
 (function(JavascriptQ) {
 	var 
-	version = 2.27,
+	version = 2.28,
 
 	// Initialize Q
 	q = window[JavascriptQ] = function (mixedQuery) {
@@ -1413,15 +1413,14 @@
 			var skipNextCheck = false;
 			if (!that.length) {
 				that = before.parent();
-				if (!that[0] || that[0].tagName == 'body' && !that.is(selection))
+				if (!that[0] || that[0].tagName == 'body')
 					return copy(fun); // end reached
 			} else if (!that.is(selection)) {
 				var found = that.find(selection);
 				if (found.length)
 					return found.become(0);
-				skipNextCheck = true;
 			}
-		} while (skipNextCheck || !that.is(selection));
+		} while (1);
 		return that;
 	});
 

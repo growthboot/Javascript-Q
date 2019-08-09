@@ -475,6 +475,13 @@ output("Next to nothing", (function () {
 })() ? strPass : strFail);
 
 // make sure the next returns nothing when there's nothing to find
+output("Prev to nothing", (function () {
+	var $foo = $("<div><span id='start'>1</span><span>2</span></div>");
+	var $nothing = $foo.find("#start").prev();
+	return $nothing.length == 0;
+})() ? strPass : strFail);
+
+// make sure the next returns nothing when there's nothing to find
 output("Next until", (function () {
 	var $foo = $("<div><span class='start'>1</span><span class='middle'>2</span><span class='end'>3</span></div>");
 	var boolTest1 = $foo.find('.start').next('.end').hasClass('end');
@@ -492,14 +499,16 @@ output("Prev until", (function () {
 output("Get prev", $("#domManSource .cell2").prev().html() == "1<span>abc</span>" ? strPass : strFail);
 
 output("Search up and down", (function () {
-	var $foo = $("<div><span>1</span><span>2</span><span>3</span></div>");
-	var $foo2 = $("<div><span>1</span><span>2</span><span class='5'>3</span></div>").appendTo($foo.children()[1]);
-	var $foo2_2 = $("<div><span>1</span><span>2</span><span>3</span></div>").appendTo($foo2.children()[0]);
-	var $foo2_3 = $("<div><span>1</span><span class='up'>2</span><span>3</span></div>").appendTo($foo2_2.children()[2]);
+	var $foo = $("<div id='foo'><span>1</span><span>2</span><span>3</span></div>");
+	var $foo2 = $("<div id='foo2'><span>1</span><span>2</span><span class='5'>3</span></div>").appendTo($foo.children()[1]);
+	var $foo2_2 = $("<div id='foo2_2'><span>1</span><span>2</span><span>3</span></div>").appendTo($foo2.children()[0]);
+	var $foo2_3 = $("<div id='foo2_3'><span>1</span><span class='up'>2</span><span>3</span></div>").appendTo($foo2_2.children()[2]);
 	
-	var $foo3 = $("<div class='4'><span>1</span><span class='3'>2</span><span>3</span></div>").appendTo($foo2.children()[2]);
-	var $foo3_1 = $("<div class='4'><span>1</span><span class='3'>2</span><span class='down'>3</span></div>").appendTo($foo3.children()[2])
-	var $foo4 = $("<div class='2'><span class='1'>1</span><span class='start'>2</span><span>3</span></div>").appendTo($foo3.children()[1]);
+	var $foo3 = $("<div id='foo3' class='4'><span>1</span><span class='3'>2</span><span>3</span></div>").appendTo($foo2.children()[2]);
+	var $foo3_1 = $("<div id='foo3_1' class='4'><span>1</span><span class='3'>2</span><span class='down test2'>3</span></div>").appendTo($foo3.children()[2])
+	var $foo4 = $("<div id='foo4' class='2'><span class='1'>1</span><span class='start'>2</span><span id='test2' class='test2'>3</span></div>").appendTo($foo3.children()[1]);
+	//$foo.find('#test2').searchDown('.test2').addClass('searchDown');
+	//console.log($foo.html());
 	var $start = $foo4.find('.start');
 	
 	return $start.searchUp('.up').length == 1 
