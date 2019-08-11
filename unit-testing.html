@@ -1,4 +1,4 @@
-<!-- 2.27 -->
+<!-- 2.3 -->
 <!-- This document is badly commented... sorry. -->
 <html>
 <head>
@@ -589,6 +589,25 @@ $("#clickBinding").trigger("mouseover");
 $("#clickBinding").unbind("mouseover.customName");
 $("#clickBinding").trigger("mouseover");
 output("Custom binder .name", $("#clickBinding").html() == 11 ? strPass : strFail);
+
+// .children .index
+
+output("index with and without matching", (function () {
+	var $foo = $("<div><div></div><span>0</span><div></div><span id='start'>1</span><span>2</span><span id='end'>3</span></div>");
+	var $end = $foo.find("#end");
+	var $start = $foo.find("#start");
+	return $start.index('span') == 1 && $end.index() == 5
+})() ? strPass : strFail);
+
+output("first and last child", (function () {
+	var $foo = $("<div><div>first child</div><span>0</span><div>last div</div><span id='start'>1</span><span>2</span><span id='end'>3</span></div>");
+	var $end = $foo.find("#end");
+	var $start = $foo.find("#start");
+	return 	   $foo.first('span').html() == 0 
+			&& $foo.first().html() == 'first child' 
+			&& $foo.last('div').html() == 'last div' 
+			&& $foo.last().html() == 3;
+})() ? strPass : strFail);
 
 // .each
 var strEachTest = "";

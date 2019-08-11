@@ -6,7 +6,7 @@
 
 (function(JavascriptQ) {
 	var 
-	version = 2.29,
+	version = 2.30,
 
 	// Initialize Q
 	q = window[JavascriptQ] = function (mixedQuery) {
@@ -356,11 +356,11 @@
 		return this;
 	});
 
-	fn('index', function () {
+	fn('index', function (strMatch) {
 		var that = this;
 		if (!that.length)
 			return that;
-		return [].slice.call(that.parent().children()).indexOf(that[0]);
+		return [].slice.call(that.parent().children(strMatch)).indexOf(that[0]);
 	});
 	
 	// DOM Ready
@@ -588,19 +588,61 @@
 	});
 	
 	// Get the children of a node
-	fn('children', function () {
+	fn('children', function (strMatch) {
 		var
 		qcopy = copy(fun),
-		intNode = 0;
+		intNode = 0,
+		boolMatch = typeof strMatch !== 'undefined';
 		iterate(this,function (k,el) {
 			var 
 			nodes = el.childNodes,
 			intNodes = nodes.length;
 			for (var i=0;i!=intNodes;i++) {
-				qcopy[intNode++] = nodes[i];
+				if (!boolMatch || q(nodes[i]).is(strMatch))
+					qcopy[intNode++] = nodes[i];
 			}
 		});
 		qcopy.length = intNode;
+		return qcopy;
+	});
+	// first child
+	fn('first', function (strMatch) {
+		var
+		qcopy = copy(fun),
+		intNode = 0,
+		boolMatch = typeof strMatch !== 'undefined';
+		iterate(this,function (k,el) {
+			var 
+			nodes = el.childNodes,
+			intNodes = nodes.length;
+			for (var i=0;i!=intNodes;i++) {
+				if (!boolMatch || q(nodes[i]).is(strMatch)) {
+					qcopy[0] = nodes[i];
+					qcopy.length = 1;
+					return qcopy;
+				}
+			}
+		});
+		return qcopy;
+	});
+	// last child
+	fn('last', function (strMatch) {
+		var
+		qcopy = copy(fun),
+		intNode = 0,
+		boolMatch = typeof strMatch !== 'undefined';
+		riterate(this,function (k,el) {
+			var 
+			nodes = el.childNodes,
+			intNodes = nodes.length;
+			for (var i=intNodes-1;i>=0;i--) {
+				if (!boolMatch || q(nodes[i]).is(strMatch)) {
+					qcopy[0] = nodes[i];
+					qcopy.length = 1;
+					return qcopy;
+				}
+			}
+		});
 		return qcopy;
 	});
 	
