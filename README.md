@@ -7,7 +7,7 @@ A modern and light-weight JavaScript framework based on ES5 Javascript.
 This is a small JavaScript library intended to reduce the data transfer and memory usage on your websites or apps by reducing redundant and repetitive coding. The library is suported by ES5 Javascript since it's now become an industry standard and doing so keeps the library size small. The idea is websites that want to service customers using pre ES5 browsers can do so using plain HTML since they make up a very small portion of the market.
 
 ## VERSION
-2.3
+2.301
 
 ## Features
  - Lightweight: 33 KB on disk (10k after compression)
@@ -391,6 +391,7 @@ $(function () {
 - **extend**: Combine an object into another object combining their keys and values `$.extend({123:321},{abc:"cba"})` results in `{123:321,abc:"cba"}`.
 - **clone**: Clone a DOM element `$("#my_element").clone()`.
 - **make**: Convert a string of html into a DOM object `$.make("<div><b>testing</b></div>")`. Another way to do the same thing `$("<div><b>testing</b></div>")`.
+- **replace**: Replace the selection with the provided element.
 - **append**: Add elements on to the end of an element on the DOM tree `$("body").append("<div>testing</div>")`.
 - **prepend**: Add elements on to the beginning of an element on the DOM tree `$("body").prepend("<div>testing</div>")`.
 - **appendTo**: Append html to a selected element `$("<div>test</div>").appendTo("#tagtoappendto")`.

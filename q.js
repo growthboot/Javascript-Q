@@ -6,7 +6,7 @@
 
 (function(JavascriptQ) {
 	var 
-	version = 2.30,
+	version = 2.301,
 
 	// Initialize Q
 	q = window[JavascriptQ] = function (mixedQuery) {
@@ -1312,6 +1312,18 @@
 			}
 		}
 		return arrOutout.join(delimiter2);
+	});
+
+	// replace a node with another node
+	fn('replace', function (mixedReplacement) {
+		if (typeof mixedReplacement == "string")
+			mixedReplacement = q(mixedReplacement);
+		var that = this,
+		replacement = mixedReplacement.is_q ? mixedReplacement[0] : mixedReplacement;
+		that.parent()[0].replaceChild(replacement, that[0]);
+		that[0] = replacement;
+		that.length = 1;
+		return that;
 	});
 
 	// append something to the selection

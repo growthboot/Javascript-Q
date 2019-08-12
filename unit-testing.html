@@ -1,4 +1,4 @@
-<!-- 2.3 -->
+<!-- 2.301 -->
 <!-- This document is badly commented... sorry. -->
 <html>
 <head>
@@ -417,6 +417,13 @@ output("Offset Parent", ($("#animationBox3").offsetParent().html() == '<div id="
 output("Create a redundant handle", (function () {
 	var $bar = $("<div>");
 	return $($bar).outer() == "<div></div>";
+})() ? strPass : strFail);
+
+// .replaceWith
+output("Replace with", (function () {
+	var $foo = $("<div id='foo'><span>1</span><span id='start'>2</span><span>3</span></div>");
+	$foo.find('#start').replace("<input>");
+	return $foo.children().become(1)[0].tagName == 'INPUT';
 })() ? strPass : strFail);
 
 // .append
