@@ -7,7 +7,7 @@ A modern and light-weight JavaScript framework based on ES5 Javascript.
 This is a small JavaScript library intended to reduce the data transfer and memory usage on your websites or apps by reducing redundant and repetitive coding. The library is suported by ES5 Javascript since it's now become an industry standard and doing so keeps the library size small. The idea is websites that want to service customers using pre ES5 browsers can do so using plain HTML since they make up a very small portion of the market.
 
 ## VERSION
-2.301
+2.302
 
 ## Features
  - Lightweight: 33 KB on disk (10k after compression)
@@ -372,6 +372,7 @@ $(function () {
 - **val**: Get the value of an input `$("#my_input").val()`.
 - **text**: Change the inner text of any element `$("#my_element").text("Some text")`.
 - **replaceWith**: Replace an element either some html `$("#my_element").html("<b>Some html</b>")`.
+- **tagName**: Get or change the an elements tag name
 - **hasClass**: Check if elements has a specific css class attached to it
 - **addClass**: Add a style sheet class to an element `$('h1').addClass("headline")`. Add multiple classes by separating them by spaces. Inject a CSS class into the DOM `$.addClass(".headline", {position:"absolute",top:0,left:0})`.
 - **removeClass**: Remove a style sheet class from dom elements `$('h1').removeClass("headline")`.

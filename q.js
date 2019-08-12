@@ -6,7 +6,7 @@
 
 (function(JavascriptQ) {
 	var 
-	version = 2.301,
+	version = 2.302,
 
 	// Initialize Q
 	q = window[JavascriptQ] = function (mixedQuery) {
@@ -584,6 +584,24 @@
 		iterate(that,function (k,el) {
 			el[htmlAttr] = strHTML;
 		});
+		return that;
+	});
+
+	// Get or alter the elements tag name
+	fn('tagName', function (strAlter) {
+		var that = this;
+		if (typeof strAlter == 'undefined') {
+			return that[0].tagName;
+		} else {
+			var item = q(
+				that[0]
+				.outerHTML
+				.replace(new RegExp('^<' + that.tagName() + ' ','i'), "<" + strAlter + ' ')
+				.replace(new RegExp(that.tagName() + '>','i'), strAlter + '>')
+			);
+			that.replace(item);
+			that[0] = item[0]; // recreate the ref
+		}
 		return that;
 	});
 	
