@@ -6,7 +6,7 @@
 
 (function(JavascriptQ) {
 	var 
-	version = 2.303,
+	version = 2.304,
 
 	// Initialize Q
 	q = window[JavascriptQ] = function (mixedQuery) {
@@ -1014,19 +1014,26 @@
 
 	// Check if selection has a class (a bit redundant with .is but should be tested for a performance difference)
 	fn('hasClass', function (strClassName) {
-		var arrClasses = strClassName.split(/ /),
-		boolHas = true,
-		l=arrClasses.length;
-		if (!this.length)
-			return false;
-		iterate(this,function ()  {
-			for (var i=0;i!=l;i++) {
-				var strName = arrClasses[i];
-				if (!this.classList.contains(strName))
-					boolHas = false;
-			}
-		});
-		return boolHas;
+		var arrOrs = strClassName.split(/\|/);
+		for (var intOr=0; intOr!=arrOrs.length; intOr++) {
+			var 
+			strSegment = arrOrs[intOr],
+			arrClasses = strSegment.split(/ /),
+			boolHas = true,
+			l=arrClasses.length;
+			if (!this.length)
+				return false;
+			iterate(this,function ()  {
+				for (var i=0;i!=l;i++) {
+					var strName = arrClasses[i];
+					if (!this.classList.contains(strName))
+						boolHas = false;
+				}
+			});
+			if (boolHas)
+				return true;
+		}
+		return false
 	});
 	
 	fn('withoutClass', function (strClassList) {

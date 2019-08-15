@@ -1,4 +1,4 @@
-<!-- 2.303 -->
+<!-- 2.304 -->
 <!-- This document is badly commented... sorry. -->
 <html>
 <head>
@@ -715,7 +715,12 @@ output("has multiple classes", (function () {
 		&& !$foo.hasClass('bar1 bar3') 
 		&& $foo.hasClass('bar2') 
 		&& !$foo.hasClass('bar2 bar3') 
-		&& $foo.hasClass('bar2 bar1');
+		&& $foo.hasClass('bar2 bar1')
+		// using or;
+		&& $foo.hasClass('bar1|bar3')
+		&& !$foo.hasClass('bar3|bar4')
+		&& $foo.hasClass('bar3|bar1 bar2')
+		&& !$foo.hasClass('bar3|bar1 bar3')
 })() ? strPass : strFail);
 
 // .css
