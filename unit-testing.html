@@ -1,4 +1,4 @@
-<!-- 2.302 -->
+<!-- 2.303 -->
 <!-- This document is badly commented... sorry. -->
 <html>
 <head>
@@ -704,6 +704,18 @@ output("Has and hasn't classs", $("#cssSource .cell1").hasClass("cell") && !$("#
 // should not return true
 output("null object has class", (function () {
 	return $('#thisWasNeverCreated').hasClass('norThis') == false;
+})() ? strPass : strFail);
+
+// should not return true
+output("has multiple classes", (function () {
+	var $foo = $('<div class="bar1 bar2"></div>');
+
+	return $foo.hasClass('bar1 bar2') 
+		&& $foo.hasClass('bar1') 
+		&& !$foo.hasClass('bar1 bar3') 
+		&& $foo.hasClass('bar2') 
+		&& !$foo.hasClass('bar2 bar3') 
+		&& $foo.hasClass('bar2 bar1');
 })() ? strPass : strFail);
 
 // .css

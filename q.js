@@ -6,7 +6,7 @@
 
 (function(JavascriptQ) {
 	var 
-	version = 2.302,
+	version = 2.303,
 
 	// Initialize Q
 	q = window[JavascriptQ] = function (mixedQuery) {
@@ -1021,7 +1021,8 @@
 			return false;
 		iterate(this,function ()  {
 			for (var i=0;i!=l;i++) {
-				if (!this.classList.contains(strClassName))
+				var strName = arrClasses[i];
+				if (!this.classList.contains(strName))
 					boolHas = false;
 			}
 		});

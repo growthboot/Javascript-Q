@@ -7,7 +7,7 @@ A modern and light-weight JavaScript framework based on ES5 Javascript.
 This is a small JavaScript library intended to reduce the data transfer and memory usage on your websites or apps by reducing redundant and repetitive coding. The library is suported by ES5 Javascript since it's now become an industry standard and doing so keeps the library size small. The idea is websites that want to service customers using pre ES5 browsers can do so using plain HTML since they make up a very small portion of the market.
 
 ## VERSION
-2.302
+2.303
 
 ## Features
  - Lightweight: 33 KB on disk (10k after compression)
@@ -15,6 +15,7 @@ This is a small JavaScript library intended to reduce the data transfer and memo
  - GPU optimized animations
  - Animation control (pause,play,stop,...)
  - Animate tranforms, rgb colors, box-shadows, etc...
+ - 31 built-in easing functions
  - Delay and animation synchronization queue
  - AJAX support
  - Traverse and manipulate the DOM
