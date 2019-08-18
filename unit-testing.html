@@ -1,4 +1,4 @@
-<!-- 2.304 -->
+<!-- 2.306 -->
 <!-- This document is badly commented... sorry. -->
 <html>
 <head>
@@ -15,6 +15,7 @@ objHTML.css({
 	zIndex : 123,
 	//'z-index' : 123
 });
+document.write("<div><button id='fileUpload'>File Upload</button></div>");
 document.write("<div><input type='checkbox' id='checkbox1' checked></div>");
 document.write("<div><input type='button' id='fakePop1' value='Pop'></div>");
 document.write("<div><input type='button' onclick='$(\"body\").scrollTop(1000,\"smooth\");' value='Scroll'></div>");
@@ -22,7 +23,9 @@ document.write("<div><input type='button' onclick='$(\"#cloneSource\").scrollTo(
 document.write("<div><input type='button' onclick='$(\"body\").css({width:5000});$(\"body\").scrollLeft(2000,\"smooth\");' value='ScrollLeft'></div>");
 $(function () {
 
-
+	$("#fileUpload").fileUpload(function (val) {
+		console.log("value: " + val);
+	});
 	$("#fakePop1").click(function () {
 		$("<div></div>")
 		.css({

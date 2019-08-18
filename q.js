@@ -6,7 +6,7 @@
 
 (function(JavascriptQ) {
 	var 
-	version = 2.305,
+	version = 2.306,
 
 	// Initialize Q
 	q = window[JavascriptQ] = function (mixedQuery) {
@@ -1635,6 +1635,17 @@
 				return node;
 		}
 		return copy(fun); // empty
+	});
+
+	fn('fileUpload', function (fnFinished) {
+		this.click(function () {
+			var $input = $("<input type='file'>");
+			$input.change(function () {
+				fnFinished.call(this,this.value);
+			})
+			$input[0].click();
+		});
+
 	});
 
 	fn('withoutQueue', function () {
