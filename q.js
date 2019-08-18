@@ -6,7 +6,7 @@
 
 (function(JavascriptQ) {
 	var 
-	version = 2.304,
+	version = 2.305,
 
 	// Initialize Q
 	q = window[JavascriptQ] = function (mixedQuery) {
@@ -1078,8 +1078,11 @@
 		if (!prospectQueue.call(that,arguments,'addClass'))
 			return that;
 		var strEvent = boolRemove ? "remove" : "add";
-		iterate(that,function ()  {
-			this.classList[strEvent](strClassName);
+		var arrClassNames = strClassName.split(/ /);
+		iterate(arrClassNames, function (k,v) {
+			iterate(that,function ()  {
+				this.classList[strEvent](v);
+			});
 		});
 		return that;
 	});

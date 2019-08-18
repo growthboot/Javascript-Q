@@ -8,6 +8,7 @@
 <body>
 <script type="text/javascript">
 var 
+intStartTime = Date.now(),
 objHTML = $("<div id='prependToBodyTest'></div>"),
 objHTMLChild = $("<span></span>");
 objHTML.css({
@@ -18,6 +19,7 @@ document.write("<div><input type='checkbox' id='checkbox1' checked></div>");
 document.write("<div><input type='button' id='fakePop1' value='Pop'></div>");
 document.write("<div><input type='button' onclick='$(\"body\").scrollTop(1000,\"smooth\");' value='Scroll'></div>");
 document.write("<div><input type='button' onclick='$(\"#cloneSource\").scrollTo(\"smooth\");' value='ScrollTo'></div>");
+document.write("<div><input type='button' onclick='$(\"body\").css({width:5000});$(\"body\").scrollLeft(2000,\"smooth\");' value='ScrollLeft'></div>");
 $(function () {
 
 
@@ -297,7 +299,7 @@ var
 strPass = "PASSED",
 strFail = "*****@@@***** FAILED *****@@@*****";
 
-function output (strKey, strText) {
+function output (strKey, strText, boolForceOut) {
 	document.write("<div>" + strKey + ": " + strText + "</div>");
 }
 // Assets for testing
@@ -576,6 +578,31 @@ output("Serialize a form object", (function () {
 	return $foo.serialize() == "foo1=bar1&foo2=bar2";
 })() ? strPass : strFail);
 
+
+output("unbind extended", (function () {
+	var $foo = $("<div></div>");
+	var i = 0;
+	$foo.bind('click.unbindedExtended', function () {
+		i++;
+	});
+	$foo.trigger('click');
+	$foo.unbind('click.unbindedExtended'); // make sure unbind works on div that was just created
+	$foo.trigger('click');
+	if (i != 1)
+		return false;
+	// now test that on the body
+	$('body').bind('click.unbindedExtended', function () {
+		i++;
+	});
+	$('body').trigger('click');
+	$('body').unbind('click.unbindedExtended');
+	$('body').trigger('click');
+	$foo.trigger('click');
+	if (i != 2)
+		return false;
+	return true;
+})() ? strPass : strFail);
+
 // .unbind
 output("Unbind trigger", "<span id='customTriggerAnswer2'>" + strPass + "</span>");
 $("#cssSource").bind("customTrigger2", function () {
@@ -698,6 +725,19 @@ output("Add Class", $("#cssSource .cell1").hasClass("somethingItNowHas") ? strPa
 $("#cssSource .cell1").removeClass("somethingItNowHas");
 output("Remove Class", !$("#cssSource .cell1").hasClass("somethingItNowHas") ? strPass : strFail);
 
+// add remove multiple classes
+// should not return true
+output("add remove multiple classes", (function () {
+	var $foo = $('<div></div>');
+	$foo.addClass('foo bar');
+	if (!$foo.hasClass('foo bar'))
+		return false;
+	$foo.removeClass('foo bar');
+	if ($foo.hasClass('foo|bar'))
+		return false;
+	return true;
+})() ? strPass : strFail);
+
 // .hasClass
 output("Has and hasn't classs", $("#cssSource .cell1").hasClass("cell") && !$("#cssSource .cell1").hasClass("somethingItDoesntHave") ? strPass : strFail);
 
@@ -706,7 +746,7 @@ output("null object has class", (function () {
 	return $('#thisWasNeverCreated').hasClass('norThis') == false;
 })() ? strPass : strFail);
 
-// should not return true
+
 output("has multiple classes", (function () {
 	var $foo = $('<div class="bar1 bar2"></div>');
 
@@ -862,7 +902,7 @@ $(function () {
 	$("#domReadyResult").html(strPass);
 });
 output("DOM Ready", "<span id='domReadyResult'>" + strFail + "</span>");
-
+output("Time taken", (Date.now() - intStartTime) + ' milliseconds', true);
 </script>
 </body>
 </html>
