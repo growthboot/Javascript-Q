@@ -6,7 +6,7 @@
 
 (function(JavascriptQ) {
 	var 
-	version = 2.306,
+	version = 2.307,
 
 	// Initialize Q
 	q = window[JavascriptQ] = function (mixedQuery) {
@@ -1597,10 +1597,10 @@
 		  };
 		}
 		var r = new XMLHttpRequest();
-		r.open(arrParams.post ? "POST" : "GET", arrParams.url);
+		r.open(arrParams.post || arrParams.formData ? "POST" : "GET", arrParams.url);
 		if (arrParams.cross)
 			r.withCredentials = true;
-		r.setRequestHeader("Content-type", "application/x-www-form-urlencoded; charset=" + (arrParams.charset || 'UTF-8'));
+		r.setRequestHeader("Content-type", arrParams.encoding ? arrParams.encoding : "application/x-www-form-urlencoded; charset=" + (arrParams.charset || 'UTF-8'));
 		r.setRequestHeader("Accept", arrParams.accept || "text/html");
 		r.onreadystatechange = function () {
 			if (r.readyState == 4 ) {
@@ -1618,9 +1618,43 @@
 				}
 			}
 		};
-		r.send(arrParams.post ? q(arrParams.post).serialize('=', '&', true).replace(/%20/g, '+') : null);
+		if (arrParams.formData)
+			r.send(arrParams.formData);
+		else
+			r.send(arrParams.post ? q(arrParams.post).serialize('=', '&', true).replace(/%20/g, '+') : null);
 		return r;
 	};
+	q.fileUpload = function (arrParams) {
+		var $form = $('<form>').appendTo('body');
+		var $input = $("<input type='file' name='file'>").appendTo($form);
+		var $submit = $("<input type='submit'>").appendTo($form);
+		
+		$form.bind('submit', function (e) {
+			e.preventDefault();
+			let formData = new FormData($form[0]);
+			arrParams.selected(formData.get('file'));
+			if (arrParams.post)
+				for (var strKey in arrParams.post) {
+					formData.append(strKey, arrParams.post[strKey]);
+				}
+			q.request({
+				url : arrParams.url,
+				formData : formData,
+				encoding : 'multipart/form-data',
+				success : arrParams.success
+			});
+		});
+		$input.change(function (e) {
+			$submit[0].click();
+		});
+		$input[0].click();
+	};
+	fn('fileUpload', function (arrParams) {
+		this.click(function () {
+			q.fileUpload.call(this,arrParams)
+		});
+
+	});
 
 	fn('offsetParent', function () {
 		var node = this.parent();
@@ -1635,17 +1669,6 @@
 				return node;
 		}
 		return copy(fun); // empty
-	});
-
-	fn('fileUpload', function (fnFinished) {
-		this.click(function () {
-			var $input = $("<input type='file'>");
-			$input.change(function () {
-				fnFinished.call(this,this.value);
-			})
-			$input[0].click();
-		});
-
 	});
 
 	fn('withoutQueue', function () {
