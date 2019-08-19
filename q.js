@@ -6,7 +6,7 @@
 
 (function(JavascriptQ) {
 	var 
-	version = 2.308,
+	version = 2.309,
 
 	// Initialize Q
 	q = window[JavascriptQ] = function (mixedQuery) {
@@ -1632,12 +1632,13 @@
 		}).appendTo('body');
 		var input = q("<input type='file' name='file'>").appendTo(form);
 		var submit = q("<input type='submit'>").appendTo(form);
-		
+		if (arrParams.accept)
+			input.attr('accept', arrParams.accept);
 		form.bind('submit', function (e) {
 			e.preventDefault();
 			var formData = new FormData(form[0]);
 			if (arrParams.selected)
-				arrParams.selected(formData.get('file'));
+				arrParams.selected.call(this,formData.get('file'),e);
 			if (arrParams.post)
 				for (var strKey in arrParams.post) {
 					formData.append(strKey, arrParams.post[strKey]);
