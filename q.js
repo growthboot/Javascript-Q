@@ -6,7 +6,7 @@
 
 (function(JavascriptQ) {
 	var 
-	version = 2.307,
+	version = 2.308,
 
 	// Initialize Q
 	q = window[JavascriptQ] = function (mixedQuery) {
@@ -1597,10 +1597,11 @@
 		  };
 		}
 		var r = new XMLHttpRequest();
-		r.open(arrParams.post || arrParams.formData ? "POST" : "GET", arrParams.url);
+		r.open((arrParams.post || arrParams.formData) ? "POST" : "GET", arrParams.url);
 		if (arrParams.cross)
 			r.withCredentials = true;
-		r.setRequestHeader("Content-type", arrParams.encoding ? arrParams.encoding : "application/x-www-form-urlencoded; charset=" + (arrParams.charset || 'UTF-8'));
+		if (arrParams.encoding !== false)
+			r.setRequestHeader("Content-type", arrParams.encoding ? arrParams.encoding : "application/x-www-form-urlencoded; charset=" + (arrParams.charset || 'UTF-8'));
 		r.setRequestHeader("Accept", arrParams.accept || "text/html");
 		r.onreadystatechange = function () {
 			if (r.readyState == 4 ) {
@@ -1625,34 +1626,44 @@
 		return r;
 	};
 	q.fileUpload = function (arrParams) {
-		var $form = $('<form>').appendTo('body');
-		var $input = $("<input type='file' name='file'>").appendTo($form);
-		var $submit = $("<input type='submit'>").appendTo($form);
+		var form = q('<form>')
+		.css({
+			display : 'none'
+		}).appendTo('body');
+		var input = q("<input type='file' name='file'>").appendTo(form);
+		var submit = q("<input type='submit'>").appendTo(form);
 		
-		$form.bind('submit', function (e) {
+		form.bind('submit', function (e) {
 			e.preventDefault();
-			let formData = new FormData($form[0]);
-			arrParams.selected(formData.get('file'));
+			var formData = new FormData(form[0]);
+			if (arrParams.selected)
+				arrParams.selected(formData.get('file'));
 			if (arrParams.post)
 				for (var strKey in arrParams.post) {
 					formData.append(strKey, arrParams.post[strKey]);
 				}
-			q.request({
+			delete arrParams.post;
+			console.log(formData.uniqid);
+			var request = {
 				url : arrParams.url,
 				formData : formData,
-				encoding : 'multipart/form-data',
-				success : arrParams.success
-			});
+				encoding : false
+			};
+			extend(request, arrParams);
+			q.request(request);
+			form.remove();
 		});
-		$input.change(function (e) {
-			$submit[0].click();
+		input.change(function (e) {
+			submit[0].click();
 		});
-		$input[0].click();
+		input[0].click();
 	};
 	fn('fileUpload', function (arrParams) {
-		this.click(function () {
-			q.fileUpload.call(this,arrParams)
-		});
+		this.click((function (arrParams) {
+			return function () {
+				q.fileUpload.call(this,copy(arrParams))
+			};
+		})(arrParams));
 
 	});
 
