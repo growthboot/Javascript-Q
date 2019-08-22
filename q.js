@@ -6,7 +6,7 @@
 
 (function(JavascriptQ) {
 	var 
-	version = 2.309,
+	version = 2.310,
 
 	// Initialize Q
 	q = window[JavascriptQ] = function (mixedQuery) {
@@ -1626,6 +1626,7 @@
 		return r;
 	};
 	q.fileUpload = function (arrParams) {
+		var that = this;
 		var form = q('<form>')
 		.css({
 			display : 'none'
@@ -1638,13 +1639,12 @@
 			e.preventDefault();
 			var formData = new FormData(form[0]);
 			if (arrParams.selected)
-				arrParams.selected.call(this,formData.get('file'),e);
+				arrParams.selected.call(that,formData.get('file'),e);
 			if (arrParams.post)
 				for (var strKey in arrParams.post) {
 					formData.append(strKey, arrParams.post[strKey]);
 				}
 			delete arrParams.post;
-			console.log(formData.uniqid);
 			var request = {
 				url : arrParams.url,
 				formData : formData,
