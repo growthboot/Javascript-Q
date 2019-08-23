@@ -6,7 +6,7 @@
 
 (function(JavascriptQ) {
 	var 
-	version = 2.311,
+	version = 2.312,
 
 	// Initialize Q
 	q = window[JavascriptQ] = function (mixedQuery) {
@@ -1658,7 +1658,7 @@
 				encoding : false
 			};
 			extend(request, arrParams);
-			that.request(request);
+			that.request ? that.request(request) : q.request(request);
 			form.remove();
 		});
 		input.change(function (e) {
@@ -1667,12 +1667,12 @@
 		input[0].click();
 	};
 	fn('fileUpload', function (arrParams) {
-		this.click((function (arrParams) {
+		var that = this;
+		that.click((function (arrParams) {
 			return function () {
-				q.fileUpload.call(this,copy(arrParams))
+				q.fileUpload.call(that,copy(arrParams))
 			};
 		})(arrParams));
-
 	});
 
 	fn('offsetParent', function () {
