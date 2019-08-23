@@ -6,7 +6,7 @@
 
 (function(JavascriptQ) {
 	var 
-	version = 2.310,
+	version = 2.311,
 
 	// Initialize Q
 	q = window[JavascriptQ] = function (mixedQuery) {
@@ -1582,9 +1582,16 @@
 		max -= dif-1;
 		return ((Math.floor(Math.random()*max)+dif)/divider);
 	};
-
+	fn('request', function (arrParams) {
+		var that = this;
+		if (!prospectQueue.call(that,arguments,'request'))
+			return that;
+		q.request.call(that,arrParams)
+		return that;
+	});
 	// Ajax reqiest
 	q.request = function (arrParams) {
+		var that = this;
 		if (typeof XMLHttpRequest === "undefined") {
 		  XMLHttpRequest = function () {
 		    try { return new ActiveXObject("Msxml2.XMLHTTP.6.0"); }
@@ -1610,12 +1617,12 @@
 						var res = r.responseText;
 						if (arrParams.response == "JSON")
 							res = JSON.parse(res);
-						arrParams.success(res);
+						arrParams.success.call(that,res);
 					}
 				} else if (!arrParams.failure) {
 					// no failure handle; do nothing
 				} else {
-					arrParams.failure(r.responseText);
+					arrParams.failure.call(that,r.responseText);
 				}
 			}
 		};
@@ -1651,7 +1658,7 @@
 				encoding : false
 			};
 			extend(request, arrParams);
-			q.request(request);
+			that.request(request);
 			form.remove();
 		});
 		input.change(function (e) {
