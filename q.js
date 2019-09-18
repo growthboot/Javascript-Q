@@ -6,7 +6,7 @@
 
 (function(JavascriptQ) {
 	var 
-	version = 2.312,
+	version = 2.313,
 
 	// Initialize Q
 	q = window[JavascriptQ] = function (mixedQuery) {
@@ -102,6 +102,7 @@
 		// then remove those elements from the selection
 		// so that none queued items can continue with their normal process 
 		iterate(that,function (intItem, el) {
+			if (!el) return;
 			var intElUid = q(el).uniqueId();
 			if (objQueueChain[intElUid]) {
 				var objLink = objQueueChain[intElUid];
@@ -257,6 +258,18 @@
 	error = q.error = function (objError) {
 		console.log(objError);
 		return this;
+	},
+	// source: https://stackoverflow.com/questions/4817029/whats-the-best-way-to-detect-a-touch-screen-device-using-javascript/4819886#4819886
+	is_touch_device = q.is_touch_device = function () {
+		var prefixes = ' -webkit- -moz- -o- -ms- '.split(' ');
+		var mq = function(query) {
+			return window.matchMedia(query).matches;
+  		}
+		if (('ontouchstart' in window) || window.DocumentTouch && document instanceof DocumentTouch) {
+			return true;
+		}
+		var query = ['(', prefixes.join('touch-enabled),('), 'heartz', ')'].join('');
+		return mq(query);
 	},
 	// Added functions to the q lib
 	fn = q.plugin = function (mixedName, fnCallback) {
@@ -534,6 +547,7 @@
 		boolGet = typeof strVal == "undefined",
 		arrDataResult = [];
 		iterate(this,function (j,el) {
+			if (!el) return;
 			var intUId = q(el).uniqueId();
 			if (boolGet)
 				arrDataResult.push(arrDataMemory[intUId] && typeof arrDataMemory[intUId][strKey] != 'undefined' ? arrDataMemory[intUId][strKey] : null);
@@ -714,8 +728,8 @@
 		scrollLeft = window.pageXOffset || document.documentElement.scrollLeft,
 		scrollTop = window.pageYOffset || document.documentElement.scrollTop;
 	    return { 
-	    	top: rect.top + scrollTop, 
-	    	left: rect.left + scrollLeft 
+	    	top: rect.top + scrollTop,
+	    	left: rect.left + scrollLeft
 	    };
 	});
 	
@@ -740,6 +754,15 @@
 		intHeight = this.height(),
 		intAmount = Math.max(0, Math.min(intHeight, intTop + intHeight));
 		intAmount -= Math.max(0, Math.min(intHeight, intTop - q.height() + intHeight));
+		return intAmount;
+	});
+	
+	fn('inViewX', function () {
+		var 
+		intLeft = this.scrollLeft(),
+		intWidth = this.width(),
+		intAmount = Math.max(0, Math.min(intWidth, intLeft + intWidth));
+		intAmount -= Math.max(0, Math.min(intWidth, intLeft - q.width() + intWidth));
 		return intAmount;
 	});
 	
@@ -809,7 +832,7 @@
 		// get
 		var el = that[0];
 		if (el == window) {
-			return window.pageYOffset || document.documentElement.scrollTop;
+			return window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
 		} else {
 			return that.position().top-q(window).scrollTop();
 		}
@@ -825,7 +848,9 @@
 			var destinationOffset = strType == "number" ? mixedLeft : q(mixedLeft).position().left;
 			if (!mixedDuration || mixedDuration == "smooth") {
 				var objParams = {
-					left: destinationOffset
+					left: destinationOffset,
+					block: "center",
+					inline: "center"
 				};
 				if (mixedDuration == "smooth")
 					objParams.behavior = "smooth";
@@ -860,7 +885,7 @@
 		// get
 		var el = that[0];
 		if (el == window) {
-			return window.pageYOffset || document.documentElement.scrollLeft;
+			return window.pageXOffset || document.documentElement.scrollLeft || document.body.scrollLeft;
 		} else {
 			return that.position().left-q(window).scrollLeft();
 		}
@@ -889,6 +914,13 @@
 	q.width = function () {
 		return q(window).width();
 	};
+	q.scrollWidth = function () {
+		return Math.max(
+			document.body.scrollWidth, document.documentElement.scrollWidth,
+			document.body.offsetWidth, document.documentElement.offsetWidth,
+			document.body.clientWidth, document.documentElement.clientWidth
+		);
+	};
 	
 	// DOM height
 	fn('height', function (mixedValue) {
@@ -900,6 +932,19 @@
 	q.height = function () {
 		return q(window).height();
 	};
+	q.scrollHeight = function () {
+		return Math.max(
+			document.body.scrollHeight, document.documentElement.scrollHeight,
+			document.body.offsetHeight, document.documentElement.offsetHeight,
+			document.body.clientHeight, document.documentElement.clientHeight
+		);
+	};
+	q.scrollTop = function () {
+		return q(window).scrollTop();
+	}
+	q.scrollLeft = function () {
+		return q(window).scrollLeft();
+	}
 
 	// DOM innerWidth (not counting scrollbars)
 	fn('innerWidth', function () {
@@ -988,6 +1033,7 @@
 			var strValue = mixedCss[strKey];
 			if (strKey == "transform" && typeof strValue == "object") {
 				iterate(that,function (k,el) {
+					if (!el) return;
 					var intElUid = q(el).uniqueId();
 					if (!objTransformHistory[intElUid])
 						objTransformHistory[intElUid] = {};
@@ -1166,13 +1212,14 @@
 			return that;
 		var arrEvents = strEvents.split(/ /);
 		iterate(that,function (k,node) {
+			if (!node) return;
 			var method = function (e) {
 				e = e || window.event;
 				e.target = e.target || e.srcElement;
 				// defeat Safari bug
 				if (e.target.nodeType == 3)
 					e.target = e.target.parentNode;
-				fnCallback.call(node, e);
+				return fnCallback.call(node, e);
 			},
 			intNodeUid = q(node).uniqueId();
 			q.each(arrEvents, function () {
@@ -1219,6 +1266,7 @@
 			return that;
 		var arrEvents = strEvents.split(/ /);
 		iterate(that,function (k,node) {
+			if (!node) return;
 			var qNodeUid = q(node).uniqueId();
 			iterate(arrEvents, function () {
 				var 
@@ -1516,10 +1564,11 @@
 		return this.prop("parentNode");
 	});
 
-	// Unix epoch in MS
+	// Unix epoch in milliseconds
 	q.mstime = function () {
 		return (new Date()).getTime();
 	};
+	// Unix epoch in seconds
 	q.time = function () {
 		return Math.floor(q.mstime()/1000);
 	};
@@ -1590,7 +1639,27 @@
 		return that;
 	});
 	// Ajax reqiest
-	q.request = function (arrParams) {
+	var arrSyncRequestQueue = {};
+	q.request = function (arrParams, boolBypassQueueInjection) {
+		function requestProcessingComplete(res, objParams, status) {
+			if (objParams.sync) {
+				arrSyncRequestQueue[objParams.sync].shift(); // removes itself to continue on
+				if (arrSyncRequestQueue[objParams.sync].length) // check if theres more in the queue
+					q.request(arrSyncRequestQueue[objParams.sync][0], true); // start the next request while bypassing queue injection
+			}
+			if (objParams.response)
+				objParams.response.call(that, res, objParams, status);
+		}
+		// queue is a string that can be provided which will serve as the key for a synchronized request queue
+		if (arrParams.sync && !boolBypassQueueInjection) {
+			if (!arrSyncRequestQueue[arrParams.sync])
+				arrSyncRequestQueue[arrParams.sync] = [];
+			arrSyncRequestQueue[arrParams.sync].push(arrParams);
+			if (arrSyncRequestQueue[arrParams.sync].length > 1) {
+				// something already queued wait for it to finish
+				return;
+			}
+		}
 		var that = this;
 		if (typeof XMLHttpRequest === "undefined") {
 		  XMLHttpRequest = function () {
@@ -1613,19 +1682,23 @@
 		r.onreadystatechange = function () {
 			if (r.readyState == 4 ) {
 				if (r.status == 200) {
-					if (arrParams.success) {
-						var res = r.responseText;
-						if (arrParams.response == "JSON")
-							res = JSON.parse(res);
+					var res = r.responseText;
+					if (arrParams.json)
+						res = JSON.parse(res);
+					if (arrParams.success)
 						arrParams.success.call(that,res);
-					}
+					requestProcessingComplete(res, arrParams, r.status);
 				} else if (!arrParams.failure) {
 					// no failure handle; do nothing
+					requestProcessingComplete(null, arrParams, r.status);
 				} else {
-					arrParams.failure.call(that,r.responseText);
+					arrParams.failure.call(that,r.responseText, r.status);
+					requestProcessingComplete(null, arrParams, r.status);
 				}
 			}
 		};
+		if (arrParams.preRequest) 
+			arrParams.preRequest.call(that, arrParams);
 		if (arrParams.formData)
 			r.send(arrParams.formData);
 		else
@@ -1674,6 +1747,21 @@
 			};
 		})(arrParams));
 	});
+	
+	fn('fixedParent', function () {
+		var node = this.parent();
+		while (node.length) {
+			var strPos = node.css("position");
+			if (strPos == "fixed")
+				return node;
+			node = node.parent();
+			if (!node.length)
+				return copy(fun);
+			if (node[0].tagName == "BODY")
+				return copy(fun);
+		}
+		return copy(fun); // empty
+	});
 
 	fn('offsetParent', function () {
 		var node = this.parent();
@@ -1683,7 +1771,7 @@
 				return node;
 			node = node.parent();
 			if (!node.length)
-				return;
+				return copy(fun);
 			if (node[0].tagName == "BODY")
 				return node;
 		}
@@ -1706,11 +1794,13 @@
 		var that = this;
 		if (boolOff)
 			iterate(that, function (k,el) {
+				if (!el) return;
 				var intElUid = q(el).uniqueId();
 				delete objQueueChain[intElUid];
 			});
 		else
 			iterate(that, function (k,el) {
+				if (!el) return;
 				var intElUid = q(el).uniqueId();
 				if (!objQueueChain[intElUid])
 					objQueueChain[intElUid] = {
@@ -1734,6 +1824,7 @@
 			});
 		}
 		function runNext(el) {
+			if (!el) return;
 			var intElUid = q(el).uniqueId();
 			if (objQueueChain[intElUid]) {
 				var objLink = objQueueChain[intElUid];
@@ -1782,6 +1873,7 @@
 	fn('dequeue', function () {
 		var that = this;
 		iterate(that, function (k,el) {
+			if (!el) return;
 			var intElUid = q(el).uniqueId();
 			if (objQueueChain[intElUid])
 				objQueueChain[intElUid].sequence = [];
@@ -1813,6 +1905,7 @@
 		if (!prospectQueue.call(that,arguments,'stop'))
 			return that;
 		iterate(this, function (k,el) {
+			if (!el) return;
 			var 
 			objAI = objAnimationInstances,
 			intElUid = q(el).uniqueId();
@@ -1824,7 +1917,9 @@
 			"animation-play-state" : "paused"
 		},undefined,undefined,undefined,BYPASS_QUEUE).dequeue();
 	});
-
+	q.clear = function (ref) {
+		window.clearTimeout(ref);
+	};
 	q.delay = function (intMS, fnCallback) {
 		var that = this;
 		if (!that.is_q)
@@ -1845,6 +1940,7 @@
 			boolLoopAdded = !that.loopOn;
 			arrArgsSequence.unshift("delay");
 			iterate(this,function (intItem, el) {
+				if (!el) return;
 				var 
 				intElUid = q(el).uniqueId(),
 				objQueueItem = objQueueChain[intElUid];
@@ -1982,6 +2078,7 @@
 		regSplitNumbers = /\-?[0-9]+(?:\.[0-9]+)?(?:[a-z]{2}?|%)?/gi;
 		arrArgsSequence.unshift("animate")
 		iterate(that,function (intItem, el) {
+			if (!el) return;
 			var intElUid = q(el).uniqueId();
 			if (objQueueChain[intElUid] && !that.withoutQueueOn) {
 				if (!boolBypassQueue) {
