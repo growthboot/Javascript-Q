@@ -1,0 +1,53 @@
+<!-- This document is badly commented... sorry. -->
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<script src="./../../q.js"></script>
+<script src="./../../qui.js"></script>
+<link rel="stylesheet" href="./../../qui.css" type="text/css" />
+<script type="text/javascript">
+	$(function () {
+		var 
+		boolStop = false,
+		$focal = $("<div>")
+		.css({
+			border : '1px solid #333',
+			width:150,
+			height:100,
+			position:'absolute'
+		}).appendTo('#playground')
+		.click(function () {
+			boolStop = true;
+		});
+		$(window).mousemove(function (e) {
+			if (boolStop)
+				return;
+
+			$focal.css({
+				top:e.pageY-$focal.height()/2-$("#playground").top(),
+				left:e.pageX-$focal.width()/2-$("#playground").left()
+			});
+		});
+		$focal.note("This is a test", {
+			minWidth : 'focal-width'
+		});
+	})
+</script>
+<style>
+	#playground {
+		position:fixed;
+		top:100px;
+		left:100px;
+		width:400px;
+		height:400px;
+		background-color:#eee;
+		overflow:hidden;
+	}
+</style>
+</head>
+<body style="width:500vw;height:500vw;">
+	<div id="playground">
+		
+	</div>
+</body>
+</html>

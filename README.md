@@ -403,9 +403,11 @@ $(function () {
 - **position**: Return an object with the top and left position of an element `$("#my_element").pos()` example returns `{top:15px,left:15px}`.
 - **offset**: Return an object with the top and left position of an element `$("#my_element").offset()` relative to the nearest `relative`, `absolute`, or `fixed` position.
 - **offsetParent**: Find the nearest object with a `relative`, `absolute`, or `fixed` position.
+- **fixedParent**: Find the nearest object with a `fixed` position.
 - **scrollTop**: Get and set the scrollTop location
 - **scrollLeft**: Get and set the scrollLeft location
 - **scrollTo**: Scroll to the location of an object on the page
+- **inViewX**: Get the amount of pixels of the object that are currently in view on the X axis
 - **inViewY**: Get the amount of pixels of the object that are currently in view on the Y axis
 - **left**: Returns the left position of an object and stores the top position in memory encase you need it `$("#my_element").left()`.
 - **top**: Returns the top position of an object and stores the left position in memory encase you need it `$("#my_element").top()`.
@@ -434,6 +436,7 @@ $(function () {
 
 ### List of tools
 - **$.plugin(name, function)**: Add your own plugin to the JSQL framework
+- **$.is_touch_device()**: Find out if the device is touch oriented
 - **$.copy(obj)**: Copy an object
 - **$.extend(obj1, obj2)**: Extend an object
 - **$.hexToRgb(hexString)**: Change HAX to RGB `#0000FF` -> `0,0,255`
@@ -450,6 +453,10 @@ $(function () {
 - **$.request(obj)**: Make an AJAX GET request `$.request({url:"...",success:function() {...}})` or a POST request `$.request({url:"...",post:{some_key:"some_value"},success:function() {...}})`.
 - **$.type(mixed)**: Return what type an element is `$.type(some_variable)` could possibly return an one of these values `null, window, document, event, array, boolean, date, object, regexp, error, domelement, string or Unknown`
 - **$.iterate(mixed, callback)**: Loop though stuff like arrays, objects, and q handles like this `$.iterate([1,2], function (k,v) {});`
+- **$.scrollWidth()**: Get the scroll width of the document
+- **$.scrollHeight()**: Get the scroll height of the document
+- **$.scrollTop()**: Get the top scroll position of the document
+- **$.scrollLeft()**: Get the left scroll position of the document
 
 ### List of variables
 - **$.id**: A randomly generated id that represents the currently running JSQL library

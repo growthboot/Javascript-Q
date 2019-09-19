@@ -1,0 +1,44 @@
+<!-- This document is badly commented... sorry. -->
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<script src="./../../q.js"></script>
+<script src="./../../qui.js"></script>
+<link rel="stylesheet" href="./../../qui.css" type="text/css" />
+<script type="text/javascript">
+	$(function () {
+		var 
+		boolStop = false,
+		$focal = $("<div>")
+		.css({
+			border : '1px solid #333',
+			width:150,
+			height:100,
+			position:'absolute'
+		}).appendTo('body')
+		.click(function () {
+			boolStop = true;
+		});
+		$(window).mousemove(function (e) {
+			if (boolStop)
+				return;
+			$focal.css({
+				top:e.pageY-$focal.height()/2,
+				left:e.pageX-$focal.width()/2
+			});
+		});
+		var _note = $focal.note("This is a test", "test two", {
+			minWidth : 'focal-width'
+		});
+		$(window).click(function () {
+			_note.shake();
+		});
+	})
+</script>
+</head>
+<body style="width:500vw;height:500vw;">
+	<div id="playground">
+		
+	</div>
+</body>
+</html>

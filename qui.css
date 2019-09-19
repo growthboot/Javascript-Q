@@ -1,0 +1,91 @@
+/*
+ * Notes
+ */
+._qui-note {
+	transition:all 0s;
+	/*transition:all 1s;
+	transition-timing-function: cubic-bezier(0.075, 0.82, 0.165, 1);*/
+	text-align:left;
+	position:absolute;
+	transform:translateY(-30px);
+	color:#fff;
+	opacity:0;
+	background-color: #8888e8;
+	z-index:300003;
+	box-sizing: border-box;
+}
+._qui-note._qui-state-error,
+._qui-note._qui-state-error ._qui-note-arrow {
+	background-color: #c83833;
+}
+._qui-note._qui-state-transitioned {
+	transform:translateY(0px);
+	opacity:1;
+}
+._qui-note span {
+	padding:0 2px;
+	border:2px solid rgba(255,255,255,0.2);
+	vertical-align:top;
+	font-size:15px;	
+}
+._qui-note hr {
+	padding:0;
+	margin:10px 0;
+	border-top: 1px solid rgba(255,255,255,0.2);
+}
+._qui-note-arrow {
+	position:absolute;
+	top:-12px;
+	left:0;
+	width: 24px;
+    height: 12.5px;
+    background-color: #8888e8;
+    clip-path: polygon(50% 0, 0 100%, 100% 100%);
+}
+._qui-note-top-pos ._qui-note-arrow {
+	clip-path: polygon(100% 0, 0 0, 50% 100%);
+	top:initial;
+	bottom:-12.5px;
+}
+._qui-note-text {
+	padding:10px 15px;
+}
+._qui-note-secondary-data {
+	width: 100%;
+    background-color: #f0f0f0;
+    color:#444;
+    padding:10px 15px;
+    box-sizing: border-box;
+}
+._qui-note-top-pos._qui-state-secondary ._qui-note-arrow {
+	background-color: #f0f0f0;
+}
+
+/* animations */
+._qui-animation-shake {
+	animation: _qui-animation-shake 0.92s cubic-bezier(.36,.07,.19,.97) both;
+	transform: translate3d(0, 0, 0);
+	backface-visibility: hidden;
+	perspective: 1000px;
+}
+
+@keyframes _qui-animation-shake {
+  10%, 90% {
+    transform: translate3d(-1.5px, 0, 0);
+  }
+  
+  20%, 80% {
+    transform: translate3d(3px, 0, 0);
+  }
+
+  30%, 50%, 70% {
+    transform: translate3d(-6px, 0, 0);
+  }
+
+  40%, 60% {
+    transform: translate3d(6px, 0, 0);
+  }
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+}

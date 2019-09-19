@@ -6,13 +6,14 @@
 
 (function(JavascriptQ) {
 	var 
-	version = 2.313,
 
 	// Initialize Q
 	q = window[JavascriptQ] = function (mixedQuery) {
 		var that = copy(fun);
 		return that.put(mixedQuery);
 	},
+
+	version = q.version = 2.313,
 	
 	BYPASS_QUEUE = q.BYPASS_QUEUE = 'BYPASS_QUEUE_CONSTANT',
 
@@ -184,6 +185,7 @@
 	fun = {
 		length : 0,
 		is_q : 1,
+		is_qchain : 1,
 		version : version,
 		layers : 0, // how many times has the find function ran
 		loopOn : false,
@@ -327,7 +329,8 @@
 	easings.easeInOutBounce = function(t, b, c, d) {if (t < d / 2) return easings.easeInBounce(t * 2, 0, c, d) * .5 + b;return easings.easeOutBounce(t * 2 - d, 0, c, d) * .5 + c * .5 + b;};
 	// define prototype object
 	q.prototype = fun;
-
+	q.is_q = 1;
+	
 	fn('rtrim', function (intFromRight) {
 		var that = this;
 		if (!prospectQueue.call(that,arguments,'rtrim'))
@@ -443,7 +446,7 @@
 			var i=0;
 			if (isNode(mixedQuery)) {
 				that[i++] = mixedQuery;
-			} else if (mixedQuery.is_q) {
+			} else if (mixedQuery.is_qchain) {
 				return mixedQuery;
 			} else if (Array.isArray(mixedQuery)) {
 				iterate(mixedQuery,function () {
@@ -1396,7 +1399,7 @@
 		if (typeof mixedReplacement == "string")
 			mixedReplacement = q(mixedReplacement);
 		var that = this,
-		replacement = mixedReplacement.is_q ? mixedReplacement[0] : mixedReplacement;
+		replacement = mixedReplacement.is_qchain ? mixedReplacement[0] : mixedReplacement;
 		that.parent()[0].replaceChild(replacement, that[0]);
 		that[0] = replacement;
 		that.length = 1;
@@ -1814,7 +1817,7 @@
 	// jump to the next item in the queue
 	q.queueNext = function (el,boolApplyByPass) {
 		var that = this;
-		if (that.is_q && that.withoutQueueOn)
+		if (that.is_qchain && that.withoutQueueOn)
 			return that;
 		if (el)
 			runNext(el);
@@ -1860,7 +1863,7 @@
 		return q.loop.apply(this,arguments);
 	});
 	q.loop = function (intAmount) {
-		var that = this.is_q ? this : q("<div>"); // give the q something if there's nothing 
+		var that = this.is_qchain ? this : q("<div>"); // give the q something if there's nothing 
 		that.queue();
 		that.loopOn = typeof intAmount == "undefined" ? Infinity : intAmount;
 		return that;
@@ -1922,7 +1925,7 @@
 	};
 	q.delay = function (intMS, fnCallback) {
 		var that = this;
-		if (!that.is_q)
+		if (!that.is_qchain)
 			return window.setTimeout(function () {
 				fnCallback();
 			},intMS);

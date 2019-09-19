@@ -1,0 +1,150 @@
+<!-- This document is badly commented... sorry. -->
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<script src="./../../../q.js"></script>
+<script src="./../../../qui.js"></script>
+<link rel="stylesheet" href="./../../../qui.css" type="text/css" />
+<script type="text/javascript">
+	$(function () {
+		var 
+		$button1,
+		$input1,
+		arrSequence = [
+			function () {
+				$.note(false);// clear all open notes
+				$button1 = $("#button1").note("This is a test");
+			},
+			function () {
+				$button1.shake();
+				$button1.text('Take change and shake');
+				$("#button2").note("There's another note over here now");
+			},
+			function () {
+				$button1.close();
+				$("#button2").note("Now the other ones gone", "But hey look now there's some text here");
+			},
+			function () {
+				$("#button2").note("Now that gray box with text is gone");
+			},
+			function () {
+				$("#button3").note(false).note("I'm over here now", "And here");
+			},
+			function () {
+				$("#button3").note(false).note("I'm over here now", "This is some long text to take up some space. You know unicorns are just horse-rhinos.");
+			},
+			function () {
+				$("#button3").note(false).note("Now there's some constraint on the width", "This is some long text to take up some space. You know unicorns are just horse-rhinos.", {
+					maxWidth : 200
+				});
+			},
+			function () {
+				$input1 = $("#input1").note(false).note("Now I'm here");
+			},
+			function () {
+				$input1.secondary('add secondary message');
+			},
+			function () {
+				$input1.secondary('change secondary message');
+			},
+			function () {
+				$input1.secondary(false);
+				$input1.text("removed secondary");
+			},
+			function () {
+				$("#input2").note(false).note("Now I'm here");
+			},
+			function () {
+				$("#input3").note(false).note("Now I'm here");
+			},
+			function () {
+				$("#button4").note(false).note("Now I'm here. Now I'm here. Now I'm here. Now I'm here.");
+			},
+			function () {
+				$("#button5").note(false).note("Now I'm here. Now I'm here. Now I'm here. Now I'm here.");
+			},
+			function () {
+				$("#button6").note(false).note("Now I'm here. Now I'm here. Now I'm here. Now I'm here.", {
+					maxWidth : 200
+				});
+			},
+			function () {
+				$("#button6").note(false).note("I'm the width of the button now. Now I'm here. Now I'm here. Now I'm here. Now I'm here.", {
+					width : 'focal-width'
+				});
+			},
+			function () {
+				$("#button6").note(false).note("I'm the width of the button now. Now I'm here. Now I'm here. Now I'm here. Now I'm here.", "And I've got even more to say boy let me tell ya", {
+					width : 'focal-width'
+				});
+			},
+			function () {
+				$("#button1").note(false).note("I'm too big to fit so I just go under. I'm the width of the button now. Now I'm here. Now I'm here. Now I'm here. Now I'm here.", "And I've got even more to say boy let me tell ya", {
+					width : 100
+				});
+			}
+
+		]; 
+		var intSeq = 0;
+		$("body").click(function () {
+			if (!arrSequence[intSeq])
+				intSeq = 0;
+			arrSequence[intSeq]();
+			intSeq++;
+		});
+		//$("#next").click();
+	});
+</script>
+<style>
+	table,p {
+		padding:10px 0;
+	}
+	input {
+		background-color: #ccc;
+		padding:5px 10px;
+		border:2px solid #336699;
+	}
+</style>
+</head>
+<body style="width:500vw;height:500vw;">
+	<div>
+		Click anywhere to progess sequence
+	</div>
+	<div id="playground">
+		<table style="width:800px">
+			<tr>
+				<td>
+					<input type="button" id="button1" value="test">
+				</td>
+				<td>
+					<input type="button" id="button2" value="test">
+				</td>
+				<td>
+					<input type="button" id="button3" value="test test test test">
+				</td>
+			</tr>
+		</table>
+		<p>
+			<input type="text" id="input1" value="test">
+		<p>
+			<input type="text" id="input2" value="test">
+		<p>
+			<input type="text" id="input3" value="test">
+		<p>
+			<input type="text" id="input4" value="test">
+		<table style="width:800px">
+			<tr>
+				<td>
+					<input type="button" id="button4" value="test test">
+				</td>
+				<td>
+					<input type="button" id="button5" value="test test test">
+				</td>
+				<td>
+					<input type="button" id="button6" value="test test test test test test">
+				</td>
+			</tr>
+		</table>
+	</div>
+</body>
+</html>
