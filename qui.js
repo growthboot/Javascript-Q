@@ -7,7 +7,7 @@
  */
 
 (function ($) {
-	var version = $.qui_version = 0.01;
+	var version = $.qui_version = 0.02;
 	// display a tip note above or below an object
 	$.note = function () {
 		if (arguments[0] === false) {
@@ -61,7 +61,14 @@
 					objBoxCss[intItr] = $focal.width();
 				}
 			}
+			if (!objBoxCss.width) {
+				objBoxCss.width = $box.width();
+			}
 			$box.css(objBoxCss);
+		} else {
+			$box.css({
+				width : Math.max($box.width(), $focal.width())
+			});
 		}
 	 		
 	 	$.delay(50, function () {
@@ -71,20 +78,23 @@
 		$(window).bind('resize.qui-note scroll.qui-note mousemove.qui-note', positionNote);
 		positionNote();
 		$.delay(10, positionNote);
-		var refStartClass = $.delay(500, positionNote);
-		var refInterval = window.setInterval(function () {
+		var 
+		refStartClass = $.delay(500, positionNote),
+		refInterval = window.setInterval(function () {
 			positionNote();
 		}, 1000);
 		function positionNote() {
-			var boolTop = $.scrollTop()+$.height()-intLimitOffset-intScrollBarOffset-$focal.height()-$box.height() < $focal.top(); // check if theres enough room under the focal
+			var 
+			intBoxWidth = $box.width(),
+			boolTop = $.scrollTop()+$.height()-intLimitOffset-intScrollBarOffset-$focal.height()-$box.height() < $focal.top(); // check if theres enough room under the focal
 			if (boolTop)
 				boolTop = $box.height() < $focal.scrollTop()-intLimitOffset; // check if there enough room over the focal
 			var
 			intTop = $focal.top(), // position from top of window
 			intLeft = $focal.left(),
 			intStartLeft = intLeft,
-			intLeft = Math.min(intLeft, $.scrollLeft()+$.width()-$box.width()-intLimitOffset-intScrollBarOffset); // limit box from moving out of bounds
-			intLeft = Math.max(intLeft, $focal.left()-$box.width()+intArrowWidth), // lock box to right of focal
+			intLeft = Math.min(intLeft, $.scrollLeft()+$.width()-intBoxWidth-intLimitOffset-intScrollBarOffset); // limit box from moving out of bounds
+			intLeft = Math.max(intLeft, $focal.left()-intBoxWidth+intArrowWidth), // lock box to right of focal
 			intLeft = Math.max(intLeft, $.scrollLeft() + intLimitOffset), // lock to left window bounds
 			intLeft = Math.min(intLeft, $focal.right()-intArrowWidth), // keep the box on the focal out of the left bounds
 			intLeftDifference = intStartLeft - intLeft;
