@@ -143,7 +143,7 @@
 				});
 			},
 			close : function () {
-				$("body").removeClass('_qui-state-transitioned');
+				$box.removeClass('_qui-state-transitioned');
 				$.delay(500, function () {
 					$box.remove();
 				});
