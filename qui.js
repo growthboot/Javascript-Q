@@ -7,13 +7,18 @@
  */
 
 (function ($) {
-	var version = $.qui_version = 0.02;
+	var version = $.qui_version = 0.03;
 	// display a tip note above or below an object
+	var objDefaultParams = {};
 	$.note = function () {
 		if (arguments[0] === false) {
 			// remove all
 			$("._qui-note").remove();
 			return this;
+		}
+		if (!this.is_q) {
+			objDefaultParams = arguments[0];
+			return;
 		}
 		var 
 		$focal = this,
@@ -40,6 +45,8 @@
 				objBoxCss = arguemnt;
 			}
 		}
+		if (!objBoxCss)
+			objBoxCss = objDefaultParams;
 	 	var 
 	 	intLimitOffset = 10, // window bounds offset
 	 	intScrollBarOffset = 20,
@@ -144,6 +151,7 @@
 			},
 			close : function () {
 				$box.removeClass('_qui-state-transitioned');
+				$box.addClass('_qui-state-closing');
 				$.delay(500, function () {
 					$box.remove();
 				});
