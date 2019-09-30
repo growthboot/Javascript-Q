@@ -1,0 +1,47 @@
+<!-- This document is badly commented... sorry. -->
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<script src="./../../../q.js"></script>
+<script src="./../../../qui.js"></script>
+<link rel="stylesheet" href="./../../../qui.css" type="text/css" />
+<script type="text/javascript">
+	$(function () {
+		$(".click-start").click(function () {
+			var objLoader = $(this).barberShopLoader();
+		});
+		$(".click-start2").click(function () {
+			var objLoader = $(this).barberShopLoader({
+				spacing : 20
+			});
+		});
+		$(".click-start3").click(function () {
+			var objLoader = $(this).barberShopLoader({
+				spacing : 10,
+				width : 20
+			});
+		});
+	})
+</script>
+<style>
+	.style-button {
+		padding:10px 15px;
+		border-radius:5px;
+		background-color:#eee;
+		border:0;
+	}
+</style>
+</head>
+<body>
+	<div id="playground">
+		<p><input type="button" value="Test button" class='click-start'></p>
+		<p><input type="button" value="Test button" class='click-start style-button'></p>
+		<p><textarea class="click-start" style="width:100px;height:300px;"></textarea></p>
+		<p><textarea class="click-start" style="width:800px;height:20px;"></textarea></p>
+		<p><textarea class="click-start2" style="width:400px;height:200px;"></textarea></p>
+		<p><textarea class="click-start2" style="width:800px;height:800px;"></textarea></p>
+		<p><textarea class="click-start3" style="width:100px;height:800px;"></textarea></p>
+		<p><textarea class="click-start3" style="width:800px;height:100px;border-radius:40px"></textarea></p>
+	</div>
+</body>
+</html>

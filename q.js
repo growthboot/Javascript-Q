@@ -973,6 +973,7 @@
 			strTempCss += '}';
 			strCss = strTempCss;
 		}
+
 		var all = document.styleSheets;
 		if (typeof all[all.length - 1] == 'undefined') {
 			document.head.appendChild(document.createElement('style'));
@@ -986,6 +987,12 @@
 			s.addRule(strCss, -1); //IE
 		return that;
 	};
+	fn('addRawCSS', function (strCss) {
+		var style = document.createElement('style');
+		style.type = 'text/css';
+		style.innerHTML = strCss;
+		this.append(style);
+	});
 	
 	function stringifyTransformData(objTransform) {
 		var arrTransforms = [];

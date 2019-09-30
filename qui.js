@@ -7,7 +7,8 @@
  */
 
 (function ($) {
-	var version = $.qui_version = 0.03;
+	var version = $.qui_version = 0.04;
+	
 	// display a tip note above or below an object
 	var objDefaultParams = {};
 	$.note = function () {
@@ -162,4 +163,61 @@
 		}
 	};
 	$.plugin('note', $.note);
+
+	// barbershop loader
+	var arrBarbershopAnimations = {};
+	$.plugin('barberShopLoader', function (arrParams) {
+		if (!arrParams)
+			arrParams = {};
+		// default params
+		var arrDefault = {
+			width : 10, // width of lines
+			spacing : 7, // space between lines
+			speed : 0.25 // seconds
+		},
+		arrParams = $.extend(arrDefault, arrParams);
+		intSpace=arrParams.width+arrParams.spacing;
+		var
+		that = this,
+		arrBars = [],
+		intMaxDim = Math.max(that.width(), that.height()),
+		intMaxBars = (intMaxDim / intSpace) * 2,
+		intSize = intMaxDim * 2,
+		$barLoader = $("<div class='_qui-barbershop-loader'>")
+		.appendAfter(that)
+		.css({
+			borderBottomLeftRadius:that.css('-webkit-border-bottom-left-radius'),
+			borderBottomRightRadius:that.css('-webkit-border-bottom-right-radius'),
+			borderTopLeftRadius:that.css('-webkit-border-top-left-radius'),
+			borderTopRightRadius:that.css('-webkit-border-top-right-radius')
+		}),
+		$barLoaderHolder = $("<div class='_qui-barbershop-holder'>").appendTo($barLoader),
+		strAnimationName = '_qui-barbershop-animation-'+intSpace;
+		that.appendTo($barLoader);
+		$barLoaderHolder.css({
+			width:intSize,
+			height:intSize,
+			left:(that.width()/2)-(intSize/2),
+			top:(that.height()/2)-(intSize/2),
+			animation: strAnimationName + ' ' + arrParams.speed + 's infinite',
+			'animation-timing-function': 'linear'
+		});
+		if (!arrBarbershopAnimations[strAnimationName])
+			$barLoaderHolder.addRawCSS('@keyframes ' + strAnimationName + ' {from {transform:translateX(-' + intSpace + 'px);}to {transform:translateX(0);}}');
+		arrBarbershopAnimations[strAnimationName] = 1;
+		for (var intBars=0; intBars<intMaxBars; intBars++) {
+			$("<div class='_qui-barbershop-bar'></div>")
+			.appendTo($barLoaderHolder)
+			.css({
+				left : intBars * intSpace
+			})
+			.css(arrParams);
+		}
+		return {
+			stop : function () {
+				that.removeClass('_qui-barbershop-loader');
+				that.find('._qui-barbershop-holder').remove();
+			}
+		};
+	});
 })($);

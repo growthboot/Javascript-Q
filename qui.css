@@ -2,9 +2,8 @@
  * Notes
  */
 ._qui-note {
-	transition:all 0s;
-	/*transition:all 1s;
-	transition-timing-function: cubic-bezier(0.075, 0.82, 0.165, 1);*/
+	transition:all 0.2s;
+	transition-timing-function: cubic-bezier(0.075, 0.82, 0.165, 1);
 	text-align:left;
 	position:absolute;
 	transform:translateY(-30px);
@@ -21,6 +20,11 @@
 ._qui-note._qui-state-transitioned {
 	transform:translateY(0px);
 	opacity:1;
+	transition:all 0.5s;
+	transition-timing-function: cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+._qui-note._qui-state-closing {
+	transform:translateY(30px);
 }
 ._qui-note span {
 	padding:0 2px;
@@ -34,6 +38,7 @@
 	border-top: 1px solid rgba(255,255,255,0.2);
 }
 ._qui-note-arrow {
+	transition:top 0s,bottom 0s,left 1s cubic-bezier(0.075, 0.82, 0.165, 1);
 	position:absolute;
 	top:-12px;
 	left:0;
@@ -88,4 +93,29 @@
   100% {
     transform: translate3d(0, 0, 0);
   }
+}
+
+/*
+ * BarberShopLoader
+ */
+._qui-barbershop-loader {
+	overflow:hidden;
+	white-space: nowrap;
+	opacity:0.7;
+	cursor:wait;
+	position:relative;
+	display:inline-block;
+}
+._qui-barbershop-bar {
+	position: absolute;
+	background-color:#336699;
+	transform-origin: 50% 50%;
+	height:100%;
+	display:inline-block;
+	transform:rotate(45deg);
+}
+._qui-barbershop-holder {
+	position:absolute;
+	top:0;
+	transform-origin: 50% 50%;
 }
