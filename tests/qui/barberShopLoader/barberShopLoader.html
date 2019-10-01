@@ -7,6 +7,12 @@
 <link rel="stylesheet" href="./../../../qui.css" type="text/css" />
 <script type="text/javascript">
 	$(function () {
+		$(".click-start0").click(function () {
+			var objLoader = $(this).barberShopLoader({
+				spacing : 20,
+				width : 10
+			});
+		});
 		$(".click-start").click(function () {
 			var objLoader = $(this).barberShopLoader();
 		});
@@ -34,7 +40,7 @@
 </head>
 <body>
 	<div id="playground">
-		<p><input type="button" value="Test button" class='click-start'></p>
+		<p><input type="button" value="Test button" class='click-start0'></p>
 		<p><input type="button" value="Test button" class='click-start style-button'></p>
 		<p><textarea class="click-start" style="width:100px;height:300px;"></textarea></p>
 		<p><textarea class="click-start" style="width:800px;height:20px;"></textarea></p>

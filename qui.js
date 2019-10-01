@@ -7,7 +7,7 @@
  */
 
 (function ($) {
-	var version = $.qui_version = 0.04;
+	var version = $.qui_version = 0.05;
 	
 	// display a tip note above or below an object
 	var objDefaultParams = {};
@@ -194,6 +194,9 @@
 		$barLoaderHolder = $("<div class='_qui-barbershop-holder'>").appendTo($barLoader),
 		strAnimationName = '_qui-barbershop-animation-'+intSpace;
 		that.appendTo($barLoader);
+		if (!arrBarbershopAnimations[strAnimationName])
+			$barLoaderHolder.addRawCSS('@keyframes ' + strAnimationName + ' {from {transform:translateX(0);}to {transform:translateX(' + intSpace + 'px);}}');
+		arrBarbershopAnimations[strAnimationName] = 1;
 		$barLoaderHolder.css({
 			width:intSize,
 			height:intSize,
@@ -202,9 +205,6 @@
 			animation: strAnimationName + ' ' + arrParams.speed + 's infinite',
 			'animation-timing-function': 'linear'
 		});
-		if (!arrBarbershopAnimations[strAnimationName])
-			$barLoaderHolder.addRawCSS('@keyframes ' + strAnimationName + ' {from {transform:translateX(-' + intSpace + 'px);}to {transform:translateX(0);}}');
-		arrBarbershopAnimations[strAnimationName] = 1;
 		for (var intBars=0; intBars<intMaxBars; intBars++) {
 			$("<div class='_qui-barbershop-bar'></div>")
 			.appendTo($barLoaderHolder)
