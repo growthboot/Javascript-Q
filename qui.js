@@ -165,14 +165,13 @@
 	$.plugin('note', $.note);
 
 	// barbershop loader
-	var arrBarbershopAnimations = {};
 	$.plugin('barberShopLoader', function (arrParams) {
 		if (!arrParams)
 			arrParams = {};
 		// default params
 		var arrDefault = {
 			width : 10, // width of lines
-			spacing : 7, // space between lines
+			spacing : 14, // space between lines
 			speed : 0.25 // seconds
 		},
 		arrParams = $.extend(arrDefault, arrParams);
@@ -183,8 +182,8 @@
 		intMaxDim = Math.max(that.width(), that.height()),
 		intMaxBars = (intMaxDim / intSpace) * 2,
 		intSize = intMaxDim * 2,
-		$barLoader = $("<div class='_qui-barbershop-loader'>")
-		.appendAfter(that)
+		$barLoader = (that.data('_qui-barbershop-loader') || $("<div>").appendAfter(that))
+		.addClass('_qui-barbershop-loader')
 		.css({
 			borderBottomLeftRadius:that.css('-webkit-border-bottom-left-radius'),
 			borderBottomRightRadius:that.css('-webkit-border-bottom-right-radius'),
@@ -194,9 +193,8 @@
 		$barLoaderHolder = $("<div class='_qui-barbershop-holder'>").appendTo($barLoader),
 		strAnimationName = '_qui-barbershop-animation-'+intSpace;
 		that.appendTo($barLoader);
-		if (!arrBarbershopAnimations[strAnimationName])
-			$barLoaderHolder.addRawCSS('@keyframes ' + strAnimationName + ' {from {transform:translateX(0);}to {transform:translateX(' + intSpace + 'px);}}');
-		arrBarbershopAnimations[strAnimationName] = 1;
+		that.data('_qui-barbershop-loader', $barLoader);
+		$barLoaderHolder.addRawCSS('@keyframes ' + strAnimationName + ' {from {transform:translateX(0);}to {transform:translateX(' + intSpace + 'px);}}');
 		$barLoaderHolder.css({
 			width:intSize,
 			height:intSize,
@@ -215,8 +213,8 @@
 		}
 		return {
 			stop : function () {
-				that.removeClass('_qui-barbershop-loader');
-				that.find('._qui-barbershop-holder').remove();
+				$barLoaderHolder.remove();
+				$barLoader.removeClass('_qui-barbershop-loader');
 			}
 		};
 	});
