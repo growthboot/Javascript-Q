@@ -122,3 +122,33 @@
 	z-index: 1;
 	transition:0s all;
 }
+
+/*
+ * xySelect
+ */
+._qui-xyselect {
+	box-sizing: border-box;
+	background-color:#003366;
+	position:relative;
+	cursor:grab;
+}
+._qui-xyselect-handle {
+	top:0;
+	left:0;
+	position: absolute;
+	background-color:#99bbee;
+	display:inline-block;
+	transition: all 0.25s;
+}
+
+/*
+ * mask
+ */
+._qui-mask {
+	position: fixed;
+	width:100%;
+	height:100%;
+	top:0;
+	left:0;
+	z-index:9999999999;
+}

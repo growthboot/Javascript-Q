@@ -7,9 +7,10 @@
  */
 
 (function ($) {
-	var version = $.qui_version = 0.05;
+	var version = $.qui_version = 0.06;
 	
 	// display a tip note above or below an object
+	// returns handle
 	var objDefaultParams = {};
 	$.note = function () {
 		if (arguments[0] === false) {
@@ -17,7 +18,7 @@
 			$("._qui-note").remove();
 			return this;
 		}
-		if (!this.is_q) {
+		if (!this.is_qchain) {
 			objDefaultParams = arguments[0];
 			return;
 		}
@@ -94,8 +95,8 @@
 		function positionNote() {
 			var 
 			intBoxWidth = $box.width(),
-			boolTop = $.scrollTop()+$.height()-intLimitOffset-intScrollBarOffset-$focal.height()-$box.height() < $focal.top(); // check if theres enough room under the focal
-			if (boolTop)
+			boolTop = objDefaultParams.topFixed || $.scrollTop()+$.height()-intLimitOffset-intScrollBarOffset-$focal.height()-$box.height() < $focal.top(); // check if theres enough room under the focal
+			if (boolTop && !objDefaultParams.topFixed)
 				boolTop = $box.height() < $focal.scrollTop()-intLimitOffset; // check if there enough room over the focal
 			var
 			intTop = $focal.top(), // position from top of window
@@ -116,7 +117,7 @@
 			});
 		}
 		// repsonse
-		return {
+		var arrResponse = {
 			text : function (strNewMessage) {
 				if (typeof strNewMessage == "undefined")
 					return strMessage;
@@ -160,12 +161,24 @@
 				$.clear(refStartClass);
 				window.clearTimeout(refInterval);
 			}
+		};
+		if (objDefaultParams.autoClose) {
+			$("body").bind('click.qui-note-auto-close keydown.qui-note-auto-close', function () {
+				$("body").unbind('click.qui-note-auto-close keydown.qui-note-auto-close');
+				arrResponse.close();
+			});
 		}
+		if (objDefaultParams.autoFocus) {
+			$focal.focus();
+		}
+		return arrResponse;
 	};
+	
 	$.plugin('note', $.note);
 
 	// barbershop loader
-	$.plugin('barberShopLoader', function (arrParams) {
+	// returns handle
+	$.plugin('barbershopLoader', function (arrParams) {
 		if (!arrParams)
 			arrParams = {};
 		// default params
@@ -218,4 +231,123 @@
 			}
 		};
 	});
+
+	// returns chain
+	$.plugin('xyselect', function (objParams) {
+		$.iterate(this,function (k,el) {
+			var
+			$el = $(el),
+			autoSelect = objParams.autoSelect || $el.attr('autoSelect'),
+			intRows = objParams.rows || $el.attr('rows') || 0,
+			intCols = objParams.cols || $el.attr('cols') || 0,
+			fnChange = objParams.change,
+			intContainerWidth = parseInt($el.css('width'))-$el.horizontalBorders(),
+			intContainerHeight = parseInt($el.css('height'))-$el.verticalBorders(),
+			intUnitWidth = !intCols ? intContainerWidth : intContainerWidth/intCols,
+			intUnitHeight = !intRows ? intContainerHeight : intContainerHeight/intRows,
+			intCurrentLeft = 0,
+			intCurrentTop = 0;
+			$el.addClass('_qui-xyselect _qui-draggable');
+			// add handle
+			var $handle = $el.data('_qui-xyselect-handle');
+			if (!$handle) {
+				$handle = $("<a>").addClass('_qui-xyselect-handle').appendTo($el);
+				$el.data('_qui-xyselect-handle', $handle[0]);
+			} else {
+				$handle = $($handle);
+			}
+			// position handle
+			$handle.css({
+				width:intUnitWidth,
+				height:intUnitHeight
+			});
+			// drag handle
+			$el.bind('mousedown._qui-xyselect', function (e) {
+				e.preventDefault();
+				var 
+				startX = e.clientX,
+				startY = e.clientY,
+				intCurrentLeft = parseInt($handle.css('left')),
+				intCurrentTop = parseInt($handle.css('top')),
+				intScrollDiffX = $.scrollLeft(),
+				intScrollDiffY = $.scrollTop(),
+				intSnapX,
+				intSnapY
+				intLastSnapX = intCurrentLeft,
+				intLastSnapY = intCurrentTop,
+				$mask = $.mask({
+					css: {
+						cursor:'grabbing'
+					}
+				});
+				if (autoSelect && e.target != $handle[0]) {
+					var 
+					intDifX = e.offsetX,
+					intDifY = e.offsetY,
+					intStateX = intDifX,
+					intStateY = intDifY,
+					intPosX = !intCols ? 0 : Math.min(intCols-1, Math.max(0, Math.floor(intStateX/intUnitWidth))),
+					intPosY = !intRows ? 0 : Math.min(intRows-1, Math.max(0, Math.floor(intStateY/intUnitHeight)));
+					intSnapX = intPosX * intUnitWidth;
+					intSnapY = intPosY * intUnitHeight;
+					if (intSnapX != intLastSnapX || intSnapY != intLastSnapY) {
+						intLastSnapX = intSnapX;
+						intLastSnapY = intSnapY;
+						$handle.css({
+							left : intSnapX,
+							top : intSnapY
+						});
+						objParams.change(intPosX,intPosY);
+					}
+				}
+				var fuCalculatePosition = function (intClientX,intClientY) {
+					
+					return [intPosX, intPosY];
+				}
+				$(window).bind('mousemove._qui-xyselect', function (e) {
+					e.preventDefault();
+					var 
+					intScrollX = $.scrollLeft()-intScrollDiffX,
+					intScrollY = $.scrollTop()-intScrollDiffY,
+					moveX = e.clientX+intScrollX,
+					moveY = e.clientY+intScrollY,
+					intDifX = moveX-startX,
+					intDifY = moveY-startY,
+					intStateX = intDifX + intCurrentLeft,
+					intStateY = intDifY + intCurrentTop,
+					intPosX = !intCols ? 0 : Math.min(intCols-1, Math.max(0, Math.round(intStateX/intUnitWidth))),
+					intPosY = !intRows ? 0 : Math.min(intRows-1, Math.max(0, Math.round(intStateY/intUnitHeight)));
+					intSnapX = intPosX * intUnitWidth;
+					intSnapY = intPosY * intUnitHeight;
+					if (intSnapX != intLastSnapX || intSnapY != intLastSnapY) {
+						intLastSnapX = intSnapX;
+						intLastSnapY = intSnapY;
+						$handle.css({
+							left : intSnapX,
+							top : intSnapY
+						});
+						objParams.change(intPosX,intPosY);
+					}
+				});
+				$(window).bind('mouseup._qui-xyselect', function (e) {
+					e.preventDefault();
+					intCurrentLeft = intSnapX;
+					intCurrentTop = intSnapY;
+					$(window).unbind('mouseup._qui-xyselect');
+					$(window).unbind('mousemove._qui-xyselect');
+					$mask.remove();
+				});
+			});
+		});
+		return this;
+	});
+
+	// puts a div mask on the window
+	// returns mask handle
+	$.mask = function (arrParams) {
+		var $mask = $("<div>").addClass('_qui-mask').appendTo('body');
+		if (arrParams.css)
+			$mask.css(arrParams.css);
+		return $mask;
+	};
 })($);

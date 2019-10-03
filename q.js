@@ -13,7 +13,7 @@
 		return that.put(mixedQuery);
 	},
 
-	version = q.version = 2.313,
+	version = q.version = 2.314,
 	
 	BYPASS_QUEUE = q.BYPASS_QUEUE = 'BYPASS_QUEUE_CONSTANT',
 
@@ -960,6 +960,13 @@
 		if (this[0] == window)
 			return document.documentElement.clientHeight || this.height();
 		return this[0].clientHeight || this.height();
+	});
+
+	fn('horizontalBorders', function () {
+		return parseInt(this.css('border-top-width')) + parseInt(this.css('border-bottom-width'))
+	});
+	fn('verticalBorders', function () {
+		return parseInt(this.css('border-left-width')) + parseInt(this.css('border-right-width'))
 	});
 
 	// Dynamically adds a CSS stylesheet

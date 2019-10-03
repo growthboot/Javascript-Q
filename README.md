@@ -7,7 +7,7 @@ A modern and light-weight JavaScript framework based on ES5 Javascript.
 This is a small JavaScript library intended to reduce the data transfer and memory usage on your websites or apps by reducing redundant and repetitive coding. The library is suported by ES5 Javascript since it's now become an industry standard and doing so keeps the library size small. The idea is websites that want to service customers using pre ES5 browsers can do so using plain HTML since they make up a very small portion of the market.
 
 ## VERSION
-2.313
+q v2.314 qui v0.06
 
 ## Features
  - Lightweight: 33 KB on disk (10k after gzip)
@@ -35,7 +35,7 @@ Required compatibility between: ECMAScript 2009 (ES5) to Current
 | Sep 2012  | Sep 2012    | Apr 2013   | Jul 2012 | Jul 2013 |
 
 ## CDN
-https://cdn.jsdelivr.net/gh/growthboot/Javascript-Q@latest/q.min.2.313.js
+https://cdn.jsdelivr.net/gh/growthboot/Javascript-Q@latest/q.min.js
 
 ## Setup
 Include the library q.js file into the head of your html document.
@@ -417,6 +417,8 @@ $(function () {
 - **innerWidth**: Get the inner width of an element
 - **height**: Get the height of an element `$("#my_element").height()`.
 - **innerHeight**: Get the inner height of an element
+- **horizontalBorders**: Get the width of the horizontal borders of a object
+- **verticalBorders**: Get the width of the vertical borders of a object
 - **functionTrim**: Remove all items from a specific point on function index. For example  `$('div').functionTrim(0)` would empty the Q selection. 
 - **serialize**: Serialize an array for a post string `$.serialize({some_key1:"some_value1",some_key2:"some_value2"})` returns `"some_key1=some_value1&some_key2=some_value2"`. Serialize all form elements from a specific point in the DOM tree `$("#some_element").serialize()`.
 - **fileUpload**: Create a file upload on a click event

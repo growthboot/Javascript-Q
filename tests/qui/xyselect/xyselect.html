@@ -1,0 +1,43 @@
+<!-- This document is badly commented... sorry. -->
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<script src="./../../../q.js"></script>
+<script src="./../../../qui.js"></script>
+<link rel="stylesheet" href="./../../../qui.css" type="text/css" />
+<script type="text/javascript">
+	$(function () {
+		$(".simpleSlider").xyselect({
+			change:function () {
+
+			}
+		});
+	})
+</script>
+<style>
+	.simpleSlider {
+		width:300px;
+		height:40px;
+		border:1px solid #000;
+	}
+	.spacer {
+		height:15px;
+	}
+</style>
+</head>
+<body>
+	<div class='simpleSlider' cols="2" autoSelect="true" style="width:140px"></div>
+	<div class="spacer"></div>
+	<div class='simpleSlider' cols="3" autoSelect="true"></div>
+	<div class="spacer"></div>
+	<div class='simpleSlider' cols="10"></div>
+	<div class="spacer"></div>
+	<div class='simpleSlider' rows="3" autoSelect="true" style="width:40px;height:300px;"></div>
+	<div class="spacer"></div>
+	<div class='simpleSlider' rows="3" autoSelect="true" cols="3" style="width:300px;height:300px;"></div>
+	<div class="spacer"></div>
+	<div class='simpleSlider' rows="10" autoSelect="true" cols="10" style="width:600px;height:300px;"></div>
+	<div class="spacer"></div>
+	<div class='simpleSlider' rows="30" autoSelect="true" cols="60" style="width:600px;height:300px;"></div>
+</body>
+</html>
