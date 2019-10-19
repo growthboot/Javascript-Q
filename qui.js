@@ -7,7 +7,7 @@
  */
 
 (function ($) {
-	var version = $.qui_version = 0.06;
+	var version = $.qui_version = 0.07;
 	
 	// display a tip note above or below an object
 	// returns handle
@@ -245,8 +245,9 @@
 			intContainerHeight = parseInt($el.css('height'))-$el.verticalBorders(),
 			intUnitWidth = !intCols ? intContainerWidth : intContainerWidth/intCols,
 			intUnitHeight = !intRows ? intContainerHeight : intContainerHeight/intRows,
-			intCurrentLeft = 0,
-			intCurrentTop = 0;
+			arrValues = objParams.value ? (objParams.value+'').split(/ *, */) : [],
+			intCurrentLeft = arrValues[0] * intUnitWidth,
+			intCurrentTop = (arrValues[1] || 0) * intUnitWidth;
 			$el.addClass('_qui-xyselect _qui-draggable');
 			// add handle
 			var $handle = $el.data('_qui-xyselect-handle');
@@ -259,7 +260,9 @@
 			// position handle
 			$handle.css({
 				width:intUnitWidth,
-				height:intUnitHeight
+				height:intUnitHeight,
+				left : intCurrentLeft,
+				top : intCurrentTop
 			});
 			// drag handle
 			$el.bind('mousedown._qui-xyselect', function (e) {
@@ -299,10 +302,6 @@
 						});
 						objParams.change(intPosX,intPosY);
 					}
-				}
-				var fuCalculatePosition = function (intClientX,intClientY) {
-					
-					return [intPosX, intPosY];
 				}
 				$(window).bind('mousemove._qui-xyselect', function (e) {
 					e.preventDefault();

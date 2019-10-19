@@ -13,7 +13,7 @@
 		return that.put(mixedQuery);
 	},
 
-	version = q.version = 2.314,
+	version = q.version = 2.315,
 	
 	BYPASS_QUEUE = q.BYPASS_QUEUE = 'BYPASS_QUEUE_CONSTANT',
 
@@ -68,6 +68,20 @@
 	},
 	riterate = q.riterate = function (that, fnCallback) {
 		return iterate(that,fnCallback,1);
+	},
+	
+	preload = q.preload = function (url, fnSuccess, fnError) {
+		var img = new Image();
+		img.src=url;
+		if (img.complete) {
+			if (fnSuccess)
+				fnSuccess(url);
+		} else {
+			if (fnSuccess)
+				img.addEventListener('load', fnSuccess);
+			if (fnError)
+				img.addEventListener('error', fnError);
+		}
 	},
 	
 	// change camel case for dashes
@@ -999,6 +1013,7 @@
 		style.type = 'text/css';
 		style.innerHTML = strCss;
 		this.append(style);
+		return style;
 	});
 	
 	function stringifyTransformData(objTransform) {
