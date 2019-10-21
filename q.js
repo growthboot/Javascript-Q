@@ -982,6 +982,12 @@
 	fn('verticalBorders', function () {
 		return parseInt(this.css('border-left-width')) + parseInt(this.css('border-right-width'))
 	});
+	fn('horizontalMargins', function () {
+		return parseInt(this.css('margin-left')) + parseInt(this.css('margin-right'))
+	});
+	fn('verticalMargins', function () {
+		return parseInt(this.css('margin-top')) + parseInt(this.css('margin-bottom'))
+	});
 
 	// Dynamically adds a CSS stylesheet
 	q.addCSS = function (strCss, arrCss) {

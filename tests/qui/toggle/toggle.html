@@ -1,0 +1,44 @@
+<!-- This document is badly commented... sorry. -->
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<script src="./../../../q.js"></script>
+<script src="./../../../qui.js"></script>
+<link rel="stylesheet" href="./../../../qui.css" type="text/css" />
+<script type="text/javascript">
+	$(function () {
+		$(".disableOther").toggled(function (boolOn) {
+			boolOn
+			? $(".disableThisOne").disable()
+			: $(".disableThisOne").enable();
+		})
+		$(".simpleToggle").toggleable();
+	})
+</script>
+<style>
+	.simpleToggle {
+		margin:5px;
+		width:40px;
+		height:40px;
+		border:1px solid #000;
+		display:inline-block;
+		position: relative;
+	}
+	.simpleToggle.toggled .simpleToggleInner {
+		width:100%;
+		height:100%;
+		top:0;
+		left:0;
+		background-color:#000;
+		transform:scale(0.5);
+	}
+	.spacer {
+		height:15px;
+	}
+</style>
+</head>
+<body>
+	<a class='simpleToggle toggled disableThisOne'><div class='simpleToggleInner'></div></a><br>
+	<a class='simpleToggle disableOther'><div class='simpleToggleInner'></div></a>
+</body>
+</html>

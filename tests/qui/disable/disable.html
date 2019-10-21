@@ -1,0 +1,47 @@
+<!-- This document is badly commented... sorry. -->
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<script src="./../../../q.js"></script>
+<script src="./../../../qui.js"></script>
+<link rel="stylesheet" href="./../../../qui.css" type="text/css" />
+<script type="text/javascript">
+	$(function () {
+		$(".simpleSlider").xyselect({
+			change:function () {
+
+			}
+		});
+	});
+	$(function () {
+		var disable1 = false;
+		$("#disable1").click(function () {
+			!disable1 ? $("#example1").disable() : $("#example1").enable();
+			disable1 = !disable1;
+		});
+		var disable2 = false;
+		$("#disable2").click(function () {
+			!disable2 ? $("#example2").disable() : $("#example2").enable();
+			disable2 = !disable2;
+		});
+	});
+</script>
+<style>
+	.simpleSlider {
+		width:300px;
+		height:40px;
+		border:1px solid #000;
+	}
+	.spacer {
+		height:15px;
+	}
+</style>
+</head>
+<body>
+	<input type='button' value='Disable' id='disable1'>
+	<div id="example1" class='simpleSlider' cols="2" autoSelect="true" style="width:140px"></div>
+	<div class="spacer"></div>
+	<input type='button' value='Disable' id='disable2'>
+	<div id="example2" class='simpleSlider' rows="30" autoSelect="true" cols="60" style="width:600px;height:300px;"></div>
+</body>
+</html>

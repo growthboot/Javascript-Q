@@ -7,7 +7,7 @@
  */
 
 (function ($) {
-	var version = $.qui_version = 0.07;
+	var version = $.qui_version = 0.08;
 	
 	// display a tip note above or below an object
 	// returns handle
@@ -339,6 +339,69 @@
 			});
 		});
 		return this;
+	});
+
+	// Disable
+	$.plugin('disable', function () {
+		var
+		that = this,
+		$parent = that.closest('._qui-disable');
+		that.attr('disabled', 'disabled');
+		if ($parent.length)
+			return;
+		$parent = $("<div class='_qui-disable'>")
+		.css({
+			display: that.css('display'),
+			width: that.css('width')+that.horizontalMargins(),
+			height: that.css('height')+that.verticalMargins()
+		})
+		.appendBefore(that);
+		that.appendTo($parent);
+		$("<div class='_qui-disable-inner'>").appendTo($parent);
+	});
+	$.plugin('enable', function () {
+		var 
+		that = this,
+		$parent = that.closest('._qui-disable');
+		that.removeAttr('disabled');
+		if ($parent.length) {
+			$parent.find('._qui-disable-inner').remove();
+			$($parent.children()[0]).appendBefore($parent);
+			$parent.remove();
+		}
+	});
+	
+	// toggle
+	$.plugin('toggleable', function () {
+		this.click(function () {
+			$(this).toggle();
+		});
+	});
+	$.plugin('toggle', function (boolValue, strParent) {
+		var that = this;
+		boolDown = that.hasClass('toggled');
+		if (typeof boolValue == 'undefined') { // toggle
+			boolDown = !boolDown;
+		} else if (boolValue) { // on
+			boolDown = 1;
+		} else { // off
+			boolDown = 0;
+		}
+		if (boolDown)
+			that.addClass('toggled');
+		else
+			that.removeClass('toggled');
+		that.trigger('toggled');
+	});
+	$.plugin('toggled', function (fnCallback) {
+		var that = this;
+		if (typeof fnCallback == 'undefined') {
+			return that.hasClass('toggled');
+		} else {
+			that.bind('toggled', function () {
+				fnCallback($(this).hasClass('toggled'), this);
+			});
+		}
 	});
 
 	// puts a div mask on the window
