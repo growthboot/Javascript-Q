@@ -7,7 +7,7 @@ A modern and light-weight JavaScript framework based on ES5 Javascript.
 This is a small JavaScript library intended to reduce the data transfer and memory usage on your websites or apps by reducing redundant and repetitive coding. The library is suported by ES5 Javascript since it's now become an industry standard and doing so keeps the library size small. The idea is websites that want to service customers using pre ES5 browsers can do so using plain HTML since they make up a very small portion of the market.
 
 ## VERSION
-q v2.314 qui v0.06
+q v2.316 qui v0.08
 
 ## Features
  - Lightweight: 33 KB on disk (10k after gzip)
@@ -459,6 +459,12 @@ $(function () {
 - **$.scrollHeight()**: Get the scroll height of the document
 - **$.scrollTop()**: Get the top scroll position of the document
 - **$.scrollLeft()**: Get the left scroll position of the document
+- **$.scrollTop()**: Get the top scroll position of the document
+- **$.scrollLeft()**: Get the left scroll position of the document
+- **$.horizontalBorders()**: Add up horizontal borders of an object
+- **$.verticalBorders()**: Add up vertical borders of an object
+- **$.horizontalMargins()**: Add up horizontal margins of an object
+- **$.verticalMargins()**: Add up vertical margins of an object
 
 ### List of variables
 - **$.id**: A randomly generated id that represents the currently running JSQL library
