@@ -12,8 +12,28 @@
 			? $(".disableThisOne").disable()
 			: $(".disableThisOne").enable();
 		})
-		$(".simpleToggle").toggleable();
-	})
+		$(".startToggle").toggleable();
+		$(".toggleRightAway")
+		.toggleable()
+		.toggle();
+		$(".displayNoneToggle")
+		.toggleable()
+		.toggled(function (boolOn) {
+			boolOn
+			? $(".hiddenToggle").removeClass('hidden')
+			: $(".hiddenToggle").addClass('hidden');
+		});
+		$(".toggledWhileHidden")
+		.toggleable()
+		.toggle();
+		$(".toggleAboveHidden")
+		.toggleable()
+		.toggled(function (boolOn) {
+			$(".toggledWhileHidden").toggle();
+		})
+		.toggle()
+		.toggle();
+	});
 </script>
 <style>
 	.simpleToggle {
@@ -35,10 +55,19 @@
 	.spacer {
 		height:15px;
 	}
+	.hidden {
+		display:none;
+	}
 </style>
 </head>
 <body>
-	<a class='simpleToggle toggled disableThisOne'><div class='simpleToggleInner'></div></a><br>
-	<a class='simpleToggle disableOther'><div class='simpleToggleInner'></div></a>
+	<div>
+		<a class='simpleToggle startToggle toggled disableThisOne'><div class='simpleToggleInner'></div></a> does nothing<br>
+		<a class='simpleToggle startToggle disableOther'><div class='simpleToggleInner'></div></a> disable above<br>
+		<a class='simpleToggle toggleRightAway'><div class='simpleToggleInner'></div></a> toggled right away<br>
+		<a class='simpleToggle displayNoneToggle'><div class='simpleToggleInner'></div></a> show display none toggle<br>
+		<div class='hiddenToggle hidden'><a class='simpleToggle toggledWhileHidden'><div class='simpleToggleInner'></div></a> toggled while in display none status</div>
+		<a class='simpleToggle toggleAboveHidden'><div class='simpleToggleInner'></div></a> toggle the hidden thing above<br>
+	</div>
 </body>
 </html>

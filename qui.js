@@ -7,7 +7,7 @@
  */
 
 (function ($) {
-	var version = $.qui_version = 0.08;
+	var version = $.qui_version = 0.09;
 	
 	// display a tip note above or below an object
 	// returns handle
@@ -358,6 +358,7 @@
 		.appendBefore(that);
 		that.appendTo($parent);
 		$("<div class='_qui-disable-inner'>").appendTo($parent);
+		return that;
 	});
 	$.plugin('enable', function () {
 		var 
@@ -369,19 +370,22 @@
 			$($parent.children()[0]).appendBefore($parent);
 			$parent.remove();
 		}
+		return that;
 	});
 	
 	// toggle
 	$.plugin('toggleable', function () {
-		this.click(function () {
+		return this
+		.addClass('_qui-toggle')
+		.click(function (e) {
+			e.preventDefault();
 			$(this).toggle();
 		});
 	});
-	$.plugin('toggle', function (boolValue, strParent) {
+	$.plugin('toggle', function (boolValue) {
 		var that = this;
-		boolDown = that.hasClass('toggled');
 		if (typeof boolValue == 'undefined') { // toggle
-			boolDown = !boolDown;
+			boolDown = !that.hasClass('toggled');
 		} else if (boolValue) { // on
 			boolDown = 1;
 		} else { // off
@@ -392,6 +396,7 @@
 		else
 			that.removeClass('toggled');
 		that.trigger('toggled');
+		return that;
 	});
 	$.plugin('toggled', function (fnCallback) {
 		var that = this;
@@ -401,6 +406,7 @@
 			that.bind('toggled', function () {
 				fnCallback($(this).hasClass('toggled'), this);
 			});
+			return that;
 		}
 	});
 
