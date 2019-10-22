@@ -7,7 +7,7 @@
  */
 
 (function ($) {
-	var version = $.qui_version = 0.11;
+	var version = $.qui_version = 0.12;
 	
 	// display a tip note above or below an object
 	// returns handle
@@ -259,6 +259,7 @@
 			if (objParams == 'value') {
 				var
 				arrVals = (strVal+'').split(/ *, */),
+				arrValsCopy = $.extend([], arrVals),
 				intRowValue = intRows ? arrVals.shift() : 0,
 				intColValue = intCols ? arrVals.shift() : 0;
 				intRowValue *= intUnitHeight;
@@ -266,8 +267,10 @@
 				$handle.css({
 					left : intColValue,
 					top : intRowValue
-				});
-				$el.attr('value', arrVals.join(','));
+				}),
+				objParams = $el.data('_qui-xyselect-params');
+				$el.attr('value', arrValsCopy);
+				objParams.change(arrValsCopy[0], arrValsCopy[1]);
 				return;
 			} else if (objParams == 'change') {
 				objParams = $el.data('_qui-xyselect-params');
