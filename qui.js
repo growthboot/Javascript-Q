@@ -7,7 +7,7 @@
  */
 
 (function ($) {
-	var version = $.qui_version = 0.1;
+	var version = $.qui_version = 0.11;
 	
 	// display a tip note above or below an object
 	// returns handle
@@ -261,7 +261,6 @@
 				arrVals = (strVal+'').split(/ *, */),
 				intRowValue = intRows ? arrVals.shift() : 0,
 				intColValue = intCols ? arrVals.shift() : 0;
-				console.log(intColValue);
 				intRowValue *= intUnitHeight;
 				intColValue *= intUnitWidth;
 				$handle.css({
@@ -270,7 +269,15 @@
 				});
 				$el.attr('value', arrVals.join(','));
 				return;
+			} else if (objParams == 'change') {
+				objParams = $el.data('_qui-xyselect-params');
+				strVal = $el.attr('value'),
+				arrVals = strVal.split(/,/);
+				objParams.change(arrVals[0], arrVals[1]);
+				return;
 			}
+			// preserve the params for later accessing
+			$el.data('_qui-xyselect-params', objParams);
 			$el.addClass('_qui-xyselect _qui-draggable');
 			// position handle
 			$handle.css({
@@ -340,7 +347,8 @@
 							left : intSnapX,
 							top : intSnapY
 						});
-						objParams.change(intPosX,intPosY);
+						if (objParams.change)
+							objParams.change(intPosX,intPosY);
 						var arrResult = [];
 						if (intCols)
 							arrResult.push(intPosX);
