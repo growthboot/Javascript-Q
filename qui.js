@@ -7,7 +7,7 @@
  */
 
 (function ($) {
-	var version = $.qui_version = 0.09;
+	var version = $.qui_version = 0.1;
 	
 	// display a tip note above or below an object
 	// returns handle
@@ -233,9 +233,9 @@
 	});
 
 	// returns chain
-	$.plugin('xyselect', function (objParams) {
+	$.plugin('xyselect', function (objParams, strVal) {
 		$.iterate(this,function (k,el) {
-			var
+			var 
 			$el = $(el),
 			autoSelect = objParams.autoSelect || $el.attr('autoSelect'),
 			intRows = objParams.rows || $el.attr('rows') || 0,
@@ -248,7 +248,6 @@
 			arrValues = objParams.value ? (objParams.value+'').split(/ *, */) : [],
 			intCurrentLeft = arrValues[0] * intUnitWidth,
 			intCurrentTop = (arrValues[1] || 0) * intUnitWidth;
-			$el.addClass('_qui-xyselect _qui-draggable');
 			// add handle
 			var $handle = $el.data('_qui-xyselect-handle');
 			if (!$handle) {
@@ -257,6 +256,22 @@
 			} else {
 				$handle = $($handle);
 			}
+			if (objParams == 'value') {
+				var
+				arrVals = (strVal+'').split(/ *, */),
+				intRowValue = intRows ? arrVals.shift() : 0,
+				intColValue = intCols ? arrVals.shift() : 0;
+				console.log(intColValue);
+				intRowValue *= intUnitHeight;
+				intColValue *= intUnitWidth;
+				$handle.css({
+					left : intColValue,
+					top : intRowValue
+				});
+				$el.attr('value', arrVals.join(','));
+				return;
+			}
+			$el.addClass('_qui-xyselect _qui-draggable');
 			// position handle
 			$handle.css({
 				width:intUnitWidth,
@@ -326,6 +341,12 @@
 							top : intSnapY
 						});
 						objParams.change(intPosX,intPosY);
+						var arrResult = [];
+						if (intCols)
+							arrResult.push(intPosX);
+						if (intRows)
+							arrResult.push(intPosY);
+						$el.attr('value', arrResult.join(','));
 					}
 				});
 				$(window).bind('mouseup._qui-xyselect', function (e) {
