@@ -7,7 +7,7 @@
  */
 
 (function ($) {
-	var version = $.qui_version = 0.13;
+	var version = $.qui_version = 0.14;
 	
 	// display a tip note above or below an object
 	// returns handle
@@ -233,10 +233,16 @@
 	});
 
 	// returns chain
-	$.plugin('xyselect', function (objParams, strVal) {
+	$.plugin('xyselect', function (objParams, strVal, boolDiscrete) {
 		$.iterate(this,function (k,el) {
 			var 
 			$el = $(el),
+			strAction;
+			if (typeof objParams == "string") {
+				strAction = objParams;
+				objParams = $el.data('_qui-xyselect-params');
+			}
+			var
 			autoSelect = objParams.autoSelect || $el.attr('autoSelect'),
 			intRows = objParams.rows || $el.attr('rows') || 0,
 			intCols = objParams.cols || $el.attr('cols') || 0,
@@ -253,7 +259,7 @@
 				$handle = $($handle);
 			}
 			// set a value
-			if (objParams == 'value') {
+			if (strAction == 'value') {
 				var
 				arrVals = (strVal+'').split(/ *, */),
 				arrValsCopy = $.extend([], arrVals),
@@ -261,20 +267,20 @@
 				intColValue = intCols ? arrVals.shift() : 0;
 				intRowValue *= intUnitHeight;
 				intColValue *= intUnitWidth,
-				objSavedParams = $el.data('_qui-xyselect-params');
+				console.log(intRows, intCols, intColValue, intRowValue);
 				$handle.css({
 					left : intColValue,
 					top : intRowValue
 				});
 				$el.attr('value', arrValsCopy);
-				objSavedParams.change(arrValsCopy[0]*1, arrValsCopy[1]*1);
+				if (!boolDiscrete)
+					objParams.change(arrValsCopy[0]*1, arrValsCopy[1]*1);
 				return;
 			// fire the change again
-			} else if (objParams == 'change') {
-				var objSavedParams = $el.data('_qui-xyselect-params');
+			} else if (strAction == 'change') {
 				strVal = $el.attr('value'),
 				arrVals = strVal.split(/,/);
-				objSavedParams.change(arrVals[0]*1, arrVals[1]*1);
+				objParams.change(arrVals[0]*1, arrVals[1]*1);
 				return;
 			}
 			var arrValues = [0];
@@ -432,12 +438,17 @@
 		});
 	});
 	$.plugin('toggle', function (boolValue) {
-		var that = this;
+		var that = this,
+		boolDown = that.hasClass('toggled');
 		if (typeof boolValue == 'undefined') { // toggle
-			boolDown = !that.hasClass('toggled');
+			boolDown = !boolDown;
 		} else if (boolValue) { // on
+			if (boolDown)
+				return; // do nothing. already down
 			boolDown = 1;
 		} else { // off
+			if (!boolDown)
+				return; // do nothing. already not down
 			boolDown = 0;
 		}
 		if (boolDown)
