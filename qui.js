@@ -7,7 +7,7 @@
  */
 
 (function ($) {
-	var version = $.qui_version = 0.12;
+	var version = $.qui_version = 0.13;
 	
 	// display a tip note above or below an object
 	// returns handle
@@ -245,17 +245,14 @@
 			intContainerHeight = parseInt($el.css('height'))-$el.verticalBorders(),
 			intUnitWidth = !intCols ? intContainerWidth : intContainerWidth/intCols,
 			intUnitHeight = !intRows ? intContainerHeight : intContainerHeight/intRows,
-			arrValues = objParams.value ? (objParams.value+'').split(/ *, */) : [],
-			intCurrentLeft = arrValues[0] * intUnitWidth,
-			intCurrentTop = (arrValues[1] || 0) * intUnitWidth;
-			// add handle
-			var $handle = $el.data('_qui-xyselect-handle');
+			$handle = $el.data('_qui-xyselect-handle');
 			if (!$handle) {
 				$handle = $("<a>").addClass('_qui-xyselect-handle').appendTo($el);
 				$el.data('_qui-xyselect-handle', $handle[0]);
 			} else {
 				$handle = $($handle);
 			}
+			// set a value
 			if (objParams == 'value') {
 				var
 				arrVals = (strVal+'').split(/ *, */),
@@ -263,22 +260,36 @@
 				intRowValue = intRows ? arrVals.shift() : 0,
 				intColValue = intCols ? arrVals.shift() : 0;
 				intRowValue *= intUnitHeight;
-				intColValue *= intUnitWidth;
+				intColValue *= intUnitWidth,
+				objSavedParams = $el.data('_qui-xyselect-params');
 				$handle.css({
 					left : intColValue,
 					top : intRowValue
-				}),
-				objParams = $el.data('_qui-xyselect-params');
+				});
 				$el.attr('value', arrValsCopy);
-				objParams.change(arrValsCopy[0], arrValsCopy[1]);
+				objSavedParams.change(arrValsCopy[0]*1, arrValsCopy[1]*1);
 				return;
+			// fire the change again
 			} else if (objParams == 'change') {
-				objParams = $el.data('_qui-xyselect-params');
+				var objSavedParams = $el.data('_qui-xyselect-params');
 				strVal = $el.attr('value'),
 				arrVals = strVal.split(/,/);
-				objParams.change(arrVals[0], arrVals[1]);
+				objSavedParams.change(arrVals[0]*1, arrVals[1]*1);
 				return;
 			}
+			var arrValues = [0];
+			if (objParams.value)
+				arrValues = (objParams.value+'').split(/ *, */);
+			else if ($el.attr('value') !== null)
+				arrValues = $el.attr('value').split(/ *, */);
+			else if (intRows && intCols)
+				arrValues.push(0);
+			var
+			intCurrentLeft = (arrValues[0] || 0) * intUnitWidth,
+			intCurrentTop = (arrValues[1] || 0) * intUnitHeight,
+			strValues = arrValues.join(',');
+			if ($el.attr('value') != strValues)
+				$el.attr('value', strValues);
 			// preserve the params for later accessing
 			$el.data('_qui-xyselect-params', objParams);
 			$el.addClass('_qui-xyselect _qui-draggable');
@@ -326,6 +337,12 @@
 							top : intSnapY
 						});
 						objParams.change(intPosX,intPosY);
+						var arrResult = [];
+						if (intCols)
+							arrResult.push(intPosX);
+						if (intRows)
+							arrResult.push(intPosY);
+						$el.attr('value', arrResult.join(','));
 					}
 				}
 				$(window).bind('mousemove._qui-xyselect', function (e) {
