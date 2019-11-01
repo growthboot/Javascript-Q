@@ -267,7 +267,6 @@
 				intColValue = intCols ? arrVals.shift() : 0;
 				intRowValue *= intUnitHeight;
 				intColValue *= intUnitWidth,
-				console.log(intRows, intCols, intColValue, intRowValue);
 				$handle.css({
 					left : intColValue,
 					top : intRowValue
