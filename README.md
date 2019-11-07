@@ -473,7 +473,6 @@ $(function () {
 
 ## Site using this library
 [WebCull](https://webcull.com/) 
-
 [ExitGet](https://exitget.com/)
 
 ## CREDITS
