@@ -471,8 +471,9 @@ $(function () {
 - **$.is_q or $(...).is_q**: A variable that is true if the object is a handle of JSQL
 - **$(...).length**: The current number of results that are in the current selection
 
-## FINAL NOTES
-This library was created [for the Exitget platform](https://exitget.com/) because of the need for an ultra light weight library to use that also has super fast animation capabilities. It was needed to help bring down the code size for the customer facing resource that's used to generate popups on their client's sites. Recently it has been readapted as general use Javascript library for app and web development.
+## Site using this library
+[WebCull](https://webcull.com/)
+[ExitGet](https://exitget.com/)
 
 ## CREDITS
-Andrew Dear - Founder & Developer - [Contact](https://www.linkedin.com/in/adear/)
+Andrew Dear - Developer - [Contact](https://www.linkedin.com/in/adear/)

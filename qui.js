@@ -7,7 +7,7 @@
  */
 
 (function ($) {
-	var version = $.qui_version = 0.14;
+	var version = $.qui_version = 0.15;
 	
 	// display a tip note above or below an object
 	// returns handle
@@ -237,8 +237,9 @@
 		$.iterate(this,function (k,el) {
 			var 
 			$el = $(el),
-			strAction;
-			if (typeof objParams == "string") {
+			strAction,
+			boolCustomAction = typeof objParams == "string";
+			if (boolCustomAction) {
 				strAction = objParams;
 				objParams = $el.data('_qui-xyselect-params');
 			}
@@ -263,23 +264,24 @@
 				var
 				arrVals = (strVal+'').split(/ *, */),
 				arrValsCopy = $.extend([], arrVals),
-				intRowValue = intRows ? arrVals.shift() : 0,
-				intColValue = intCols ? arrVals.shift() : 0;
+				intColValue = intCols ? arrVals.shift() : 0,
+				intRowValue = intRows ? arrVals.shift() : 0;
 				intRowValue *= intUnitHeight;
-				intColValue *= intUnitWidth,
+				intColValue *= intUnitWidth;
 				$handle.css({
 					left : intColValue,
 					top : intRowValue
 				});
 				$el.attr('value', arrValsCopy);
-				if (!boolDiscrete)
+				if (!boolDiscrete && objParams.change)
 					objParams.change(arrValsCopy[0]*1, arrValsCopy[1]*1);
 				return;
 			// fire the change again
 			} else if (strAction == 'change') {
 				strVal = $el.attr('value'),
 				arrVals = strVal.split(/,/);
-				objParams.change(arrVals[0]*1, arrVals[1]*1);
+				if (objParams.change)
+					objParams.change(arrVals[0]*1, arrVals[1]*1);
 				return;
 			}
 			var arrValues = [0];
