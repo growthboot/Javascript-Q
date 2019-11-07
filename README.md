@@ -472,8 +472,8 @@ $(function () {
 - **$(...).length**: The current number of results that are in the current selection
 
 ## Site using this library
-[WebCull](https://webcull.com/) 
-[ExitGet](https://exitget.com/)
+- [WebCull](https://webcull.com/) 
+- [ExitGet](https://exitget.com/)
 
 ## CREDITS
 Andrew Dear - Developer - [Contact](https://www.linkedin.com/in/adear/)
