@@ -13,7 +13,7 @@
 		return that.put(mixedQuery);
 	},
 
-	version = q.version = 2.315,
+	version = q.version = 2.316,
 	
 	BYPASS_QUEUE = q.BYPASS_QUEUE = 'BYPASS_QUEUE_CONSTANT',
 
@@ -766,20 +766,30 @@
 	
 	// Find out if something has scrolled into the visible range of the screen
 	fn('inViewY', function () {
-		var 
-		intTop = this.scrollTop(),
-		intHeight = this.height(),
-		intAmount = Math.max(0, Math.min(intHeight, intTop + intHeight));
-		intAmount -= Math.max(0, Math.min(intHeight, intTop - q.height() + intHeight));
-		return intAmount;
+		var intTotal = 0;
+		iterate(this,function (k,el) {
+			var 
+			$el = $(el),
+			intTop = $el.scrollTop(),
+			intHeight = $el.height(),
+			intAmount = Math.max(0, Math.min(intHeight, intTop + intHeight));
+			intAmount -= Math.max(0, Math.min(intHeight, intTop - q.height() + intHeight));
+			intTotal += intAmount;
+		});
+		return intTotal;
 	});
 	
 	fn('inViewX', function () {
-		var 
-		intLeft = this.scrollLeft(),
-		intWidth = this.width(),
-		intAmount = Math.max(0, Math.min(intWidth, intLeft + intWidth));
-		intAmount -= Math.max(0, Math.min(intWidth, intLeft - q.width() + intWidth));
+		var intTotal = 0;
+		iterate(this,function (k,el) {
+			var 
+			$el = $(el),
+			intLeft = $el.scrollLeft(),
+			intWidth = $el.width(),
+			intAmount = Math.max(0, Math.min(intWidth, intLeft + intWidth));
+			intAmount -= Math.max(0, Math.min(intWidth, intLeft - q.width() + intWidth));
+			intTotal += intAmount;
+		});
 		return intAmount;
 	});
 	
@@ -937,6 +947,27 @@
 			document.body.offsetWidth, document.documentElement.offsetWidth,
 			document.body.clientWidth, document.documentElement.clientWidth
 		);
+	};
+	q.copyToClipboard = function (strVal) {
+		var $el = $("<textarea>")
+		.val(strVal)
+		.attr('readonly', '')
+		.css({
+			position : 'absolute',
+			left : '-9999px'
+		})
+		.appendTo('body')
+		var selected 
+			= document.getSelection().rangeCount > 0
+			? document.getSelection().getRangeAt(0)
+			: false;
+		$el[0].select();
+		document.execCommand('copy');
+		$el.remove();
+		if (selected) {
+			document.getSelection().removeAllRanges();
+			document.getSelection().addRange(selected);
+		}
 	};
 	
 	// DOM height
@@ -1314,6 +1345,8 @@
 				if (!objEventMomory[qNodeUid])
 					return;
 				if (strEventCategory) {
+					if (!objEventMomory[qNodeUid][strEventName] || !objEventMomory[qNodeUid][strEventName][strEventCategory])
+						return;
 					var fnCallback = objEventMomory[qNodeUid][strEventName][strEventCategory];
 					window.addEventListener
 					? node.removeEventListener(strEventName, fnCallback, true)
@@ -1696,6 +1729,15 @@
 			if (arrSyncRequestQueue[arrParams.sync].length > 1) {
 				// something already queued wait for it to finish
 				return;
+			}
+		}
+		// process post params
+		if (arrParams.post) {
+			for (var key in arrParams.post) {
+				var val = arrParams.post[key];
+				if (typeof val == 'function') {
+					arrParams.post[key] = val(); 
+				}
 			}
 		}
 		var that = this;
