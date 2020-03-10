@@ -7,11 +7,12 @@
  */
 
 (function ($) {
-	var version = $.qui_version = 0.15;
+	var version = $.qui_version = 0.16;
 	
 	// display a tip note above or below an object
 	// returns handle
-	var objDefaultParams = {};
+	var objDefaultParams = {},
+	strLastValueClassName = null;
 	$.note = function () {
 		if (arguments[0] === false) {
 			// remove all
@@ -254,7 +255,7 @@
 			intUnitHeight = !intRows ? intContainerHeight : intContainerHeight/intRows,
 			$handle = $el.data('_qui-xyselect-handle');
 			if (!$handle) {
-				$handle = $("<a>").addClass('_qui-xyselect-handle').appendTo($el);
+				$handle = $("<a href='#'>").addClass('_qui-xyselect-handle').appendTo($el);
 				$el.data('_qui-xyselect-handle', $handle[0]);
 			} else {
 				$handle = $($handle);
@@ -299,7 +300,11 @@
 				$el.attr('value', strValues);
 			// preserve the params for later accessing
 			$el.data('_qui-xyselect-params', objParams);
-			$el.addClass('_qui-xyselect _qui-draggable');
+			if (strLastValueClassName != null)
+				$el.removeClass(strLastValueClassName);
+			var strClass = "qui-xyselect-value-" + strValues;
+			strLastValueClassName = strClass;
+			$el.addClass('_qui-xyselect _qui-draggable ' + strClass);
 			// position handle
 			$handle.css({
 				width:intUnitWidth,
@@ -349,7 +354,13 @@
 							arrResult.push(intPosX);
 						if (intRows)
 							arrResult.push(intPosY);
-						$el.attr('value', arrResult.join(','));
+						var strValues = arrResult.join(',');
+						$el.attr('value', strValues);
+						var strClass = "qui-xyselect-value-" + strValues;
+						$el.addClass(strClass);
+						if (strLastValueClassName != null)
+							$el.removeClass(strLastValueClassName);
+						strLastValueClassName = strClass;
 					}
 				}
 				$(window).bind('mousemove._qui-xyselect', function (e) {
@@ -381,7 +392,13 @@
 							arrResult.push(intPosX);
 						if (intRows)
 							arrResult.push(intPosY);
-						$el.attr('value', arrResult.join(','));
+						var strValues = arrResult.join(',');
+						$el.attr('value', strValues);
+						var strClass = "qui-xyselect-value-" + strValues;
+						$el.addClass(strClass);
+						if (strLastValueClassName != null)
+							$el.removeClass(strLastValueClassName);
+						strLastValueClassName = strClass;
 					}
 				});
 				$(window).bind('mouseup._qui-xyselect', function (e) {
@@ -474,7 +491,7 @@
 	// puts a div mask on the window
 	// returns mask handle
 	$.mask = function (arrParams) {
-		var $mask = $("<div>").addClass('_qui-mask').appendTo('body');
+		var $mask = $("<div>").addClass('_qui-mask').appendTo(arrParams.source || 'body');
 		if (arrParams.css)
 			$mask.css(arrParams.css);
 		return $mask;
