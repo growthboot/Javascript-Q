@@ -13,7 +13,7 @@
 		return that.put(mixedQuery);
 	},
 
-	version = q.version = 2.317,
+	version = q.version = 2.318,
 	
 	BYPASS_QUEUE = q.BYPASS_QUEUE = 'BYPASS_QUEUE_CONSTANT',
 
@@ -1753,7 +1753,7 @@
 		  };
 		}
 		var r = new XMLHttpRequest();
-		r.open((arrParams.post || arrParams.formData) ? "POST" : "GET", arrParams.url);
+		r.open((arrParams.formData || arrParams.post) ? "POST" : "GET", arrParams.url);
 		if (arrParams.cross)
 			r.withCredentials = true;
 		if (arrParams.encoding !== false)
@@ -1787,7 +1787,8 @@
 	};
 	q.fileUpload = function (arrParams) {
 		var that = this;
-		var form = q('<form>')
+		$('._q-file-upload-form').remove();
+		var form = q('<form class="_q-file-upload-form">')
 		.css({
 			display : 'none'
 		}).appendTo('body');
@@ -1811,7 +1812,7 @@
 				encoding : false
 			};
 			extend(request, arrParams);
-			that.request ? that.request(request) : q.request(request);
+			that && that.request ? that.request(request) : q.request(request);
 			form.remove();
 		});
 		input.change(function (e) {
@@ -1826,6 +1827,7 @@
 				q.fileUpload.call(that,copy(arrParams))
 			};
 		})(arrParams));
+		return that;
 	});
 	
 	fn('fixedParent', function () {
@@ -2038,6 +2040,368 @@
 		if (!prospectQueue.call(that,arguments,'sync'))
 			return that;
 		return that.delay(0, fnCallback);
+	});
+	// GPU Optimized Animations Started: Apr 13, 2018
+	var addAnimationInstances = function (intElUid, strKeyFrameName, objCssTo) {
+		var arrInstanceNameList = [];
+		if (!objAnimationInstances[intElUid])
+			objAnimationInstances[intElUid] = {
+				animationAttributes : {},
+				arrInstanceNameList : arrInstanceNameList,
+				getAnimationAttributes : function () {
+					var arrAnimationAttributes = [];
+					for (var intINL in arrInstanceNameList) {
+						var strName = arrInstanceNameList[intINL],
+						objAI = objAnimationInstances[intElUid][strName];
+						if (objAI.strAnimationAtrribute)
+							arrAnimationAttributes.push(objAI.strAnimationAtrribute);
+					}
+					return arrAnimationAttributes;
+				},
+				stop : function (optionalStrKeyFrameName) {
+					if (optionalStrKeyFrameName) {
+						arrInstanceNameList.splice(arrInstanceNameList.indexOf(optionalStrKeyFrameName),1);
+						objAnimationInstances[intElUid][optionalStrKeyFrameName].stop();
+						delete objAnimationInstances[intElUid][optionalStrKeyFrameName];
+						if (!arrInstanceNameList.length && objAnimationInstances[intElUid])
+							delete objAnimationInstances[intElUid];
+					} else {
+						for (var intINL in arrInstanceNameList) {
+							var strName = arrInstanceNameList[intINL];
+							objAnimationInstances[intElUid].stop(strName);
+						}
+						delete objAnimationInstances[intElUid];
+					}
+				}
+			};
+		arrInstanceNameList = objAnimationInstances[intElUid].arrInstanceNameList;
+		arrInstanceNameList.push(strKeyFrameName);
+		var objResult = {
+			objCssTo : objCssTo,
+			strKeyFrameName : strKeyFrameName
+		};
+		objAnimationInstances[intElUid][strKeyFrameName] = objResult;
+		return objResult;
+	};
+	fn('pause', function () {
+		var that = this;
+		if (!prospectQueue.call(that,arguments,'pause'))
+			return that;
+		return that.css({
+			"animation-play-state" : "paused"
+		},undefined,undefined,undefined,BYPASS_QUEUE);
+	});
+
+	fn('play', function () {
+		var that = this;
+		if (!prospectQueue.call(that,arguments,'play'))
+			return that;
+		return that.css({
+			"animation-play-state" : "running"
+		},undefined,undefined,undefined,BYPASS_QUEUE);
+	});
+
+	// stop all animation sequences for the selected object
+	fn('stop', function () {
+		var that = this;
+		if (!prospectQueue.call(that,arguments,'stop'))
+			return that;
+		iterate(this, function (k,el) {
+			if (!el) return;
+			var 
+			objAI = objAnimationInstances,
+			intElUid = q(el).uniqueId();
+			if (objAI[intElUid]) {
+				objAI[intElUid].stop();
+			}
+		});
+		return this.css({
+			"animation-play-state" : "paused"
+		},undefined,undefined,undefined,BYPASS_QUEUE).dequeue();
+	});
+	fn('animate', function (mixedCssTo) {
+		var that = this,
+		intArgs = arguments.length,
+		intDuration = 750,
+		fnEasing = easings.linear,
+		strEasing = "linear",
+		boolLoopAdded = !that.loopOn,
+		objCallbacks = {
+			stopped : function () {}, // the animation was stopped without finishing
+			finished : function () {}, // redundant function works just like 
+			ended : function () {} // called when an animation is stopped or finishes on its own
+		},
+		fnCallback = function () {},
+		arrArgs = Array.prototype.slice.call(arguments),
+		boolBypassQueue = arrArgs.includes(BYPASS_QUEUE);
+		if (boolBypassQueue)
+			delete arrArgs[arrArgs.indexOf(BYPASS_QUEUE)];
+		if (that.loopOn === 0)
+			return that;
+		for (var intArg=1;intArg<intArgs;intArg++) {
+			var 
+			mixedValue = arrArgs[intArg],
+			strType = typeof mixedValue;
+			if (strType == "number" || strType == "float") {
+				intDuration = mixedValue;
+			} else if (strType == "string") {
+				strEasing = mixedValue;
+				fnEasing = easings[mixedValue] || easings.linear;
+			} else if (strType == "function") {
+				fnCallback = mixedValue;
+			} else if (strType == "object") {
+				extend(objCallbacks, mixedValue);
+			}
+		}
+		mixedCssTo = fnResolve.call(that, mixedCssTo);
+		var arrArgsSequence = arrArgs.slice(0),
+		intIterations = Math.ceil(intDuration/10),
+		regMatchNumbers = /(\-?[0-9]+(?:\.[0-9]+)?(?:[a-z]{2}?|%)?)/gi,
+		regSplitNumbers = /\-?[0-9]+(?:\.[0-9]+)?(?:[a-z]{2}?|%)?/gi;
+		arrArgsSequence.unshift("animate")
+		iterate(that,function (intItem, el) {
+			if (!el) return;
+			var intElUid = q(el).uniqueId();
+			if (objQueueChain[intElUid] && !that.withoutQueueOn) {
+				if (!boolBypassQueue) {
+					if (!boolLoopAdded) {
+						addLoopParam.call(that,arrArgsSequence);
+						boolLoopAdded = true;
+					}
+					if (objQueueChain[intElUid].active) {
+						objQueueChain[intElUid].sequence.push(arrArgsSequence);
+						return;
+					}
+				}
+				objQueueChain[intElUid].active = true;
+			}
+			var 
+			strKeyFrameName = "qStepAnim" + q.id + 'n' + (animations++), // generate an ID
+			objHistory = objTransformHistory[intElUid],
+			arrOutput = [],
+			strCurrentKey,
+			objStartStyles = getComputedStyle(el),
+			boolTransformsUsed = false;
+			if (!objHistory) {
+				objTransformHistory[intElUid] = {};
+				objHistory = objTransformHistory[intElUid];
+			}
+			// loop through parameter
+			// extend transform history to applicable params,
+			// process and store instructions in arrOutput
+			for (var strCssToKey in mixedCssTo) {
+				var 
+				to = mixedCssTo[strCssToKey],
+				toRC = camelToDash(strCssToKey);
+				// iterate the tranform in a slightly different way
+				if (toRC == "transform") {
+					if (objHistory)
+						mixedCssTo[strCssToKey] = to = q.extend(copy(objHistory),to);
+					boolTransformsUsed = true;
+					for (var strTransform in to) {
+						var 
+						strTransformTo = to[strTransform],
+						strTransformFrom = objHistory && typeof objHistory[strTransform] != "undefined" ? objHistory[strTransform] : (objTransformDefaults[strTransform] || 0);
+						tweenString(toRC+"-"+strTransform, toRC+"-"+strTransform, parseFloat(strTransformFrom), parseFloat(strTransformTo));
+					}
+				} else {
+					var from = objStartStyles[camelToDash(strCssToKey)] || 0;
+					tweenString(strCssToKey, toRC, from, to);
+				}
+			}
+			function tweenString(strCssToKey, toRC,from,to) {
+				var 
+				intToValues = 1,
+				intDefaultFrom = toRC == "rgba" || toRC == "opacity" || toRC == "background-color" ? 1 : 0,
+				arrToValues = [to],
+				arrFromValues = [from],
+				arrToWrappers = [],
+				arrFromWrappers = [];
+				if (typeof from == "string") {
+					arrFromWrappers = from.split(regMatchNumbers);
+					arrFromValues = from.match(regMatchNumbers);
+				}
+				if (!arrFromValues) {
+					arrFromValues = [intDefaultFrom];
+				}
+				// Convert hax to rgb
+				if (to[0] == "#") {
+					to = hexToRgb(to);
+				} else if (typeof to == "string") {
+					arrToWrappers = to.split(regSplitNumbers);
+					arrToValues = to.match(regMatchNumbers);
+					intToValues = arrToValues.length;
+				}
+				// convert rgb to rbba for simplicity
+				if (intToValues == 3 && toRC == "background-color") {
+					intToValues++;
+					arrToValues[3] = 1;
+					arrToWrappers[3] = ", ";
+					arrToWrappers[4] = ")";
+					arrToWrappers[0] = "rgba(";
+				}
+				if (toRC == "box-shadow") {
+					// from: 0 0 10px 0 rgba(222,33,24,0.5)
+					// to: rgba(2, 3, 4, 1) 0px 0px 40px 0px
+					var newCss = 
+					arrFromWrappers[4].replace(/^ /, '')
+					+ arrFromValues[4] // red
+					+ arrFromWrappers[5]
+					+ arrFromValues[5] // green
+					+ arrFromWrappers[6]
+					+ arrFromValues[6] // blue
+					+ arrFromWrappers[7]
+					+ arrFromValues[7] // alpha
+					+ arrFromWrappers[8]
+					+ " "
+					+ arrFromValues[0] // left
+					+ arrFromWrappers[1]
+					+ arrFromValues[1] // right
+					+ arrFromWrappers[2]
+					+ arrFromValues[1] // blur
+					+ arrFromWrappers[2]
+					+ arrFromValues[2] // spread
+					+ arrFromWrappers[3].replace(/ $/, '');
+					arrFromWrappers = newCss.split(regSplitNumbers);
+					arrFromValues = newCss.match(regMatchNumbers);
+				}
+				// itarete to values
+				for (var intItem=0;intItem!=intToValues;intItem++) {
+					var
+					// unit conversions will not be handled yet
+					mixedFromValue = ((arrFromValues[intItem] || intDefaultFrom)+'').replace(/[a-z%]+/, ''),
+					mixedToValue = arrToValues[intItem],
+					matchToSuffix = typeof mixedToValue == 'string' ? mixedToValue.match(/([a-z%]+)/) : "",
+					strToSuffix = matchToSuffix ? matchToSuffix[1] : (typeof mixedToValue == 'string' || arrExcludePx[toRC] ? '' : 'px');
+					var mixedChange=0;
+					if (mixedFromValue*1==mixedFromValue) {
+						mixedFromValue*=1;
+						if (typeof mixedToValue == 'string')
+							mixedToValue = mixedToValue.replace(/[a-z%]+/, '')*1;
+						mixedChange = mixedToValue - mixedFromValue;
+					}
+					// loop through time
+					for (var intItr=0;intItr!=intIterations;intItr++) {
+						if (intItem == 0) {
+							if (!arrOutput[intItr])
+								arrOutput[intItr] = Math.round(((intItr+1) / intIterations)*10000)/100 + "% {" + toRC + ":";
+							else if (strCurrentKey != toRC) {
+								arrOutput[intItr] += ";" + toRC + ":";
+							}
+						}
+						var pos = !mixedChange ? mixedFromValue : Math.floor(fnEasing(intItr+1, mixedFromValue, mixedChange, intIterations)*10000)/10000;
+						if (arrToWrappers[intItem])
+							arrOutput[intItr] += arrToWrappers[intItem];
+						arrOutput[intItr] += pos + strToSuffix;
+						if (intItem==intToValues-1 && arrToWrappers[intItem+1]) 
+							arrOutput[intItr] += arrToWrappers[intItem+1];
+					}
+				}
+			}
+			// reprocess transform params into a keyframe animation
+			if (boolTransformsUsed) {
+				var regTransform = /transform\-([a-z]+):([^;]+)(;?)/i;
+				for (var intOutput in arrOutput) {
+					var 
+					strLine = arrOutput[intOutput],
+					boolChange = false,
+					arrMatched;
+					while ((arrMatched = strLine.match(regTransform))) {
+						strLine = strLine.replace(regTransform, (!boolChange ? "transform:" : "") + arrMatched[1]+"(" + arrMatched[2] + ")" + (arrMatched[3] == ";" ? " " : ""));
+						boolChange = true;
+					}
+					if (boolChange) {
+						strLine = strLine.replace(/(transform:.+?) ([a-z]+:)/i, '$1;$2');
+						arrOutput[intOutput] = strLine;
+					}
+				}
+			}
+			var 
+			strAnimation = "@keyframes " + strKeyFrameName + " {" + arrOutput.join("}\n") + "}",
+			style = document.createElement('style');
+			style.type = 'text/css';
+			style.innerHTML = strAnimation;
+			document.getElementsByTagName('body')[0].appendChild(style);
+			var 
+			objAI = addAnimationInstances(intElUid, strKeyFrameName, mixedCssTo),
+			objAIParent = objAnimationInstances[intElUid],
+			// finalize an animation once its complete
+			fnDone = objAI.done = function () {
+				return (function (strKeyFrameName, mixedCssTo, el, toRC, fnDone, objAI, style, intElUid, objCallbacks) {
+					return (function () {
+						// reprocess transforms into proper CSS
+						if (mixedCssTo.transform) {
+							objTransformHistory[intElUid] = mixedCssTo.transform;
+							mixedCssTo.transform = stringifyTransformData(mixedCssTo.transform);
+						}
+						q(el).css(mixedCssTo, undefined,undefined,undefined, BYPASS_QUEUE);
+						cleanUp(el,fnDone,style,intElUid,strKeyFrameName);// remove the animation css
+						fnCallback();
+						strCurrentKey = toRC;
+						q.queueNext.call(that,el,true);
+						objCallbacks.ended();
+						objCallbacks.finished();
+					})();
+				})(strKeyFrameName, mixedCssTo, el, toRC, fnDone, objAI, style, intElUid, objCallbacks);
+			};
+			// stop an animation before complete
+			objAI.stop = function () {
+				return (function (that, objAI, intDuration, arrOutput, fnDone, el, style, intElUid, objCallbacks, strKeyFrameName) {
+					return (function () {
+						window.clearTimeout(objAI.timeout);
+						var 
+						intElapsed = q.mstime() - objAI.startTime,
+						intPercentage = 0,
+						intElapsedPercentage = (intElapsed / intDuration) * 100,
+						strMatched = "";
+						// fetch the position out of the raw output data
+						for (var intOutput in arrOutput) {
+							var 
+							strOutput = arrOutput[intOutput],
+							arrMatchedPecenteage = strOutput.match(/^([0-9\.]+)/);
+							intPercentage = arrMatchedPecenteage[1];
+							if (intPercentage > intElapsedPercentage) {
+								strMatched = strOutput.replace(/^[^\{]+\{/, '');
+								break;
+							}
+						}
+						var arrUnits = strMatched.split(/;/);
+						for (var intUnit in arrUnits) {
+							var 
+							arrKeyVal = arrUnits[intUnit].split(/:/),
+							strKey = arrKeyVal[0],
+							strValue = arrKeyVal[1];
+							if (strKey == "transform") {
+								objTransformHistory[intElUid] = parseTransformData(strValue);
+							}
+							el.style.setProperty(strKey, strValue);
+						}
+						cleanUp(el,fnDone,style, intElUid,strKeyFrameName,1);
+						objCallbacks.ended();
+						objCallbacks.stopped();
+					})();
+				})(that, objAI, intDuration, arrOutput, fnDone, el, style, intElUid, objCallbacks, strKeyFrameName);
+			};
+			function cleanUp(el,fnDone,style, intElUid,strKeyFrameName,boolStopping) {
+				if (objQueueChain[intElUid])
+					objQueueChain[intElUid].active = false;
+				if (!boolStopping)
+					objAnimationInstances[intElUid].stop(strKeyFrameName);
+				el.style.setProperty("animation", objAnimationInstances[intElUid] ? objAnimationInstances[intElUid].getAnimationAttributes().join(",") : 'none');
+				q(style).remove(BYPASS_QUEUE);
+				style = undefined;
+			}
+			objAI.startTime = q.mstime();
+			var strPrefix = objAIParent.getAnimationAttributes().join(",");
+			strPrefix = strPrefix.length ? strPrefix + "," : "";
+			var strAnimationAtrribute = strKeyFrameName + " " + intDuration + "ms forwards linear";
+			objAI.strAnimationAtrribute = strAnimationAtrribute;
+			el.style.setProperty("animation", strPrefix + strAnimationAtrribute);
+			q(el).play(BYPASS_QUEUE); // make sure its unpaused
+			objAI.timeout = q.delay(intDuration, fnDone);
+		});
+
+		return this;
 	});
 	q.id = q.rand(0,99999999);
 })(typeof JAVASCRIPT_Q_HANDLE == "undefined" ? "$" : JAVASCRIPT_Q_HANDLE);
