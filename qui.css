@@ -170,3 +170,13 @@
 	cursor: not-allowed;
 	background-color:rgba(255,255,255,0.5);
 }
+
+/*
+ * textarea
+ */
+._qui-sudo-textarea {
+	border:1px solid transparent;
+	color:transparent;
+	word-wrap:anywhere;
+	white-space:pre-wrap;
+}

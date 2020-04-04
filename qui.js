@@ -7,7 +7,7 @@
  */
 
 (function ($) {
-	var version = $.qui_version = 0.16;
+	var version = $.qui_version = 0.17;
 	
 	// display a tip note above or below an object
 	// returns handle
@@ -496,4 +496,48 @@
 			$mask.css(arrParams.css);
 		return $mask;
 	};
+
+	$.plugin('textarea', function () {
+		var $textarea = this;
+		var $sudoText = $("<div class='_qui-sudo-textarea'>").appendAfter($textarea);
+		var arrWrapperCss = {
+			paddingLeft: $textarea.css('padding-left'),
+			paddingRight: $textarea.css('padding-right'),
+			paddingTop: $textarea.css('padding-top'),
+			paddingBottom: $textarea.css('padding-bottom'),
+			borderLeftWidth: $textarea.css('border-left-width'),
+			borderRightWidth: $textarea.css('border-right-width'),
+			borderTopWidth: $textarea.css('border-top-width'),
+			borderBottomWidth: $textarea.css('border-bottom-width'),
+			lineHeight: $textarea.css('line-height'),
+			fontSize: $textarea.css('font-size'),
+			fontFamily: $textarea.css('font-family'),
+			fontStyle: $textarea.css('font-style'),
+			fontVariant: $textarea.css('font-variant'),
+			fontStretch: $textarea.css('font-stretch'),
+			fontWeight: $textarea.css('font-weight'),
+			fontAdjust: $textarea.css('font-adjust'),
+			width:$textarea.width()
+		};
+		console.log('arrWrapperCss', arrWrapperCss);
+		$sudoText.css(arrWrapperCss);
+		var strLastVal = null;
+		function setTextareaHeight() {
+			var strVal = $textarea.val();
+			if (strLastVal === strVal)
+				return;
+			strLastVal = strVal;
+			$sudoText.text($textarea.val()+' ');
+			$textarea.css({
+				height : $sudoText.height()
+			});
+		}
+		setTextareaHeight();
+		$textarea.bind('keypress keydown keyup input', function () {
+			$sudoText.css({
+				width : $textarea.width()
+			});
+			setTextareaHeight();
+		});
+	});
 })($);
