@@ -7,7 +7,7 @@
  */
 
 (function ($) {
-	var version = $.qui_version = 0.17;
+	var version = $.qui_version = 0.18;
 	
 	// display a tip note above or below an object
 	// returns handle
@@ -433,6 +433,7 @@
 		$("<div class='_qui-disable-inner'>").appendTo($parent);
 		return that;
 	});
+	
 	$.plugin('enable', function () {
 		var 
 		that = this,
@@ -497,7 +498,9 @@
 		return $mask;
 	};
 
-	$.plugin('textarea', function () {
+	$.plugin('textarea', function (arrParams) {
+		if (!arrParams)
+			arrParams = {};
 		var $textarea = this;
 		var $sudoText = $("<div class='_qui-sudo-textarea'>").appendAfter($textarea);
 		var arrWrapperCss = {
@@ -523,6 +526,12 @@
 		$sudoText.css(arrWrapperCss);
 		var strLastVal = null;
 		function setTextareaHeight() {
+			$sudoText.css({
+				width : $textarea.width() || '100%'
+			});
+			$textarea.css({
+				height : $sudoText.height()
+			});
 			var strVal = $textarea.val();
 			if (strLastVal === strVal)
 				return;
@@ -531,13 +540,67 @@
 			$textarea.css({
 				height : $sudoText.height()
 			});
+			if (arrParams.height) {
+				arrParams.height($sudoText.height());
+			}
 		}
 		setTextareaHeight();
 		$textarea.bind('keypress keydown keyup input', function () {
-			$sudoText.css({
-				width : $textarea.width()
-			});
 			setTextareaHeight();
 		});
+		$.delay(500, function () {
+			setTextareaHeight();
+		});
+		return this;
+	});
+	
+	$.plugin('io', function (arrParams) {
+		var 
+		$this = this,
+		strEvents = 'keyup._qui-io click._qui-io blur._qui-io change._qui-io input._qui-io',
+		refUpdateDelay,
+		strCurrentValue = $this.val();
+		if ($this.hasClass('_qui-io'))
+			return $this;
+		$this
+		.addClass('_qui-io')
+		.bind(strEvents, function () {
+			var
+			strVal = $this.val();
+			window.clearTimeout(refUpdateDelay);
+			if (arrParams.required) {
+				if (strVal == '') {
+					$this.addClass('_qui-io-error');
+					return;
+				} else {
+					$this.removeClass('_qui-io-error');
+				}
+			}
+			refUpdateDelay = $.delay(1000, (function (that) {
+				return function () {
+					updateCall(that);
+				};
+			})($this[0]));
+		});
+		function updateCall(that) {
+			var $this = $(that);
+			if ($this.hasClass('_qui-io-error'))
+				return;
+			var strVal = $this.val();
+			if (strVal == strCurrentValue)
+				return;
+			// make sure it still exists
+			strCurrentValue = strVal;
+			arrParams.out.value = strVal;
+			$.irequest({
+				url : arrParams.post,
+				post : arrParams.out,
+				success : function (arrResponse) {
+					if (arrParams.success)
+						arrParams.success(arrResponse);
+				}
+			});
+		}
+		return $this;
 	});
 })($);
