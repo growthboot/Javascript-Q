@@ -7,7 +7,7 @@
  */
 
 (function ($) {
-	var version = $.qui_version = 0.18;
+	var version = $.qui_version = 0.19;
 	
 	// display a tip note above or below an object
 	// returns handle
@@ -502,6 +502,9 @@
 		if (!arrParams)
 			arrParams = {};
 		var $textarea = this;
+		$textarea.css({
+			overflow:'hidden'
+		});
 		var $sudoText = $("<div class='_qui-sudo-textarea'>").appendAfter($textarea);
 		var arrWrapperCss = {
 			paddingLeft: $textarea.css('padding-left'),
@@ -522,7 +525,6 @@
 			fontAdjust: $textarea.css('font-adjust'),
 			width:$textarea.width()
 		};
-		console.log('arrWrapperCss', arrWrapperCss);
 		$sudoText.css(arrWrapperCss);
 		var strLastVal = null;
 		function setTextareaHeight() {
@@ -545,7 +547,7 @@
 			}
 		}
 		setTextareaHeight();
-		$textarea.bind('keypress keydown keyup input', function () {
+		$textarea.bind('keypress keydown keyup input change', function () {
 			setTextareaHeight();
 		});
 		$.delay(500, function () {
