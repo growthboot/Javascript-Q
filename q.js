@@ -13,7 +13,7 @@
 		return that.put(mixedQuery);
 	},
 
-	version = q.version = 2.318,
+	version = q.version = 2.319,
 	
 	BYPASS_QUEUE = q.BYPASS_QUEUE = 'BYPASS_QUEUE_CONSTANT',
 
@@ -1718,7 +1718,7 @@
 				if (arrSyncRequestQueue[objParams.sync].length) // check if theres more in the queue
 					q.request(arrSyncRequestQueue[objParams.sync][0], true); // start the next request while bypassing queue injection
 			}
-			if (objParams.response)
+			if (typeof objParams.response == "function")
 				objParams.response.call(that, res, objParams, status);
 		}
 		// queue is a string that can be provided which will serve as the key for a synchronized request queue
@@ -1772,7 +1772,8 @@
 					// no failure handle; do nothing
 					requestProcessingComplete(null, arrParams, r.status);
 				} else {
-					arrParams.failure.call(that,r.responseText, r.status);
+					if (arrParams.failure)
+						arrParams.failure.call(that,r.responseText, r.status);
 					requestProcessingComplete(null, arrParams, r.status);
 				}
 			}

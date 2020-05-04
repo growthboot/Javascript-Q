@@ -13,8 +13,7 @@
 	z-index:300003;
 	box-sizing: border-box;
 }
-._qui-note._qui-state-error,
-._qui-note._qui-state-error ._qui-note-arrow {
+._qui-note._qui-state-error {
 	background-color: #c83833;
 }
 ._qui-note._qui-state-transitioned {
@@ -40,17 +39,32 @@
 ._qui-note-arrow {
 	transition:top 0s,bottom 0s,left 1s cubic-bezier(0.075, 0.82, 0.165, 1);
 	position:absolute;
-	top:-12px;
-	left:0;
+	top:-7px;
 	width: 24px;
-    height: 12.5px;
-    background-color: #8888e8;
-    clip-path: polygon(50% 0, 0 100%, 100% 100%);
+    height: 24px;
+    transform:rotate(45deg);
+    overflow:hidden;
+}
+._qui-note-arrow:after {
+	content:'';
+	background-color: #8888e8;
+    transform:rotate(-45deg);
+    position:absolute;
+    width: 24px;
+    height: 24px;
+    top:-10px;
+    left:-10px;
 }
 ._qui-note-top-pos ._qui-note-arrow {
-	clip-path: polygon(100% 0, 0 0, 50% 100%);
 	top:initial;
-	bottom:-12.5px;
+	bottom:-6px;
+	margin-left:0px;
+}
+._qui-note-top-pos ._qui-note-arrow:after {
+	background-color: #8888e8;
+	top:12.5px;
+    left:12.5px;
+    transition: .092s background-color cubic-bezier(.36,.07,.19,.97);
 }
 ._qui-note-text {
 	padding:10px 15px;
@@ -62,8 +76,12 @@
     padding:10px 15px;
     box-sizing: border-box;
 }
-._qui-note-top-pos._qui-state-secondary ._qui-note-arrow {
+._qui-animation-shake ._qui-note-arrow:after {
+	background-color: #c83833;
+}
+._qui-note-top-pos._qui-state-secondary ._qui-note-arrow:after {
 	background-color: #f0f0f0;
+	transition: 0s;
 }
 
 /* animations */
