@@ -13,7 +13,7 @@
 		return that.put(mixedQuery);
 	},
 
-	version = q.version = 2.319,
+	version = q.version = 2.320,
 	
 	BYPASS_QUEUE = q.BYPASS_QUEUE = 'BYPASS_QUEUE_CONSTANT',
 
@@ -82,6 +82,20 @@
 			if (fnError)
 				img.addEventListener('error', fnError);
 		}
+	},
+
+	uriEncode = q.uriEncode = function (val) {
+		return encodeURIComponent(val).replace(/\+/, '%2B').replace(/ /, '+');
+	},
+
+	queryString = q.queryString = function (arrItem) {
+		var strResult = "";
+		for (var k in arrItem) {
+			var v = q.uriEncode(arrItem[k]);
+			strResult += k + '=' + v + '&';
+		}
+		strResult = strResult.slice(0, -1);
+		return strResult;
 	},
 	
 	// change camel case for dashes
@@ -1753,7 +1767,8 @@
 		  };
 		}
 		var r = new XMLHttpRequest();
-		r.open((arrParams.formData || arrParams.post) ? "POST" : "GET", arrParams.url);
+		r.open((arrParams.post || arrParams.formData) ? "POST" : "GET", arrParams.url);
+		r.withCredentials = false;
 		if (arrParams.cross)
 			r.withCredentials = true;
 		if (arrParams.encoding !== false)
