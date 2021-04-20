@@ -1,0 +1,324 @@
+<script>
+	$.component.set('menu_navigation', function () {});
+</script>
+
+<template>
+	<div id="menu_navigation">
+		<ul>
+			<li>
+				<li><h1>API</h1></li>
+				<li><a href="#">Getting Started</a></li>
+				<li>
+					<ul>
+						<li><a href="#introduction">Introduction</a></li>
+						<li><a href="#installation">Installation</a></li>
+						<li><a href="#usage">Usage</a></li>
+					</ul>
+				</li>
+				<li><a href="#components">Component</a></li>
+				<li>
+					<ul>
+						<li><a href="#components_load">load</a></li>
+						<li><a href="#components_set">set</a></li>
+						<li><a href="#components_get">get</a></li>
+						<li><a href="#components_insert">insert</a></li>
+						<li><a href="#components_mount">mount</a></li>
+						<li><a href="#components_router">router</a></li>
+						<li class="category"><a href="#componentApi">Component API</a></li>
+						<ul>
+							<li class="category"><a href="#componentApi_methods">Methods</a></li>
+							<li>
+								<ul>
+									<li><a href="#componentApi_methods_mount">mount</a></li>
+									<li><a href="#componentApi_methods_unmount">unmount</a></li>
+								</ul>
+							</li>
+							<li class="category"><a href="#componentApi_events">Events</a></li>
+							<li>
+								<ul>
+									<li><a href="#componentApi_events_unmounted">created</a></li>
+									<li><a href="#componentApi_events_mounted">mounted</a></li>
+									<li><a href="#componentApi_events_unmounted">unmounted</a></li>
+								</ul>
+							</li>
+							<li class="category"><a href="#componentApi_hooks">Hooks</a></li>
+							<li>
+								<ul>
+									<li><a href="#componentApi_hooks_finsihedLoading">finsihed_loading</a></li>
+								</ul>
+							</li>
+							
+							<li class="category"><a href="#componentApi_flags">Flags</a></li>
+							<li>
+								<ul>
+									<li><a href="#componentApi_flags_loading">loading</a></li>
+									<li><a href="#componentApi_flags_loaded">loaded</a></li>
+								</ul>
+							</li>
+							<li class="category"><a href="#componentApi_tempalte">Template</a></li>
+						</ul>
+						<a href="#componentRouter">Component Router</a>
+					</ul>
+				</li>
+				<li><a href="#reactivity">Reactivity</a></li>
+				<li>
+					<ul>
+						<li><a href="#reactivity_hook">Hook</a></li>
+					</ul>
+				</li>
+				<li><a href="#dom">DOM</a></li>
+				<li>
+					<ul>
+						<li><a href="#dom_transversing" class="category">Transversing</a></li>
+						<li>
+							<ul>
+								<li><a href="#dom_index">find</a></li>
+								<li><a href="#dom_index">index</a></li>
+								<li><a href="#dom_index">children</a></li>
+								<li><a href="#dom_index">first</a></li>
+								<li><a href="#dom_index">lirst</a></li>
+								<li><a href="#dom_index">withoutClass</a></li>
+								<li><a href="#dom_index">withClass</a></li>
+								<li><a href="#dom_index">filter</a></li>
+								<li><a href="#dom_index">get</a></li>
+								<li><a href="#dom_index">become</a></li>
+								<li><a href="#dom_index">each</a></li>
+								<li><a href="#dom_index">reach</a></li>
+								<li><a href="#dom_index">next</a></li>
+								<li><a href="#dom_index">prev</a></li>
+								<li><a href="#dom_index">searchUp</a></li>
+								<li><a href="#dom_index">searchDown</a></li>
+								<li><a href="#dom_index">parent</a></li>
+								<li><a href="#dom_index">closest</a></li>
+								<li><a href="#dom_index">fixedParent</a></li>
+								<li><a href="#dom_index">offsetParent</a></li>
+							</ul>
+						</li>
+						<li class="category"><a href="#dom_manipulation">Manipulation</a></li>
+						<li>
+							<ul>
+								<li><a href="#dom_index">html</a></li>
+								<li><a href="#dom_index">tagName</a></li>
+								<li><a href="#dom_index">outer</a></li>
+								<li><a href="#dom_index">text</a></li>
+								<li><a href="#dom_index">val</a></li>
+								<li><a href="#dom_index">scrollTo</a></li>
+								<li><a href="#dom_index">scrollTop</a></li>
+								<li><a href="#dom_index">scrollLeft</a></li>
+								<li><a href="#dom_index">width</a></li>
+								<li><a href="#dom_index">height</a></li>
+								<li><a href="#dom_index">attr</a></li>
+								<li><a href="#dom_index">removeAttr</a></li>
+								<li><a href="#dom_index">removeAttr</a></li>
+								<li><a href="#dom_index">replace</a></li>
+								<li><a href="#dom_index">append</a></li>
+								<li><a href="#dom_index">prepend</a></li>
+								<li><a href="#dom_index">prependTo</a></li>
+								<li><a href="#dom_index">appendTo</a></li>
+								<li><a href="#dom_index">appendAfter</a></li>
+								<li><a href="#dom_index">appendBefore</a></li>
+								<li><a href="#dom_index">remove</a></li>
+								<li><a href="#dom_index">prop</a></li>
+								<li><a href="#dom_index">checked</a></li>
+								<li><a href="#dom_index">src</a></li>
+								<li><a href="#dom_index">clone</a></li>
+								<li><a href="#dom_index">addCSS</a></li>
+							</ul>
+						</li>
+						<li class="category"><a href="#dom_detection">CSS</a></li>
+						<li>
+							<ul>
+								<li><a href="#dom_index">css</a></li>
+								<li><a href="#dom_index">addClass</a></li>
+								<li><a href="#dom_index">hasClass</a></li>
+								<li><a href="#dom_index">removeClass</a></li>
+								<li><a href="#dom_index">toggleClass</a></li>
+								<li><a href="#dom_index">addRawCSS</a></li>
+								<li><a href="#dom_index">show</a></li>
+								<li><a href="#dom_index">hide</a></li>
+								<li><a href="#dom_index">disableSelect</a></li>
+								<li><a href="#dom_index">background</a></li>
+							</ul>
+						</li>
+						<li class="category"><a href="#dom_detection">Dimensions</a></li>
+						<li>
+							<ul>
+								<li><a href="#dom_index">width</a></li>
+								<li><a href="#dom_index">height</a></li>
+								<li><a href="#dom_index">innerWidth</a></li>
+								<li><a href="#dom_index">innerHeight</a></li>
+								<li><a href="#dom_index">horizontalBorders</a></li>
+								<li><a href="#dom_index">verticalBorders</a></li>
+								<li><a href="#dom_index">horizontalMargins</a></li>
+								<li><a href="#dom_index">verticalMargins</a></li>
+								<li><a href="#dom_index">left</a></li>
+								<li><a href="#dom_index">top</a></li>
+								<li><a href="#dom_index">bottom</a></li>
+								<li><a href="#dom_index">right</a></li>
+								<li><a href="#dom_index">position</a></li>
+								<li><a href="#dom_index">inViewY</a></li>
+								<li><a href="#dom_index">inViewX</a></li>
+								<li><a href="#dom_index">offset</a></li>
+
+							</ul>
+						</li>
+						<li class="category"><a href="#dom_detection">Events</a></li>
+						<li>
+							<ul>
+								<li><a href="#dom_index">on</a></li>
+								<li><a href="#dom_index">bind</a></li>
+								<li><a href="#dom_index">unbind</a></li>
+								<li><a href="#dom_index">trigger</a></li>
+								<li><a href="#dom_index">ready</a></li>
+							</ul>
+						</li>
+						<li class="category"><a href="#dom_detection">Forms</a></li>
+						<li>
+							<ul>
+								<li><a href="#dom_index">val</a></li>
+								<li><a href="#dom_index">submit</a></li>
+								<li><a href="#dom_index">select</a></li>
+								<li><a href="#dom_index">change</a></li>
+								<li><a href="#dom_index">focus</a></li>
+								<li><a href="#dom_index">focusIn</a></li>
+								<li><a href="#dom_index">focusOut</a></li>
+								<li><a href="#dom_index">blur</a></li>
+								<li><a href="#dom_index">serialize</a></li>
+								<li><a href="#dom_index">fileUpload</a></li>
+							</ul>
+						</li>
+						<li class="category"><a href="#dom_detection">Filtering</a></li>
+						<li>
+							<ul>
+								<li><a href="#dom_index">is</a></li>
+							</ul>
+						</li>
+						<li class="category"><a href="#window">Window</a></li>
+						<ul>
+							<li><a href="#get">width</a></li>
+							<li><a href="#set">height</a></li>
+							<li><a href="#set">scrollWidth</a></li>
+							<li><a href="#set">scrollHeight</a></li>
+							<li><a href="#set">scrollTop</a></li>
+							<li><a href="#set">scrollLeft</a></li>
+						</ul>
+						<li><a href="#dom_detection">Data</a></li>
+					</ul>
+				</li>
+				
+				<li><a href="#scripting">Scripting</a></li>
+				<li>
+					<ul>
+						<li><a href="#dfggdfwr">if</a></li>
+						<li><a href="#dfgdgr">else</a></li>
+						<li><a href="#dfgdgr">or</a></li>
+						<li><a href="#dfgdgr">loop</a></li>
+						<li><a href="#dfgdgr">endLoop</a></li>
+						<li><a href="#dfgdgr">delay</a></li>
+						<li><a href="#dfgdgr">clear</a></li>
+						<li><a href="#dom_index">each</a></li>
+					</ul>
+				</li>
+				<li><a href="#queueing">Queueing</a></li>
+				<li>
+					<ul>
+						<li><a href="#sdfdgfdg">queue</a></li>
+						<li><a href="#dfgwrwer">dequeue</a></li>
+						<li><a href="#dfgwrwer">queueNext</a></li>
+						<li><a href="#dfgwrwer">withoutQueue</a></li>
+						<li><a href="#dfgwrwer">withQueue</a></li>
+						<li><a href="#dfgwrwer">sync</a></li>
+						<li><a href="#dfgwrwer">async</a></li>
+					</ul>
+				</li>
+				<li><a href="#objects">Objects</a></li>
+				<li>
+					<ul>
+						<li><a href="#objects_get">Get</a></li>
+						<li><a href="#objects_set">Set</a></li>
+					</ul>
+				</li>
+				<li><a href="#requests">Requests</a></li>
+				<li>
+					<ul>
+						<li><a href="#objects_get">url</a></li>
+						<li><a href="#objects_get">post</a></li>
+						<li><a href="#objects_set">success</a></li>
+					</ul>
+				</li>
+				<li><a href="#requests">FileUpload</a></li>
+				<li>
+					<ul>
+						<li><a href="#objects_get">url</a></li>
+						<li><a href="#objects_get">post</a></li>
+						<li><a href="#objects_set">success</a></li>
+					</ul>
+				</li>
+				<li><a href="#encoding">Encoding</a></li>
+				<li>
+					<ul>
+						<li><a href="#fgdfgdwer">Introduction</a></li>
+						<li><a href="#dfgdfgwer">Installation</a></li>
+					</ul>
+				</li>
+				<li><a href="#detecting">Utilities</a></li>
+				<li>
+					<ul>
+						<li><a href="#sfdsf">copyToClipboard</a></li>
+						<li><a href="#fdg">mstime</a></li>
+						<li><a href="#fdg">time</a></li>
+						<li><a href="#fdg">uniqueId</a></li>
+						<li><a href="#fdg">rand</a></li>
+						<li><a href="#fdg">dataURLToBlob</a></li>
+					</ul>
+				</li>
+			</li>
+		</ul>
+		<div class="bottom_padding"></div>
+	</div>
+</template>
+
+<style>
+	#menu_navigation {
+		box-sizing: border-box; 
+		position: fixed;
+		top:84px;
+		overflow-y: scroll;
+		height:calc(100% - 84px);
+		padding-top: 20px;
+		width:297px;
+	}
+	#menu_navigation .bottom_padding {
+		height: 80px;
+	}
+	#menu_navigation h1,
+	#menu_navigation a {
+		color: var(--dark);
+		text-decoration: none;
+		padding:5px 10px;
+		margin-bottom: 5px;
+		display: block;
+	}
+	#menu_navigation h1 {
+		margin-bottom: 15px;
+	}
+	#menu_navigation a.q-link-active {
+		color: var(--light);
+	}
+	#menu_navigation ul {
+		list-style-type: none;
+		margin:0;
+		padding-left:20px;
+		padding-bottom:5px;
+	}
+	#menu_navigation li {
+		list-style-type: none;
+	}
+	#menu_navigation > ul > li > a {
+		font-weight: bold;
+	}
+	#menu_navigation li.category {
+		font-style: italic;
+	}
+
+</style>

@@ -1,0 +1,114 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>Javascript Q - Documentation</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1" />
+	<script type="text/javascript" src="../q.js"></script>
+	<link rel="stylesheet" href="styles/root.css">
+	<script>
+		$.component.root = "./components";
+		$.hash_offset(110);
+		$.component.mount(function () {
+			this.template.find('.code:not(.done) textarea').each(function () {
+				$(this).closest('.code').addClass('done');
+				var editor = CodeMirror.fromTextArea(this, {
+					lineNumbers: true,
+					viewportMargin: Infinity
+				});
+			});
+		});
+	</script>
+	<link rel="stylesheet" href="libs/codemirror/codemirror.css">
+	<script src="libs/codemirror/codemirror.js"></script>
+	<script src="libs/codemirror/codemirrorcss.js"></script>
+</head>
+<body>
+	<!-- colors: https://colors.lol/kindliest -->
+	<div id="header-placeholder"></div>
+	<header class="">
+		<div class="center">
+			<div class="logo"><div class="logo-icon">Q<div class="logo-icon-2">Q</div></div><div class="logo-text">q.js</div></div>
+		</div>
+		<div class="right">
+			<div class="header-text">Documentation</div>
+		</div>
+	</header>
+	<div id="main-content" class="body-margin">
+		<nav><script>$.component.insert("menu_navigation")</script></nav>
+		<main>
+			<script>$.component.route(["", "#introduction", "#installation", "#usage"], "page_intro")</script>
+			<script>$.component.route("#dom.*", "page_dom")</script>
+			<script>$.component.route("#objects.*", "page_objects")</script>
+			<script>$.component.route("#components.*", "page_components")</script>
+			<div class="bottom_padding"></div>
+		</main>
+	</div>
+	<style>
+		.logo {
+			text-align: center;
+			line-height: 60px;
+			display: inline-block;
+			width:100%;
+		}
+		.logo-icon-2,
+		.logo-icon {
+			font-size:40px;
+			transform:rotate(180deg);
+			display: inline-block;
+			vertical-align: middle;
+			font-weight: bolder;
+			width:50px;
+			height:50px;
+			line-height: 46px;
+			border-radius:4px;
+			box-shadow: inset 0 0 10px -4px #2A0134;
+			position: relative;
+		}
+		.logo-icon-2 {
+			position: absolute;
+			top:0;
+			left:1px;
+			background-color: transparent;
+			box-shadow: none;
+		}
+		.logo-text {
+			display: inline;
+			vertical-align: middle;
+			margin-left: 14px;
+			font-size:22px;
+		}
+		.header-text {
+			display: inline-block;
+			font-size:18px;
+			margin-right:40px;
+			line-height: 60px;
+			color:var(--dark);
+		}
+		#main-content {
+			grid-template-columns: 310px 1fr;
+			display: grid;
+		}
+		#main-content > main {
+			padding:0px 40px calc(100vh - 300px) 40px;
+		}
+		#main-content > main h1 {
+			margin: 45px 0;
+		}
+		#main-content h2 {
+			margin: 45px 0;
+		}
+		#main-content h3 {
+			margin: 25px 0;
+		}
+		#main-content section {
+			margin-bottom: 50px;
+		}
+		#main-content section h3 {
+			border-bottom: 0.5px solid #ccc;
+			padding-bottom: 10px;
+		}
+	</style>
+</body>
+</html>

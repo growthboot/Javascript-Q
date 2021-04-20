@@ -1,0 +1,86 @@
+:root {
+	--dark: #2A0134;
+	--matt: #6B7C85;
+	--light: #FCB001;
+	--white: #fef;
+}
+body {
+	font-size: 16px;
+	font-family: Georgia, Helvetica;
+	color:var(--dark);
+	margin:0;
+	min-height: 100vh;
+	grid-template-rows: 82px 1fr;
+	display: grid;
+	line-height: 22px;
+}
+header {
+	position: fixed;
+	z-index: 100;
+	top:0;
+	left:0;
+	width:100%;
+	border-bottom:20px solid var(--matt);
+	padding-bottom: 1px;
+	font-size:18px;
+	background-color: var(--light);
+	grid-template-columns: 297px 1fr;
+	display: grid;
+	text-align: center;
+}
+code {
+	background-color: #eee;
+	padding:3px;
+}
+#header-placeholder {
+	height:80px;
+}
+.body-margin {
+	padding-left:30px;
+	padding-right:30px;
+	text-align: left;
+}
+.right {
+	text-align: right;
+}
+.center {
+	text-align: center;
+}
+.code {
+	height: 150px;
+	position: relative;
+	margin-bottom: 15px;
+}
+.code > div {
+	position: relative;
+	width:100%;
+}
+.CodeMirror {
+	border: 1px solid #eee;
+	height: 150px;
+	width:100%;
+}
+.code.min,
+.code.min .CodeMirror {
+	height:auto;
+}
+.code.small,
+.code.small .CodeMirror {
+	height:80px;
+}
+.code.one-line,
+.code.one-line .CodeMirror {
+	height:40px;
+}
+.table {
+	border-spacing: 0;
+    border-collapse: collapse;
+}
+.table th,
+.table td {
+	border: 1px solid var(--dark);
+	padding:6px 13px;
+}
+.table th {
+	font-weight: bold;
+}

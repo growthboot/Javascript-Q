@@ -1,0 +1,171 @@
+<script>
+$.component.set('page_components', function () {});
+</script>
+<template>
+	<div>
+		<a name="components"></a>
+		<section>
+			<h1>Comonents</h1>
+			<p>Components provide a way to load self contained scripts that are managed through an internal API.</p>
+		</section>
+
+		<!-- load -->
+		<section>
+			<a name="components_load"></a>
+			<h2>load</h2>
+			<p>The load function accepts two parameter configurations.</p>
+			<h4>$.component.load(strName, strUrl, fnLoaded)</h4>
+			<p>Async load a component file from a given path.</p>
+			<h4>$.component.load(strName, fnLoaded)</h4>
+			<p>Async load a component file using path generation.</p>
+			<p>Loads a components without injecting it. Injection can happen from within the component itself using the component api.</p>
+			<div class="code min">
+				<div>
+					<textarea>var objComponent = q.component.load(strName);</textarea>
+				</div>
+			</div>
+			<p>When called it returns imidately the object that will contain the component object. The object doesnt yet have all the component data filled in yet because it may be currently loading.</p>
+			<div class="code min">
+				<div>
+<textarea>{
+	loading: true,
+	finsihed_loading: Function
+}</textarea>
+				</div>
+			</div>
+			<p>The <code>finsihed_loading</code> hook function can be used to set a function that will be called when the component is loaded. If the component was already loaded in the past it will do nothing.</p>
+			<div class="code min">
+				<div>
+<textarea>var objComponent = $.component.load(strName, fnLoaded);
+objComponent.finsihed_loading(function () {
+	// the component has now loaded and has been populated with component api features
+	console.log(objComponent);
+});</textarea>
+				</div>
+			</div>
+			<p>This will result in a log of a component object.</p>
+			<div class="code min">
+				<div>
+<textarea>{
+	loaded: true,
+	mount: function mount(mixedLocation),
+	name: "page_components",
+	template: $object,
+	unmount: function unmount(mixedLocation),
+}</textarea>
+				</div>
+			</div>
+			<p>To mount the compoonent you must wait for it to load, then you can apply a <code>mount</code> call with the location that you want it to be mounted in. This is also an example of how the <code>fnDone</code> callback is fired when the component loads.</p>
+			<div class="code min">
+				<div>
+<textarea>var objComponent = $.component.load(strName, function () {
+	objComponent.mount('#mountLocation');
+});</textarea>
+				</div>
+			</div>
+		</section>
+
+		<!-- set -->
+		<section>
+			<a name="components_set"></a>
+			<h2>set</h2>
+			<p>Initalize a component when it's loaded.</p>
+			<h4>$.component.set(strName, fnCallback)</h4>
+			<p>It is required that a <code>set</code> function is called within a component file that is loaded. This will initialize the component. You can pass a function that is called to the fnCallback parameter that allows you to interact with the component and call methods of the component API.</p>
+			<div class="code min">
+				<div>
+<textarea>$.component.set('learning_test', function () {
+	this.created = function () {
+		this.mount("#placeholder");
+	};
+	this.doSometing = function () {
+		//...
+	};
+});</textarea>
+				</div>
+			</div>
+			<p>You can access methods of the API from within methods created in a component as well as within the component callback itself.</p>
+			<div class="code min">
+				<div>
+<textarea>$.component.set('learning_test', function () {
+	this.mount("#placeholder");
+});</textarea>
+				</div>
+			</div>
+		</section>
+
+		<!-- get -->
+		<section>
+			<a name="components_get"></a>
+			<h2>get</h2>
+			<h4>$.component.get(strName)</h4>
+			<p>The <code>get</code> mothod is very simular to the load method except it is not ment to be used with same intention. Even though it is capable of loading a component too it is not capable of handling any other parameters other than the name of the component you want to retrieve. This method should be used when you don't have a reference variable available to the component, you can simply call the <code>get</code> method to retrive the component object.</p>
+			<div class="code min">
+				<div>
+<textarea>q.component.get(strName).doSomething();</textarea>
+				</div>
+			</div>
+		</section>
+
+		<!-- insert -->
+		<section>
+			<a name="components_insert"></a>
+			<h2>insert</h2>
+			<h4>$.component.insert(strName)</h4>
+			<p>Loads and mounts a component at the current location that the call happens.</p>
+			<div class="code min">
+				<div>
+<textarea><div>Some example HTML</div>
+<script>$.component.insert("component_path_name")</script>
+<footer>Some example HTML</footer></textarea>
+				</div>
+			</div>
+			<p>This will place the component in the exact location it was called in by automatically calling the <code>mount</code> function. When the component is unmounted it is replaced with an HTML comment placeholder. When you call the <code>mount</code> function again it will replace the HTML comment with the component.</p>
+		</section>
+
+		<!-- mount -->
+		<section>
+			<a name="components_mount"></a>
+			<h2>mount</h2>
+			<h4>$.component.mount(fnCallback)</h4>
+			<p>Automatically run any hook function when a component is mounted.</p>
+			<div class="code min">
+				<div>
+<textarea>$.component.mount(function () {
+		this.template.find('.code:not(.done) textarea').each(function () {
+			$(this).closest('.code').addClass('done');
+			var editor = CodeMirror.fromTextArea(this, {
+				lineNumbers: true,
+				viewportMargin: Infinity
+			});
+		});
+	});</textarea>
+				</div>
+			</div>
+			<p>In this example we are watching for a component to be mounted and applying the external library to <code>.code</code> classes that have not been done. Within the <code>fnCallback</code> we are able to access the component being loaded with the <code>this</code>.</p>
+		</section>
+
+		<!-- router -->
+		<section>
+			<a name="components_router"></a>
+			<h2>router</h2>
+			<h4>$.component.router(strPath, strName)</h4>
+			<p>Matches a single route with regex</p>
+			<h4>$.component.router(arrPath, strName)</h4>
+			<p>Simular to the <code>mount</code> method, the <code>router</code> will insert a component in the current location. The difference is this method will only <code>mount</code> the component when the route matches the <code>strPath</code> or <code>arrPath</code>.</p>
+			<p>A list:</p>
+			<div class="code min">
+				<div>
+<textarea><script>$.component.route(["", "#introduction", "#installation", "#usage"], "page_intro")</script></textarea>
+				</div>
+			</div>
+			<p>A regex match:</p>
+			<div class="code min">
+				<div>
+<textarea><script>$.component.route("#dom.*", "page_dom")</script></textarea>
+				</div>
+			</div>
+			<p>When the URL changes the component will either show or hide depending on if it matches the path.</p>
+		</section>
+	</div>
+</template>

@@ -1,0 +1,80 @@
+<script>
+$.component.set('page_intro', function () {});
+</script>
+
+<template>
+	<div>
+		<section>
+			<h1>Getting Started</h1>
+			<p>Welcome to Javascript Q, an open source library meant to help streamline your web development process.</p>
+		</section>
+		<section>
+			<a name="introduction"></a>
+			<h2>Introduction</h2>
+			<p>The Q framework is meant to be a an all encompassing Single Page Application (SPA) creation tool that requires no compiling and has as little extra bloat as possible. It's designed in a way that intends to not get in the way of your development process with lots of background magic, edge cases, compiling time and modern JavaScript dependencies by relying heavily on ES5 vanilla programming.</p>
+			<p>It's meant to be an all-in-one solution to making stable applications that will work in older browsers without the need of using compilers or polyfills that add an enormous amount of bloat to your website or application. There are many simularities in the UI of this library to JQuery because it was heavily inspired by it but in the end it has a lot of differences too.</p>
+			<p>Below are some of the major characteristic of this framework that differ from a lot of the currently popular frameworks out there</p>
+			<ul>
+				<li>DOM manipulation based (No virtual dom) because it's quicker and less complicated</li>
+				<li>Contains a wide variety to features that encomeses the most important tools needed to build an application without the need of extra libaries</li>
+				<li>The entire library is a single file that hasn't been compiled other than for compression in the minified version</li>
+				<li>Small size compared to most frameworks being only 33 KB on disk (10k after gzip)</li>
+				<li>Works and is tested regularly in older browsers (ES5)</li>
+				<li>Various types of synchronization queueing features</li>
+				<li>Built in programming logic capabilities (if, else, loop, etc)</li>
+				<li>Doesn't force you out of a traditional vanilla coding experience</li>
+			</ul>
+			<h3>Compatibility</h3>
+			<p>Required compatibility between: ECMAScript 2009 (ES5) to Current</p>
+			<table class="table">
+				<tr>
+					<th>Chrome 23</th>
+					<th>IE10 / Edge</th>
+					<th>Firefox 21</th>
+					<th>Safari 6</th>
+					<th>Opera 15</th>
+				</tr>
+				<tr class="center">
+					<td>Sep 2012</td>
+					<td>Sep 2012</td>
+					<td>Apr 2013</td>
+					<td>Jul 2012</td>
+					<td>Jul 2013</td>
+				</tr>
+			</table>
+		</section>
+		<section>
+			<a name="installation"></a>
+			<h2>Installation</h2>
+			<h3>CDN</h3>
+			<code>https://cdn.jsdelivr.net/gh/growthboot/Javascript-Q@latest/q.min.js</code>
+			<h3>Setup</h3>
+			<p>Include the library q.js file into the head of your html document.</p>
+			<div class="code min">
+				<div>
+					<textarea><script src="https://cdn.jsdelivr.net/gh/growthboot/Javascript-Q@latest/q.min.2.313.js"></script></textarea>
+				</div>
+			</div>
+		</section>
+		<section>
+			<a name="usage"></a>
+			<h2>Usage</h2>
+			<h3>The library handle</h3>
+			<p>The library is used and controlled using the $ variable by default. If you're using another library that uses the same handle there could be a conflict. You can choose to customize the handle variable name by setting a variable called JAVASCRIPT_Q_HANDLE before the q.js is loaded.</p>
+			<h3>Example:</h3>
+			<div class="code min">
+				<div>
+					<textarea><script>
+	var JAVASCRIPT_Q_HANDLE = "q";
+</script>
+<script src="https://cdn.jsdelivr.net/gh/growthboot/Javascript-Q@latest/q.js"></script>
+<script>
+q(function () {
+	alert("I'm alive!");
+});
+</script></textarea>
+				</div>
+			</div>
+		</section>
+	</div>
+</template>
