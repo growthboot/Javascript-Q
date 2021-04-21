@@ -13,7 +13,7 @@
 		return that.put(mixedQuery);
 	},
 
-	version = q.version = '3.0.1',
+	version = q.version = '3.0.2',
 	
 	BYPASS_QUEUE = q.BYPASS_QUEUE = 'BYPASS_QUEUE_CONSTANT',
 
@@ -358,7 +358,16 @@
 	// define prototype object
 	q.prototype = fun;
 	q.is_q = 1;
-
+	q.first = function (objItem) {
+		for (var intItem in objItem) {
+			return objItem[intItem];
+		}
+	};
+	q.last = function (objItem) {
+		if (typeof objItem === 'object')
+			objItem = Object.values(objItem);
+		return objItem[objItem.length-1];
+	};
 	q.zIndex = {
 		increment: 100,
 		current: 1000,
@@ -431,6 +440,11 @@
 			if (callNow) func.apply(context, args);
 		};
 	};
+
+	q.escapeRegex = function (string) {
+		return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+	}
+
 	var intHashOffset = 0;
 	q.hash_offset = function (offset) {
 		$(function () {
@@ -601,7 +615,17 @@
 	q.component.set = function (strName, fnCallback) {
 		// generate root component
 		var objComponent = new fnCallback();
-		Object.assign(objComponent, fnComponentRoot(objComponent));
+		for (var strMethod in objComponent) {
+			if (typeof objComponent[strMethod] == "function") {
+				var objMethod = objComponent[strMethod];
+				objComponent[strMethod] = (function (strMethod, objMethod) {
+					return function () {
+						return objMethod.apply(components[strName], arguments);
+					};
+				})(strMethod, objMethod);
+			}
+		};
+		Object.assign(objComponent, fnComponentRoot(components[strName]));
 		// add template to new component
 		var $template = componentsTemplates[strName].find("template");
 		objComponent.template = $($template.html());
@@ -612,6 +636,7 @@
 		componentsTemplates[strName].remove();
 		delete componentsTemplates[strName];
 		objComponent.name = strName;
+		// assign new component to root
 		Object.assign(components[strName], objComponent);
 		objComponent = components[strName];
 		delete objComponent.loading;
@@ -621,13 +646,17 @@
 		if (objComponent.created)
 			objComponent.created();
 		if (componentsLoadedCallbacks[strName]) {
-			componentsLoadedCallbacks[strName](objComponent);
+			componentsLoadedCallbacks[strName].call(objComponent);
 			delete componentsLoadedCallbacks[strName];
 		}
-		console.log('objComponent', objComponent);
 	};
-	q.component.get = function (strName) {
-		return q.component.load(strName);
+	q.component.get = function (strName, fnDone) {
+		if (components[strName]) {
+			fnDone.call(components[strName]);
+			return components[strName];
+		} else {
+			return q.component.load(strName, fnDone);
+		}
 	};
 	q.component.insert = function (strName) {
 		var strId = "q__component__inject__" + strName;
@@ -1290,9 +1319,9 @@
 	}
 	function getProcessedWidthHeight(strType) {
 		if (strType == 'Width')
-			return parseInt(this.css('border-left-width')) + parseInt(this.css('padding-left')) + parseInt(this.css('width')) + parseInt(this.css('padding-right')) + parseInt(this.css('border-right-width'));
+			return parseFloat(this.css('border-left-width')) + parseFloat(this.css('padding-left')) + parseFloat(this.css('width')) + parseFloat(this.css('padding-right')) + parseFloat(this.css('border-right-width'));
 		else
-			return parseInt(this.css('border-top-width')) + parseInt(this.css('padding-top')) + parseInt(this.css('height')) + parseInt(this.css('padding-bottom')) + parseInt(this.css('border-bottom-width'));
+			return parseFloat(this.css('border-top-width')) + parseFloat(this.css('padding-top')) + parseFloat(this.css('height')) + parseFloat(this.css('padding-bottom')) + parseFloat(this.css('border-bottom-width'));
 	}
 	// DOM width
 	fn('width', function (mixedValue, boolProcessed) {
@@ -1351,10 +1380,10 @@
 		);
 	};
 	q.scrollTop = function () {
-		return q(window).scrollTop();
+		return q(window).scrollTop(arguments[0], arguments[1], arguments[2], arguments[3]);
 	};
 	q.scrollLeft = function () {
-		return q(window).scrollLeft();
+		return q(window).scrollLeft(arguments[0], arguments[1], arguments[2], arguments[3]);
 	};
 	
 	// sames as lodash get/set
@@ -1399,6 +1428,12 @@
 	});
 	fn('verticalMargins', function () {
 		return parseInt(this.css('margin-top')) + parseInt(this.css('margin-bottom'))
+	});
+	fn('horizontalPadding', function () {
+		return parseInt(this.css('padding-left')) + parseInt(this.css('padding-right'))
+	});
+	fn('verticalPadding', function () {
+		return parseInt(this.css('padding-top')) + parseInt(this.css('padding-bottom'))
 	});
 
 	// Dynamically adds a CSS stylesheet
@@ -1591,11 +1626,11 @@
 		return that.addClass(strClassName, 1);
 	});
 
-	fn('toggleClass', function (strClassName) {
+	fn('toggleClass', function (strClassName, boolAnswer) {
 		var that = this;
 		if (!prospectQueue.call(that,arguments,'toggleClass'))
 			return that;
-		return that.hasClass(strClassName) 
+		return (boolAnswer !== undefined ? !boolAnswer : that.hasClass(strClassName))
 			? that.removeClass(strClassName)
 			: that.addClass(strClassName);
 	});
@@ -1605,6 +1640,9 @@
 		var that = this;
 		if (!prospectQueue.call(that,arguments,'attr'))
 			return that;
+		if (that[0] == undefined) {
+			return undefined;
+		}
 		if (typeof strVal=='undefined')
 			return that[0].getAttribute(strKey);
 		iterate(that,function () {
@@ -1763,14 +1801,14 @@
 	});
 
 	// triggers an event
-	fn('trigger', function (strEvent) {
+	fn('trigger', function (strEvent, customEvent) {
 		var that = this;
 		if (!prospectQueue.call(that,arguments,'trigger'))
 			return that;
 		var event = document.createEvent('HTMLEvents');
 		event.initEvent(strEvent, true, false);
 		iterate(that,function (k,node) {
-			node.dispatchEvent(event);
+			node.dispatchEvent(customEvent || event);
 		});
 		return that;
 	});
@@ -1923,6 +1961,53 @@
 	fn('appendBefore', function (mixedVar) {
 		return this.appendAfter(mixedVar, 1);
 	});
+
+	fn('appendIndex', function ($parent, strMatch, intIndex) {
+		var $this = $(this);
+		var $children = $parent.children(strMatch);
+		if (!$children.length) {
+			this.prependTo($parent);
+			return this;
+		}
+		// remove itself from list of children
+		$children.each(function (k) {
+			if (this == $this[0]) {
+				$children.extract(k);
+			}
+		});
+		var $child = $children.become(intIndex);
+		if ($child.length)
+			this.appendBefore($child);
+		else
+			this.appendAfter($children.become(-1));
+		return this;
+	});
+
+	// extract a value from the query using a key
+	fn('extract', function (intIndex) {
+		var 
+		that = this,
+		offset = 0,
+		result;
+		iterate(that,function (k,v) {
+			if (k == intIndex) {
+				offset++;
+				result = v;
+				return;
+			}
+			var k2 = k - offset;
+			if (k2 >= 0)
+				that[k2] = v;
+		});
+		if (offset) {
+			var intPastLength = that.length;
+			that.length = that.length - offset;
+			for (var itr=that.length; itr!=intPastLength; itr++) {
+				delete that[itr];
+			}
+		}
+		return result;
+	})
 
 	// Remove node
 	fn('remove', function () {
@@ -2466,21 +2551,61 @@
 		return that;
 	});
 
+	var arrDelayRefQueue = {};
 	q.clear = function (ref) {
-		window.clearTimeout(ref);
+		if (typeof ref === "string") {
+			var arrRefQueue = arrDelayRefQueue[ref];
+			if (arrRefQueue) {
+				for (var intRef in arrRefQueue) {
+					window.clearTimeout(arrRefQueue[intRef]);
+					delete arrRefQueue[intRef];
+				}
+			}
+		} else {
+			window.clearTimeout(ref);
+		}
 	};
-	q.delay = function (intMS, fnCallback) {
+	q.delay = function () {
+		var intMS, fnCallback, strName;
+		for (var intParam=0; intParam!=3; intParam++) {
+			var mixedArguement = arguments[intParam];
+			switch(typeof mixedArguement) {
+				case "number":
+					intMS = mixedArguement;
+					break;
+				case "function":
+					fnCallback = mixedArguement;
+					break;
+				case "string":
+					strName = mixedArguement;
+					break;
+				case "undefined":
+					strName = mixedArguement;
+					break;
+				default:
+					throw "Invalid arugment type '" + (typeof mixedArguement) + "' supplied to $.delay function";
+
+			}
+		}
 		var that = this;
-		if (!that.is_qchain)
-			return window.setTimeout(function () {
+		if (!that.is_qchain) {
+			if (strName != undefined)
+				q.clear(strName);
+			var ref = window.setTimeout(function () {
 				fnCallback();
 			},intMS);
-		else if (!that.length)
+			if (strName != undefined) {
+				if (arrDelayRefQueue[strName] == undefined)
+					arrDelayRefQueue[strName] = [];
+				arrDelayRefQueue[strName].push(ref);
+			}
+			return ref;
+		} else if (!that.length)
 			 q.delay(intMS, function () {
 			 	if (fnCallback)
 			 		fnCallback();
 			 	that.queueNext();
-			 });
+			 }, strName);
 		else {
 			var 
 			arrArgs = Array.prototype.slice.call(arguments),
@@ -2501,7 +2626,7 @@
 						}
 						if (objQueueItem.active) {
 							// Add next animation to chain
-							objQueueItem.sequence.push(["delay", intMS, fnCallback]);
+							objQueueItem.sequence.push(["delay", intMS, fnCallback, strName]);
 							return false;
 						}
 					}
@@ -2514,7 +2639,7 @@
 					 	objQueueItem.active = false;
 					 	q.queueNext.call(that,el,true);
 					 }
-				});
+				}, strName);
 			});
 		}
 		return this;
